@@ -45,7 +45,45 @@ describe ::Question::Ruby::Constant::Registry do
       subject(:registry) { described_class.new }
 
       it "raises an error" do
-        expect { registry.close! }.to raise_error(described_class::CannotCloseGlobalNamespaceError)
+        expect { registry.close! }.to raise_error("Cannot close global namespace")
+      end
+    end
+  end
+
+  describe "#add_reference" do
+    context "when the namespace is global" do
+      subject(:registry) { described_class.new }
+
+      it "adds the reference in global namespace" do
+        registry.add_reference! do |namespace|
+          ::Question::Ruby::Constant::Reference.new(namespace:, name: "MyReference")
+        end
+
+        expect(registry.references.size).to eql(1)
+        expect(registry.references.first.name).to eql("MyReference")
+        expect(registry.references.first.namespace).to eql(::Question::Ruby::Constant::Namespace::GLOBAL)
+      end
+    end
+
+    context "when namespace is NOT global" do
+      subject(:registry) { described_class.new }
+
+      before do
+        registry.open! do |namespace|
+          ::Question::Ruby::Constant::Namespace::Module.new(parent_namespace: namespace, name: "MyNamespace")
+        end
+      end
+
+      it "adds a reference in the nested namespace" do
+        registry.add_reference! do |namespace|
+          ::Question::Ruby::Constant::Reference.new(namespace:, name: "MyReference")
+        end
+
+        registry.close!
+
+        expect(registry.references.size).to eql(1)
+        expect(registry.references.first.name).to eql("MyReference")
+        expect(registry.references.first.namespace.name).to eql("MyNamespace")
       end
     end
   end
