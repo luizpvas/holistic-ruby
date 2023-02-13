@@ -9,18 +9,16 @@ module Question::Ruby::Constant
       @references = []
     end
 
-    def open!(&block)
-      @namespace = block.call(namespace)
+    def open_module(name, &block)
+      @namespace = Namespace::Module.new(parent_namespace: namespace, name:)
+
+      block.call
+
+      @namespace = @namespace.parent_namespace
     end
 
-    def close!
-      raise "Cannot close global namespace" if namespace.global?
-
-      @namespace = namespace.parent_namespace
-    end
-
-    def add_reference!(&block)
-      references << block.call(namespace)
+    def add_reference!(name)
+      references << Reference.new(namespace:, name:)
     end
   end
 end

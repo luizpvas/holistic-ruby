@@ -9,44 +9,16 @@ describe ::Question::Ruby::Constant::Registry do
     end
   end
 
-  describe "#open!" do
+  describe "#open_module" do
     subject(:registry) { described_class.new }
 
-    it "updates the current namespace with the result from the block" do
-      registry.open! do |namespace|
-        ::Question::Ruby::Constant::Namespace::Module.new(parent_namespace: namespace, name: "MyNamespace")
+    it "updates the current namespace inside the block" do
+      registry.open_module("MyModule") do
+        expect(registry.namespace.name).to eql("MyModule")
+        expect(registry.namespace.parent_namespace).to eql(::Question::Ruby::Constant::Namespace::GLOBAL)
       end
 
-      expect(registry.namespace.name).to eql("MyNamespace")
-      expect(registry.namespace.parent_namespace).to eql(::Question::Ruby::Constant::Namespace::GLOBAL)
-    end
-  end
-
-  describe "#close!" do
-    context "when the current namespace is NOT global" do
-      subject(:registry) { described_class.new }
-
-      it "restores the previous namespace" do
-        expect(registry.namespace.global?).to be(true)
-
-        registry.open! do |namespace|
-          ::Question::Ruby::Constant::Namespace::Module.new(parent_namespace: namespace, name: "MyNamespace")
-        end
-
-        expect(registry.namespace.global?).to be(false)
-
-        registry.close!
-
-        expect(registry.namespace.global?).to be(true)
-      end
-    end
-
-    context "when the current namespace is global" do
-      subject(:registry) { described_class.new }
-
-      it "raises an error" do
-        expect { registry.close! }.to raise_error("Cannot close global namespace")
-      end
+      expect(registry.namespace).to eql(::Question::Ruby::Constant::Namespace::GLOBAL)
     end
   end
 
@@ -55,9 +27,7 @@ describe ::Question::Ruby::Constant::Registry do
       subject(:registry) { described_class.new }
 
       it "adds the reference in global namespace" do
-        registry.add_reference! do |namespace|
-          ::Question::Ruby::Constant::Reference.new(namespace:, name: "MyReference")
-        end
+        registry.add_reference!("MyReference")
 
         expect(registry.references.size).to eql(1)
         expect(registry.references.first.name).to eql("MyReference")
@@ -68,22 +38,14 @@ describe ::Question::Ruby::Constant::Registry do
     context "when namespace is NOT global" do
       subject(:registry) { described_class.new }
 
-      before do
-        registry.open! do |namespace|
-          ::Question::Ruby::Constant::Namespace::Module.new(parent_namespace: namespace, name: "MyNamespace")
-        end
-      end
-
       it "adds a reference in the nested namespace" do
-        registry.add_reference! do |namespace|
-          ::Question::Ruby::Constant::Reference.new(namespace:, name: "MyReference")
+        registry.open_module("MyModule") do
+          registry.add_reference!("MyReference")
         end
-
-        registry.close!
 
         expect(registry.references.size).to eql(1)
         expect(registry.references.first.name).to eql("MyReference")
-        expect(registry.references.first.namespace.name).to eql("MyNamespace")
+        expect(registry.references.first.namespace.name).to eql("MyModule")
       end
     end
   end
