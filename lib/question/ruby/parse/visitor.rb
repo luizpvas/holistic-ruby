@@ -8,30 +8,30 @@ module Question::Ruby
       case node
       when ::SyntaxTree::ConstRef then parts << node.child_nodes[0].value
       when ::SyntaxTree::Const    then parts << node.value
+      when ::SyntaxTree::ConstPathRef then debugger
       else raise "Unexpected node type: #{node.class}"
       end
 
       parts.join("::")
     end
 
-    IsAssignToConst = ->(node) do
-      node.is_a?(::SyntaxTree::VarField) && node.child_nodes[0].is_a?(::SyntaxTree::Const)
-    end
-
     class ProgramVisitor < ::SyntaxTree::Visitor
       visit_methods do
         def visit_module(node)
-          declaration, body = node.child_nodes
+          declaration, statements = node.child_nodes
+          declaration_name = DeclarationName[declaration]
 
-          Parse::Current.application.constant_registry.open! do |namespace|
-            Constant::Namespace::Module.new(parent_namespace: namespace, name: DeclarationName[declaration])
-          end
+          registry.open_module(declaration_name) { visit(statements) }
+        end
 
-          super
-
-          Parse::Current.application.constant_registry.close!
+        def visit_const(node)
+          registry.add_reference!(node.value)
         end
       end
+
+      private
+
+      def registry = Parse::Current.application.constant_registry
     end
   end
 end
