@@ -6,9 +6,9 @@ module Question::Ruby
       parts = []
 
       case node
-      when ::SyntaxTree::ConstRef then parts << node.child_nodes[0].value
-      when ::SyntaxTree::Const    then parts << node.value
-      when ::SyntaxTree::ConstPathRef then debugger
+      when ::SyntaxTree::ConstRef     then parts << node.child_nodes[0].value
+      when ::SyntaxTree::Const        then parts << node.value
+      when ::SyntaxTree::ConstPathRef then raise "TODO: ConstPathRef"
       else raise "Unexpected node type: #{node.class}"
       end
 
