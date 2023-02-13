@@ -10,11 +10,11 @@ module Question::Ruby::Constant
     end
 
     def open_module(name, &block)
-      @namespace = Namespace::Module.new(parent_namespace: namespace, name:)
+      @namespace = Namespace::Module.new(parent: namespace, name:)
 
       block.call
 
-      @namespace = @namespace.parent_namespace
+      @namespace = @namespace.parent
     end
 
     def add_reference!(name)

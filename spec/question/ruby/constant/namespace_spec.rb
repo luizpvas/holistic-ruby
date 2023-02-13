@@ -14,11 +14,11 @@ describe ::Question::Ruby::Constant::Namespace do
 
   describe "::Module" do
     let(:my_module) do
-      described_class::Module.new(parent_namespace: described_class::GLOBAL, name: "MyModule")
+      described_class::Module.new(parent: described_class::GLOBAL, name: "MyModule")
     end
 
     it "has a parent namespace" do
-      expect(my_module.parent_namespace).to eql(described_class::GLOBAL)
+      expect(my_module.parent).to eql(described_class::GLOBAL)
     end
 
     it "has a name" do
@@ -32,11 +32,11 @@ describe ::Question::Ruby::Constant::Namespace do
 
   describe "::Class" do
     let(:my_class) do
-      described_class::Class.new(parent_namespace: described_class::GLOBAL, name: "MyClass")
+      described_class::Class.new(parent: described_class::GLOBAL, name: "MyClass")
     end
 
     it "has a parent namespace" do
-      expect(my_class.parent_namespace).to eql(described_class::GLOBAL)
+      expect(my_class.parent).to eql(described_class::GLOBAL)
     end
 
     it "has a name" do
@@ -55,14 +55,14 @@ describe ::Question::Ruby::Constant::Namespace do
 
     let(:my_class_with_inheritance) do
       described_class::ClassWithInheritance.new(
-        parent_namespace: described_class::GLOBAL,
+        parent: described_class::GLOBAL,
         name: "MyClassWithInheritance",
         superclass:
       )
     end
 
     it "has a parent namespace" do
-      expect(my_class_with_inheritance.parent_namespace).to eql(described_class::GLOBAL)
+      expect(my_class_with_inheritance.parent).to eql(described_class::GLOBAL)
     end
 
     it "has a name" do

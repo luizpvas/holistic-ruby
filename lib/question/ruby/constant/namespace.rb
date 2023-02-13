@@ -6,15 +6,15 @@ module Question::Ruby::Constant
       def singleton.global? = true
     end
 
-    Module = ::Struct.new(:parent_namespace, :name, keyword_init: true) do
+    Module = ::Struct.new(:parent, :name, keyword_init: true) do
       def global? = false
     end
 
-    Class = ::Struct.new(:parent_namespace, :name, keyword_init: true) do
+    Class = ::Struct.new(:parent, :name, keyword_init: true) do
       def global? = false
     end
 
-    ClassWithInheritance = ::Struct.new(:parent_namespace, :name, :superclass, keyword_init: true) do
+    ClassWithInheritance = ::Struct.new(:parent, :name, :superclass, keyword_init: true) do
       def global? = false
     end
   end

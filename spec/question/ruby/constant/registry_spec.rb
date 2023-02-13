@@ -15,7 +15,7 @@ describe ::Question::Ruby::Constant::Registry do
     it "updates the current namespace inside the block" do
       registry.open_module("MyModule") do
         expect(registry.namespace.name).to eql("MyModule")
-        expect(registry.namespace.parent_namespace).to eql(::Question::Ruby::Constant::Namespace::GLOBAL)
+        expect(registry.namespace.parent).to eql(::Question::Ruby::Constant::Namespace::GLOBAL)
       end
 
       expect(registry.namespace).to eql(::Question::Ruby::Constant::Namespace::GLOBAL)
