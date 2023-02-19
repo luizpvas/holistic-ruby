@@ -5,14 +5,17 @@ module Question::Ruby
     DeclarationName = ->(node) do
       parts = []
 
-      case node
-      when ::SyntaxTree::ConstRef     then parts << node.child_nodes[0].value
-      when ::SyntaxTree::Const        then parts << node.value
-      when ::SyntaxTree::ConstPathRef then raise "TODO: ConstPathRef"
-      else raise "Unexpected node type: #{node.class}"
+      append = ->(node) do
+        case node
+        when ::SyntaxTree::ConstRef     then parts << node.child_nodes[0].value
+        when ::SyntaxTree::Const        then parts << node.value
+        when ::SyntaxTree::VarRef       then node.child_nodes.each(&append)
+        when ::SyntaxTree::ConstPathRef then node.child_nodes.each(&append)
+        else raise "Unexpected node type: #{node.class}"
+        end
       end
 
-      parts.join("::")
+      append.(node) and parts.join("::")
     end
 
     class ProgramVisitor < ::SyntaxTree::Visitor
