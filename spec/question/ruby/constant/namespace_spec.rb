@@ -14,7 +14,7 @@ describe ::Question::Ruby::Constant::Namespace do
 
   describe "::Module" do
     let(:my_module) do
-      described_class::Module.new(parent: described_class::GLOBAL, name: "MyModule")
+      described_class::Module.new(parent: described_class::GLOBAL, name: "MyModule", source_locations: [])
     end
 
     it "has a parent namespace" do
@@ -23,6 +23,10 @@ describe ::Question::Ruby::Constant::Namespace do
 
     it "has a name" do
       expect(my_module.name).to eql("MyModule")
+    end
+
+    it "has many source locations" do
+
     end
 
     it "is not global" do
