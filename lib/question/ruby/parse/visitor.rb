@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module Question::Ruby
-  module Parse::Visitor
+module Question::Ruby::Parse
+  module Visitor
     DeclarationName = ->(node) do
       parts = []
 
@@ -34,7 +34,7 @@ module Question::Ruby
 
       private
 
-      def repository = Parse::Current.application.constant_repository
+      def repository = Current.application.constant_repository
     end
   end
 end
