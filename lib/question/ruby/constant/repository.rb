@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Question::Ruby::Constant
-  class Registry
+  class Repository
     attr_reader :namespace, :references
 
     def initialize

@@ -24,17 +24,17 @@ module Question::Ruby
           declaration, statements = node.child_nodes
           declaration_name = DeclarationName[declaration]
 
-          registry.open_module(declaration_name) { visit(statements) }
+          repository.open_module(declaration_name) { visit(statements) }
         end
 
         def visit_const(node)
-          registry.add_reference!(node.value)
+          repository.add_reference!(node.value)
         end
       end
 
       private
 
-      def registry = Parse::Current.application.constant_registry
+      def repository = Parse::Current.application.constant_repository
     end
   end
 end

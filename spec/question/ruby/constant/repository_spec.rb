@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe ::Question::Ruby::Constant::Registry do
+describe ::Question::Ruby::Constant::Repository do
   describe "#initialize" do
     subject(:registry) { described_class.new }
 

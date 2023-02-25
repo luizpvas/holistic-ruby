@@ -17,13 +17,13 @@ describe ::Question::Ruby::Parse::Source do
     it "finishes the parsing process in global namespace" do
       parse_source
 
-      expect(application.constant_registry.namespace.global?).to be(true)
+      expect(application.constant_repository.namespace.global?).to be(true)
     end
 
     it "stores a constant reference for `Name`" do
       parse_source
 
-      references = application.constant_registry.references
+      references = application.constant_repository.references
 
       expect(references.size).to eql(1)
       expect(references.first.name).to eql("Name")
@@ -47,13 +47,13 @@ describe ::Question::Ruby::Parse::Source do
     it "finishes the parsing process in global namespace" do
       parse_source
 
-      expect(application.constant_registry.namespace.global?).to be(true)
+      expect(application.constant_repository.namespace.global?).to be(true)
     end
 
     it "stores a constant reference for `Name`" do
       parse_source
 
-      references = application.constant_registry.references
+      references = application.constant_repository.references
 
       expect(references.size).to eql(1)
       expect(references.first.name).to eql("Name")
@@ -79,13 +79,13 @@ describe ::Question::Ruby::Parse::Source do
     it "finishes the parsing process in global namespace" do
       parse_source
 
-      expect(application.constant_registry.namespace.global?).to be(true)
+      expect(application.constant_repository.namespace.global?).to be(true)
     end
 
     it "stores a constant reference for `Name`" do
       parse_source
 
-      references = application.constant_registry.references
+      references = application.constant_repository.references
 
       expect(references.size).to eql(1)
       expect(references.first.name).to eql("Name")
@@ -112,13 +112,13 @@ describe ::Question::Ruby::Parse::Source do
     it "finishes the parsing process in global namespace" do
       parse_source
 
-      expect(application.constant_registry.namespace.global?).to be(true)
+      expect(application.constant_repository.namespace.global?).to be(true)
     end
 
     it "stores a constant reference for `Name`" do
       parse_source
 
-      references = application.constant_registry.references
+      references = application.constant_repository.references
 
       expect(references.size).to eql(1)
       expect(references.first.name).to eql("Name")
