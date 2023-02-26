@@ -1,51 +1,53 @@
 # frozen_string_literal: true
 
 describe ::Question::Ruby::Constant::Repository do
-  describe "#initialize" do
-    subject(:registry) { described_class.new }
+  let(:root) { ::Question::Ruby::Constant::Namespace.new(kind: :root, name: "::", parent: nil) }
 
-    it "starts out with the global namespace" do
-      expect(registry.namespace).to eql(::Question::Ruby::Constant::Namespace::GLOBAL)
+  describe "#initialize" do
+    subject(:repository) { described_class.new(root:) }
+
+    it "starts in the root namespace" do
+      expect(repository.namespace).to be(root)
     end
   end
 
   describe "#open_module" do
-    subject(:registry) { described_class.new }
+    subject(:repository) { described_class.new(root:) }
 
     it "updates the current namespace inside the block" do
-      registry.open_module("MyModule") do
-        expect(registry.namespace.name).to eql("MyModule")
-        expect(registry.namespace.parent).to eql(::Question::Ruby::Constant::Namespace::GLOBAL)
+      repository.open_module("MyModule") do
+        expect(repository.namespace.name).to eql("MyModule")
+        expect(repository.namespace.parent).to be(root)
       end
 
-      expect(registry.namespace).to eql(::Question::Ruby::Constant::Namespace::GLOBAL)
+      expect(repository.namespace).to be(root)
     end
   end
 
   describe "#add_reference" do
-    context "when the namespace is global" do
-      subject(:registry) { described_class.new }
+    context "when the namespace is root" do
+      subject(:repository) { described_class.new(root:) }
 
-      it "adds the reference in global namespace" do
-        registry.add_reference!("MyReference")
+      it "adds the reference in root namespace" do
+        repository.add_reference!("MyReference")
 
-        expect(registry.references.size).to eql(1)
-        expect(registry.references.first.name).to eql("MyReference")
-        expect(registry.references.first.namespace).to eql(::Question::Ruby::Constant::Namespace::GLOBAL)
+        expect(repository.references.size).to eql(1)
+        expect(repository.references.first.name).to eql("MyReference")
+        expect(repository.references.first.namespace).to be(root)
       end
     end
 
-    context "when namespace is NOT global" do
-      subject(:registry) { described_class.new }
+    context "when namespace is NOT root" do
+      subject(:repository) { described_class.new(root:) }
 
       it "adds a reference in the nested namespace" do
-        registry.open_module("MyModule") do
-          registry.add_reference!("MyReference")
+        repository.open_module("MyModule") do
+          repository.add_reference!("MyReference")
         end
 
-        expect(registry.references.size).to eql(1)
-        expect(registry.references.first.name).to eql("MyReference")
-        expect(registry.references.first.namespace.name).to eql("MyModule")
+        expect(repository.references.size).to eql(1)
+        expect(repository.references.first.name).to eql("MyReference")
+        expect(repository.references.first.namespace.name).to eql("MyModule")
       end
     end
   end

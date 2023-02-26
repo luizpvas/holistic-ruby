@@ -2,7 +2,7 @@
 
 describe ::Question::Ruby::Parse::Source do
   describe ".call" do
-    context "module declaration in the global namespace" do
+    context "module declaration in the root namespace" do
       subject(:parse_source) { described_class.call(application:, source:) }
 
       let(:application) { ::Question::Ruby::Application.new }
@@ -10,29 +10,32 @@ describe ::Question::Ruby::Parse::Source do
       let(:source) do
         <<-RUBY
         module MyModule
-          Name.foo()
+          Foo.bar()
         end
         RUBY
       end
 
-      it "finishes the parsing process in global namespace" do
+      it "finishes the parsing process in root namespace" do
         parse_source
 
-        expect(application.constant_repository.namespace.global?).to be(true)
+        expect(application.repository.namespace.root?).to be(true)
       end
 
       it "stores a constant reference for `Name`" do
         parse_source
 
-        references = application.constant_repository.references
+        references = application.repository.references
 
         expect(references.size).to eql(1)
-        expect(references.first.name).to eql("Name")
-        expect(references.first.namespace.name).to eql("MyModule")
+        expect(references.first.name).to eql("Foo")
+        expect(references.first.namespace).to have_attributes(
+          itself: be_a(::Question::Ruby::Constant::Namespace),
+          name: "MyModule"
+        )
       end
     end
 
-    context "module declaration in global scope with double colon syntax" do
+    context "module declaration in root scope with double colon syntax" do
       subject(:parse_source) { described_class.call(application:, source:) }
 
       let(:application) { ::Question::Ruby::Application.new }
@@ -40,25 +43,28 @@ describe ::Question::Ruby::Parse::Source do
       let(:source) do
         <<-RUBY
         module MyApp::MyModule
-          Name.foo()
+          Foo.bar()
         end
         RUBY
       end
 
-      it "finishes the parsing process in global namespace" do
+      it "finishes the parsing process in root namespace" do
         parse_source
 
-        expect(application.constant_repository.namespace.global?).to be(true)
+        expect(application.repository.namespace.root?).to be(true)
       end
 
-      it "stores a constant reference for `Name`" do
+      it "stores a reference in the module namespace" do
         parse_source
 
-        references = application.constant_repository.references
+        references = application.repository.references
 
         expect(references.size).to eql(1)
-        expect(references.first.name).to eql("Name")
-        expect(references.first.namespace.name).to eql("MyApp::MyModule")
+        expect(references.first.name).to eql("Foo")
+        expect(references.first.namespace).to have_attributes(
+          itself: be_a(::Question::Ruby::Constant::Namespace),
+          name: "MyApp::MyModule",
+        )
       end
     end
 
@@ -71,27 +77,33 @@ describe ::Question::Ruby::Parse::Source do
         <<-RUBY
         module MyApp
           module MyModule
-            Name.foo()
+            Foo.bar()
           end
         end
         RUBY
       end
 
-      it "finishes the parsing process in global namespace" do
+      it "finishes the parsing process in root namespace" do
         parse_source
 
-        expect(application.constant_repository.namespace.global?).to be(true)
+        expect(application.repository.namespace.root?).to be(true)
       end
 
       it "stores a constant reference for `Name`" do
         parse_source
 
-        references = application.constant_repository.references
+        references = application.repository.references
 
         expect(references.size).to eql(1)
-        expect(references.first.name).to eql("Name")
-        expect(references.first.namespace.name).to eql("MyModule")
-        expect(references.first.namespace.parent.name).to eql("MyApp")
+        expect(references.first.name).to eql("Foo")
+        expect(references.first.namespace).to have_attributes(
+          itself: be_a(::Question::Ruby::Constant::Namespace),
+          name: "MyModule",
+          parent: have_attributes(
+            itself: be_a(::Question::Ruby::Constant::Namespace),
+            name: "MyApp"
+          )
+        )
       end
     end
 
@@ -110,21 +122,90 @@ describe ::Question::Ruby::Parse::Source do
         RUBY
       end
 
-      it "finishes the parsing process in global namespace" do
+      it "finishes the parsing process in root namespace" do
         parse_source
 
-        expect(application.constant_repository.namespace.global?).to be(true)
+        expect(application.repository.namespace.root?).to be(true)
       end
 
       it "stores a constant reference for `Name`" do
         parse_source
 
-        references = application.constant_repository.references
+        references = application.repository.references
 
         expect(references.size).to eql(1)
         expect(references.first.name).to eql("Name")
         expect(references.first.namespace.name).to eql("MyModule1::MyModule2")
         expect(references.first.namespace.parent.name).to eql("MyApp")
+      end
+    end
+
+    context "duplicated module declaration" do
+      subject(:parse_source) { described_class.call(application:, source:) }
+
+      let(:application) { ::Question::Ruby::Application.new }
+
+      let(:source) do
+        <<-RUBY
+        module MyApp
+          module MyModule
+            Foo1.bar()
+          end
+
+          module MyModule
+            Foo2.bar()
+          end
+        end
+        RUBY
+      end
+
+      it "finishes the parsing process in root namespace" do
+        parse_source
+
+        expect(application.repository.namespace.root?).to be(true)
+      end
+
+      it "stores two source locations for the module" do
+        parse_source
+
+        references = application.repository.references
+
+        expect(references.size).to eql(2)
+
+        expect(references[0].name).to eql("Foo1")
+        expect(references[1].name).to eql("Foo2")
+
+        expect(references[0].namespace).to be(references[1].namespace)
+      end
+    end
+
+    context "class declaration in root namespace" do
+      subject(:parse_source) { described_class.call(application:, source:) }
+
+      let(:application) { ::Question::Ruby::Application.new }
+
+      let(:source) do
+        <<-RUBY
+        class MyClass
+          Foo.bar()
+        end
+        RUBY
+      end
+
+      it "finishes the parsing process in root namespace" do
+        parse_source
+
+        expect(application.repository.namespace.root?).to be(true)
+      end
+
+      it "stores a constant reference in the class namespace" do
+        parse_source
+
+        references = application.repository.references
+
+        expect(references.size).to eql(1)
+        expect(references.first.name).to eql("Foo")
+        expect(references.first.namespace.name).to eql("MyClass")
       end
     end
   end

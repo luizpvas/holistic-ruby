@@ -1,22 +1,25 @@
 # frozen_string_literal: true
 
 module Question::Ruby::Constant
-  module Namespace
-    GLOBAL = ::Object.new.tap do |singleton|
-      def singleton.global? = true
+  class Namespace
+    attr_reader :kind, :name, :parent, :children, :source_locations
+
+    def initialize(kind:, name:, parent:)
+      @kind = kind
+      @parent = parent
+      @name = name
+      @source_locations = []
+      @children = []
     end
 
-    Module = ::Struct.new(:parent, :name, :source_locations, keyword_init: true) do
-      def global? = false
+    def nest(kind:, name:)
+      namespace = children.find { _1.name == name }
+
+      return namespace if namespace
+
+      self.class.new(kind: kind, name: name, parent: self).tap { children << _1 }
     end
 
-    Class = ::Struct.new(:parent, :name, :source_locations, keyword_init: true) do
-      def global? = false
-    end
-
-    # Does it make sense to have this here? Should it just be `Class` with a different parent?
-    ClassWithInheritance = ::Struct.new(:parent, :name, :superclass, :source_locations, keyword_init: true) do
-      def global? = false
-    end
+    def root? = parent.nil?
   end
 end

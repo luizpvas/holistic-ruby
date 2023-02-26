@@ -27,6 +27,13 @@ module Question::Ruby::Parse
           repository.open_module(declaration_name) { visit(statements) }
         end
 
+        def visit_class(node)
+          declaration, _superclass, statements = node.child_nodes
+          declaration_name = DeclarationName[declaration]
+
+          repository.open_class(declaration_name) { visit(statements) }
+        end
+
         def visit_const(node)
           repository.add_reference!(node.value)
         end
@@ -34,7 +41,7 @@ module Question::Ruby::Parse
 
       private
 
-      def repository = Current.application.constant_repository
+      def repository = Current.application.repository
     end
   end
 end

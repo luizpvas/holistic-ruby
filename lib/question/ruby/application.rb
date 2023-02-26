@@ -2,10 +2,11 @@
 
 module Question::Ruby
   class Application
-    attr_reader :constant_repository
+    attr_reader :repository
 
     def initialize
-      @constant_repository = Constant::Repository.new
+      @root = Constant::Namespace.new(kind: :root, name: "::", parent: nil)
+      @repository = Constant::Repository.new(root: @root)
     end
   end
 end

@@ -1,15 +1,20 @@
 # frozen_string_literal: true
 
 describe ::Question::Ruby::Constant::Reference do
-  let(:reference) do
-    described_class.new(name: "MyClass", namespace: ::Question::Ruby::Constant::Namespace::GLOBAL)
-  end
+  describe ".new" do
+    let(:namespace) do
+      ::Question::Ruby::Constant::Namespace.new(kind: :module, name: "MyModule", parent: nil)
+    end
 
-  it "has a name" do
-    expect(reference.name).to eql("MyClass")
-  end
+    let(:reference) do
+      described_class.new(name: "MyClass", namespace:)
+    end
 
-  it "has a namespace" do
-    expect(reference.namespace).to eql(::Question::Ruby::Constant::Namespace::GLOBAL)
+    it "has a name and namespace" do
+      expect(reference).to have_attributes(
+        name: "MyClass",
+        namespace:
+      )
+    end
   end
 end

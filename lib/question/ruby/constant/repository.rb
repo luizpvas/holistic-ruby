@@ -4,13 +4,21 @@ module Question::Ruby::Constant
   class Repository
     attr_reader :namespace, :references
 
-    def initialize
-      @namespace = Namespace::GLOBAL
+    def initialize(root:)
+      @namespace = root
       @references = []
     end
 
     def open_module(name, &block)
-      @namespace = Namespace::Module.new(parent: namespace, name:)
+      @namespace = @namespace.nest(kind: :module, name:)
+
+      block.call
+
+      @namespace = @namespace.parent
+    end
+
+    def open_class(name, &block)
+      @namespace = @namespace.nest(kind: :class, name:)
 
       block.call
 
