@@ -18,20 +18,32 @@ module Question::Ruby::Parse
       append.(node) and parts.join("::")
     end
 
+    BuildSourceLocation = ->(node) do
+      ::Question::Ruby::SourceLocation.new(
+        file_path: nil,
+        start_line: node.location.start_line,
+        end_line: node.location.end_line
+      )
+    end
+
     class ProgramVisitor < ::SyntaxTree::Visitor
       visit_methods do
         def visit_module(node)
           declaration, statements = node.child_nodes
           declaration_name = DeclarationName[declaration]
 
-          repository.open_module(declaration_name) { visit(statements) }
+          source_location = BuildSourceLocation.call(node)
+
+          repository.open_module(name: declaration_name, source_location:) { visit(statements) }
         end
 
         def visit_class(node)
           declaration, _superclass, statements = node.child_nodes
           declaration_name = DeclarationName[declaration]
 
-          repository.open_class(declaration_name) { visit(statements) }
+          source_location = BuildSourceLocation.call(node)
+
+          repository.open_class(name: declaration_name, source_location:) { visit(statements) }
         end
 
         def visit_const(node)

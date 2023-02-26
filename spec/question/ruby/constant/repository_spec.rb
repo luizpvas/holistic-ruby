@@ -15,7 +15,9 @@ describe ::Question::Ruby::Constant::Repository do
     subject(:repository) { described_class.new(root:) }
 
     it "updates the current namespace inside the block" do
-      repository.open_module("MyModule") do
+      source_location = ::Question::Ruby::SourceLocation.new
+
+      repository.open_module(name: "MyModule", source_location:) do
         expect(repository.namespace.name).to eql("MyModule")
         expect(repository.namespace.parent).to be(root)
       end
@@ -41,7 +43,9 @@ describe ::Question::Ruby::Constant::Repository do
       subject(:repository) { described_class.new(root:) }
 
       it "adds a reference in the nested namespace" do
-        repository.open_module("MyModule") do
+        source_location = ::Question::Ruby::SourceLocation.new
+
+        repository.open_module(name: "MyModule", source_location:) do
           repository.add_reference!("MyReference")
         end
 

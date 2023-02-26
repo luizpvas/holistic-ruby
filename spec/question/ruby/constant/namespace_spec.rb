@@ -17,39 +17,29 @@ describe ::Question::Ruby::Constant::Namespace do
 
   describe "#nest" do
     context "when a namespace with the same name DOES NOT EXIST in the parent namespace" do
-      it "first child" do
+      it "adds a new child for each new module" do
         parent = described_class.new(kind: :module, name: "MyModule", parent: nil)
 
-        expect(parent.children.size).to be(0)
+        source_location_1 = ::Question::Ruby::SourceLocation.new
+        child_1 = parent.nest(kind: :module, name: "MyChild1", source_location: source_location_1)
 
-        child = parent.nest(kind: :module, name: "MyChild")
-
-        expect(parent.children.size).to be(1)
-
-        expect(child).to have_attributes(
-          kind: :module,
-          name: "MyChild",
-          parent:
-        )
-      end
-
-      it "second child" do
-        parent = described_class.new(kind: :module, name: "MyModule", parent: nil)
-        child_1 = parent.nest(kind: :module, name: "MyChild1")
-        child_2 = parent.nest(kind: :module, name: "MyChild2")
+        source_location_2 = ::Question::Ruby::SourceLocation.new
+        child_2 = parent.nest(kind: :module, name: "MyChild2", source_location: source_location_2)
 
         expect(parent.children.size).to be(2)
 
         expect(child_1).to have_attributes(
           kind: :module,
           name: "MyChild1",
-          parent: parent
+          parent: parent,
+          source_locations: [source_location_1]
         )
 
         expect(child_2).to have_attributes(
           kind: :module,
           name: "MyChild2",
-          parent: parent
+          parent: parent,
+          source_locations: [source_location_2]
         )
       end
     end
@@ -58,12 +48,24 @@ describe ::Question::Ruby::Constant::Namespace do
       it "returns the existing namespace" do
         parent = described_class.new(kind: :module, name: "MyModule", parent: nil)
 
-        child_1 = parent.nest(kind: :module, name: "MyChild")
-        child_2 = parent.nest(kind: :module, name: "MyChild")
+        child_1 = parent.nest(kind: :module, name: "MyChild", source_location: nil)
+        child_2 = parent.nest(kind: :module, name: "MyChild", source_location: nil)
 
         expect(parent.children.size).to be(1)
 
         expect(child_1).to be(child_2)
+      end
+
+      it "appends the source location to the existing namespace" do
+        parent = described_class.new(kind: :module, name: "MyModule", parent: nil)
+
+        source_location_1 = ::Question::Ruby::SourceLocation.new
+        source_location_2 = ::Question::Ruby::SourceLocation.new
+
+        parent.nest(kind: :module, name: "MyChild", source_location: source_location_1)
+        child = parent.nest(kind: :module, name: "MyChild", source_location: source_location_2)
+
+        expect(child.source_locations).to contain_exactly(source_location_1, source_location_2)
       end
     end
   end
