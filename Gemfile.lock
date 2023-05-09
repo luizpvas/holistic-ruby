@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     question (0.1.0)
+      sinatra (~> 3.0)
       syntax_tree (~> 6.0)
       zeitwerk (~> 2.6)
 
@@ -10,7 +11,12 @@ GEM
   specs:
     debug (1.7.1)
     diff-lcs (1.5.0)
+    mustermann (3.0.0)
+      ruby2_keywords (~> 0.0.1)
     prettier_print (1.2.0)
+    rack (2.2.7)
+    rack-protection (3.0.6)
+      rack
     rake (13.0.6)
     rspec (3.12.0)
       rspec-core (~> 3.12.0)
@@ -25,8 +31,15 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.12.0)
     rspec-support (3.12.0)
+    ruby2_keywords (0.0.5)
+    sinatra (3.0.6)
+      mustermann (~> 3.0)
+      rack (~> 2.2, >= 2.2.4)
+      rack-protection (= 3.0.6)
+      tilt (~> 2.0)
     syntax_tree (6.0.0)
       prettier_print (>= 1.2.0)
+    tilt (2.1.0)
     zeitwerk (2.6.7)
 
 PLATFORMS
