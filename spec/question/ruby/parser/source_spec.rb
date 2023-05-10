@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-describe ::Question::Ruby::Parse::Source do
+describe ::Question::Ruby::Parser do
   describe ".call" do
     context "module declaration in the root namespace" do
-      subject(:parse_source) { described_class.call(application:, source:) }
+      subject(:parse_code) { described_class::ParseCode[application:, code:] }
 
       let(:application) { ::Question::Ruby::Application.new }
 
-      let(:source) do
+      let(:code) do
         <<-RUBY
         module MyModule
           Foo.bar()
@@ -16,13 +16,13 @@ describe ::Question::Ruby::Parse::Source do
       end
 
       it "finishes the parsing process in root namespace" do
-        parse_source
+        parse_code
 
         expect(application.repository.namespace.root?).to be(true)
       end
 
       it "stores a constant reference for `Name`" do
-        parse_source
+        parse_code
 
         references = application.repository.references
 
@@ -36,11 +36,11 @@ describe ::Question::Ruby::Parse::Source do
     end
 
     context "module declaration in root scope with double colon syntax" do
-      subject(:parse_source) { described_class.call(application:, source:) }
+      subject(:parse_code) { described_class::ParseCode[application:, code:] }
 
       let(:application) { ::Question::Ruby::Application.new }
 
-      let(:source) do
+      let(:code) do
         <<-RUBY
         module MyApp::MyModule
           Foo.bar()
@@ -49,13 +49,13 @@ describe ::Question::Ruby::Parse::Source do
       end
 
       it "finishes the parsing process in root namespace" do
-        parse_source
+        parse_code
 
         expect(application.repository.namespace.root?).to be(true)
       end
 
       it "stores a reference in the module namespace" do
-        parse_source
+        parse_code
 
         references = application.repository.references
 
@@ -69,11 +69,11 @@ describe ::Question::Ruby::Parse::Source do
     end
 
     context "module declaration with nested syntax" do
-      subject(:parse_source) { described_class.call(application:, source:) }
+      subject(:parse_code) { described_class::ParseCode[application:, code:] }
 
       let(:application) { ::Question::Ruby::Application.new }
 
-      let(:source) do
+      let(:code) do
         <<-RUBY
         module MyApp
           module MyModule
@@ -84,13 +84,13 @@ describe ::Question::Ruby::Parse::Source do
       end
 
       it "finishes the parsing process in root namespace" do
-        parse_source
+        parse_code
 
         expect(application.repository.namespace.root?).to be(true)
       end
 
       it "stores a constant reference for `Name`" do
-        parse_source
+        parse_code
 
         references = application.repository.references
 
@@ -108,11 +108,11 @@ describe ::Question::Ruby::Parse::Source do
     end
 
     context "module declaration with nested syntax AND double colon syntax" do
-      subject(:parse_source) { described_class.call(application:, source:) }
+      subject(:parse_code) { described_class::ParseCode[application:, code:] }
 
       let(:application) { ::Question::Ruby::Application.new }
 
-      let(:source) do
+      let(:code) do
         <<-RUBY
         module MyApp
           module MyModule1::MyModule2
@@ -123,13 +123,13 @@ describe ::Question::Ruby::Parse::Source do
       end
 
       it "finishes the parsing process in root namespace" do
-        parse_source
+        parse_code
 
         expect(application.repository.namespace.root?).to be(true)
       end
 
       it "stores a constant reference for `Name`" do
-        parse_source
+        parse_code
 
         references = application.repository.references
 
@@ -141,11 +141,11 @@ describe ::Question::Ruby::Parse::Source do
     end
 
     context "duplicated module declaration" do
-      subject(:parse_source) { described_class.call(application:, source:) }
+      subject(:parse_code) { described_class::ParseCode[application:, code:] }
 
       let(:application) { ::Question::Ruby::Application.new }
 
-      let(:source) do
+      let(:code) do
         <<-RUBY
         module MyApp
           module MyModule
@@ -160,13 +160,13 @@ describe ::Question::Ruby::Parse::Source do
       end
 
       it "finishes the parsing process in root namespace" do
-        parse_source
+        parse_code
 
         expect(application.repository.namespace.root?).to be(true)
       end
 
       it "stores two source locations for the module" do
-        parse_source
+        parse_code
 
         references = application.repository.references
 
@@ -180,11 +180,11 @@ describe ::Question::Ruby::Parse::Source do
     end
 
     context "class declaration in root namespace" do
-      subject(:parse_source) { described_class.call(application:, source:) }
+      subject(:parse_code) { described_class::ParseCode[application:, code:] }
 
       let(:application) { ::Question::Ruby::Application.new }
 
-      let(:source) do
+      let(:code) do
         <<-RUBY
         class MyClass
           Foo.bar()
@@ -193,13 +193,13 @@ describe ::Question::Ruby::Parse::Source do
       end
 
       it "finishes the parsing process in root namespace" do
-        parse_source
+        parse_code
 
         expect(application.repository.namespace.root?).to be(true)
       end
 
       it "stores a constant reference in the class namespace" do
-        parse_source
+        parse_code
 
         references = application.repository.references
 

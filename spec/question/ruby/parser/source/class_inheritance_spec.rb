@@ -2,11 +2,11 @@
 
 require_relative "support/parse_source_code"
 
-describe ::Question::Ruby::Parse::Source do
+describe ::Question::Ruby::Parser do
   include ParseSourceCode
 
   describe "class inheritance without scope resolution operator" do
-    let(:source_code) do
+    let(:code) do
       <<-RUBY
         module MyModule
           class MySubClass < MyParentClass; end
@@ -15,7 +15,7 @@ describe ::Question::Ruby::Parse::Source do
     end
 
     it "stores a reference to the parent class" do
-      references = detect_references(source_code)
+      references = detect_references(code)
 
       expect(references.size).to eql(1)
 

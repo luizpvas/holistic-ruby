@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 module ParseSourceCode
-  def detect_references(source)
+  def detect_references(code)
     application = ::Question::Ruby::Application.new
 
-    ::Question::Ruby::Parse::Source.call(application:, source:)
+    ::Question::Ruby::Parser::ParseCode[application:, code:]
 
     application.repository.references
   end

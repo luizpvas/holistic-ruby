@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Question::Ruby::Parse
+module Question::Ruby::Parser
   module Visitor
     module Node
       GetDeclarationName = ->(node) do
@@ -21,7 +21,7 @@ module Question::Ruby::Parse
 
       BuildSourceLocation = ->(node) do
         ::Question::Ruby::SourceLocation.new(
-          file_path: nil,
+          file_path: Current.file_path,
           start_line: node.location.start_line,
           end_line: node.location.end_line
         )

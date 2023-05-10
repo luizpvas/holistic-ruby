@@ -31,4 +31,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "syntax_tree", "~> 6.0"
   spec.add_dependency "zeitwerk", "~> 2.6"
   spec.add_dependency "sinatra", "~> 3.0"
+  spec.add_dependency "activesupport", "~> 7.0"
 end
