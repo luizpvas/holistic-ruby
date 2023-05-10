@@ -13,15 +13,24 @@ module Question::Ruby::Constant
     end
 
     def nest(kind:, name:, source_location:)
-      children.find { _1.name == name }&.then do |namespace|
-        namespace.source_locations << source_location
-
-        return namespace
-      end
-
-      self.class.new(kind: kind, name: name, parent: self, source_location:).tap { children << _1 }
+      append_source_location_to_existing_namespace(name:, source_location:) || add_new_namespace(kind:, name:, source_location:)
     end
 
     def root? = parent.nil?
+
+    private
+      def append_source_location_to_existing_namespace(name:, source_location:)
+        namespace = children.find { _1.name == name }
+
+        return if namespace.nil?
+
+        namespace.tap { _1.source_locations << source_location }
+      end
+
+      def add_new_namespace(kind:, name:, source_location:)
+        namespace = self.class.new(kind:, name:, parent: self, source_location:)
+
+        namespace.tap { children << namespace }
+      end
   end
 end
