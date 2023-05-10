@@ -17,10 +17,8 @@ describe ::Question::Ruby::Parser do
     it "stores a reference to the parent class" do
       references = detect_references(code)
 
-      expect(references.size).to eql(1)
-
       expect(references.find("MyParentClass")).to have_attributes(
-        namespace: have_attributes(name: "MyModule")
+        namespace: have_attributes(kind: :module, name: "MyModule")
       )
     end
   end

@@ -21,8 +21,10 @@ describe ::Question::Ruby::Parser do
 
       expect(references.find("Name")).to have_attributes(
         namespace: have_attributes(
+          kind: :module,
           name: "MyModule1::MyModule2",
           parent: have_attributes(
+            kind: :module,
             name: "MyApp"
           )
         )

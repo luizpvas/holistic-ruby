@@ -18,7 +18,7 @@ describe ::Question::Ruby::Parser do
       references = detect_references(code)
 
       expect(references.find("Foo")).to have_attributes(
-        namespace: have_attributes(name: "MyClass")
+        namespace: have_attributes(kind: :class, name: "MyClass")
       )
     end
   end
