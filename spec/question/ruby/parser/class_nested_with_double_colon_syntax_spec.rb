@@ -5,13 +5,11 @@ require_relative "support/detect_references"
 describe ::Question::Ruby::Parser do
   include DetectReferences
 
-  context "module declaration with nested syntax" do
+  context "nested class declaration with double colon syntax" do
     let(:code) do
       <<-RUBY
-      module MyApp
-        module MyModule
-          Foo.bar()
-        end
+      class MyApp::MyClass
+        Foo.bar()
       end
       RUBY
     end
@@ -20,14 +18,7 @@ describe ::Question::Ruby::Parser do
       references = detect_references(code)
 
       expect(references.find("Foo")).to have_attributes(
-        namespace: have_attributes(
-          kind: :module,
-          name: "MyModule",
-          parent: have_attributes(
-            kind: :module,
-            name: "MyApp"
-          )
-        )
+        namespace: have_attributes(kind: :class, name: "MyApp::MyClass")
       )
     end
   end

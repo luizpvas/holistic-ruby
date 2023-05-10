@@ -5,7 +5,7 @@ require_relative "support/detect_references"
 describe ::Question::Ruby::Parser do
   include DetectReferences
 
-  context "module declaration in root scope with double colon syntax" do
+  context "nested module declaration with double colon syntax" do
     let(:code) do
       <<-RUBY
       module MyApp::MyModule
