@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require_relative "support/parse_source_code"
+require_relative "support/detect_references"
 
 describe ::Question::Ruby::Parser do
-  include ParseSourceCode
+  include DetectReferences
 
   describe "class inheritance without scope resolution operator" do
     let(:code) do
@@ -19,11 +19,8 @@ describe ::Question::Ruby::Parser do
 
       expect(references.size).to eql(1)
 
-      expect(references.first).to have_attributes(
-        name: "MyParentClass",
-        namespace: have_attributes(
-          name: "MyModule"
-        )
+      expect(references.find("MyParentClass")).to have_attributes(
+        namespace: have_attributes(name: "MyModule")
       )
     end
   end

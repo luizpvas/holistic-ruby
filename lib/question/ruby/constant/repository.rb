@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "active_support/core_ext/module/delegation"
+
 module Question::Ruby::Constant
   class Repository
     attr_reader :namespace, :references
@@ -27,6 +29,12 @@ module Question::Ruby::Constant
 
     def add_reference!(name)
       references << Reference.new(namespace:, name:)
+    end
+
+    delegate :size, to: :references
+
+    def find(name)
+      references.find { _1.name == name }
     end
   end
 end

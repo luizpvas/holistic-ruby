@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-module ParseSourceCode
+module DetectReferences
   def detect_references(code)
     application = ::Question::Ruby::Application.new
 
     ::Question::Ruby::Parser::ParseCode[application:, code:]
 
-    application.repository.references
+    application.repository
   end
 end
