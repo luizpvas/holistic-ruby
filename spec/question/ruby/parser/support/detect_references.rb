@@ -6,6 +6,6 @@ module DetectReferences
 
     ::Question::Ruby::Parser::ParseCode[application:, code:]
 
-    application.repository
+    application.repository.references
   end
 end

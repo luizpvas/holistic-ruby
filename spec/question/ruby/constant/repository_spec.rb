@@ -34,8 +34,11 @@ describe ::Question::Ruby::Constant::Repository do
         repository.add_reference!("MyReference")
 
         expect(repository.references.size).to eql(1)
-        expect(repository.references.first.name).to eql("MyReference")
-        expect(repository.references.first.namespace).to be(root)
+        expect(repository.references.find("MyReference")).to have_attributes(
+          namespace: have_attributes(
+            root?: true
+          )
+        )
       end
     end
 
@@ -49,9 +52,9 @@ describe ::Question::Ruby::Constant::Repository do
           repository.add_reference!("MyReference")
         end
 
-        expect(repository.references.size).to eql(1)
-        expect(repository.references.first.name).to eql("MyReference")
-        expect(repository.references.first.namespace.name).to eql("MyModule")
+        expect(repository.references.find("MyReference")).to have_attributes(
+          namespace: have_attributes(kind: :module, name: "MyModule")
+        )
       end
     end
   end

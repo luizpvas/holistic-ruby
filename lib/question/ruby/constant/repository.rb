@@ -8,7 +8,7 @@ module Question::Ruby::Constant
 
     def initialize(root:)
       @namespace = root
-      @references = []
+      @references = References.new
     end
 
     def open_module(name:, source_location:, &block)
@@ -28,13 +28,7 @@ module Question::Ruby::Constant
     end
 
     def add_reference!(name)
-      references << Reference.new(namespace:, name:)
-    end
-
-    delegate :size, to: :references
-
-    def find(name)
-      references.find { _1.name == name }
+      references.add(namespace:, name:)
     end
   end
 end
