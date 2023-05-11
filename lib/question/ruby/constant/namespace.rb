@@ -30,7 +30,7 @@ module Question::Ruby::Constant
       def add_new_namespace(kind:, name:, source_location:)
         namespace = self.class.new(kind:, name:, parent: self, source_location:)
 
-        namespace.tap { children << namespace }
+        namespace.tap { children << _1 }
       end
   end
 end
