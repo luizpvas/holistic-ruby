@@ -2,7 +2,7 @@
 
 module DetectReferences
   def detect_references(code)
-    application = ::Question::Ruby::Application.new
+    application = ::Question::Ruby::Application.new(root_directory: '.')
 
     ::Question::Ruby::Parser::ParseCode[application:, code:]
 
