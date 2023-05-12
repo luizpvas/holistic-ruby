@@ -4,9 +4,9 @@ module Question::Ruby
   module Application::Repository
     extend self
 
-    @items = {}
-
     AlreadyExistsError = ::Class.new(::StandardError)
+
+    @items = {}
 
     def create(name:, root_directory:)
       raise AlreadyExistsError if @items.key?(name)
