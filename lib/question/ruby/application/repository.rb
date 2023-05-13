@@ -16,6 +16,8 @@ module Question::Ruby
       @items[name] = application
     end
 
+    def find(name) = @items.fetch(name)
+
     def delete_all = @items.clear
   end
 end
