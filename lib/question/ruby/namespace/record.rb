@@ -12,6 +12,12 @@ module Question::Ruby::Namespace
       @children = []
     end
 
+    def fully_qualified_name
+      return "" if root?
+
+      "#{parent.fully_qualified_name}::#{name}"
+    end
+
     def nest(kind:, name:, source_location:)
       append_source_location_to_existing_namespace(name:, source_location:) || add_new_namespace(kind:, name:, source_location:)
     end

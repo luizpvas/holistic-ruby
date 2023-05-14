@@ -15,6 +15,30 @@ describe ::Question::Ruby::Namespace::Record do
     end
   end
 
+  describe "#fully_qualified_name" do
+    context "when is root namespace" do
+      let(:root_namespace) { described_class.new(kind: :module, name: "::", parent: nil) }
+
+      it "returns an empty string" do
+        expect(root_namespace.fully_qualified_name).to eql("")
+      end
+    end
+
+    context "when is nested namespace" do
+      let(:nested_namespace) do
+        root_namespace = described_class.new(kind: :module, name: "::", parent: nil)
+
+        parent_namespace = described_class.new(kind: :module, name: "ParentModule", parent: root_namespace)
+
+        described_class.new(kind: :module, name: "MyModule", parent: parent_namespace)
+      end
+
+      it "returns the fully qualified name" do
+        expect(nested_namespace.fully_qualified_name).to eql("::ParentModule::MyModule")
+      end
+    end
+  end
+
   describe "#nest" do
     context "when a namespace with the same name DOES NOT EXIST in the parent namespace" do
       it "adds a new child for each new module" do
