@@ -63,7 +63,7 @@ module Question::Ruby::Parser
 
       private
 
-      def add_reference!(name) = Current.application.repository.references.add(namespace: Current.namespace, name:)
+      def add_reference!(name) = Current.application.references.add(namespace: Current.namespace, name:)
     end
   end
 end
