@@ -6,6 +6,6 @@ require "active_support/current_attributes"
 
 module Question::Ruby::Parser
   class Current < ::ActiveSupport::CurrentAttributes
-    attribute :application, :file_path
+    attribute :application, :namespace, :file_path
   end
 end

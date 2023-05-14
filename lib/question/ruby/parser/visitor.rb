@@ -36,30 +36,34 @@ module Question::Ruby::Parser
 
           source_location = Node::BuildSourceLocation.call(node)
 
-          repository.open_module(name: declaration_name, source_location:) { visit(statements) }
+          Current::Namespace.nest_module(name: declaration_name, source_location:) do
+            visit(statements)
+          end
         end
 
         def visit_class(node)
           declaration, superclass, statements = node.child_nodes
 
           if superclass
-            repository.add_reference!(Node::GetDeclarationName[superclass])
+            add_reference!(Node::GetDeclarationName[superclass])
           end
 
           declaration_name = Node::GetDeclarationName[declaration]
           source_location = Node::BuildSourceLocation.call(node)
 
-          repository.open_class(name: declaration_name, source_location:) { visit(statements) }
+          Current::Namespace.nest_class(name: declaration_name, source_location:) do
+            visit(statements)
+          end
         end
 
         def visit_const(node)
-          repository.add_reference!(node.value)
+          add_reference!(node.value)
         end
       end
 
       private
 
-      def repository = Current.application.repository
+      def add_reference!(name) = Current.application.repository.references.add(namespace: Current.namespace, name:)
     end
   end
 end

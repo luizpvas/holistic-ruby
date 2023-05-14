@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe ::Question::Ruby::Constant::Namespace do
+describe ::Question::Ruby::Namespace::Record do
   describe ".new" do
     it "initializes the namespace with the arguments + defaults" do
       namespace = described_class.new(kind: :module, name: "MyModule", parent: nil)

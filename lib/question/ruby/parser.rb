@@ -2,7 +2,7 @@
 
 module Question::Ruby::Parser
   ParseCode = ->(application:, code:) do
-    Current.set(application:) do
+    Current.set(application:, namespace: application.root_namespace) do
       program = ::SyntaxTree.parse(code)
 
       Visitor::ProgramVisitor.new.visit(program)
