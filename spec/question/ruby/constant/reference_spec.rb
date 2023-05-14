@@ -3,7 +3,7 @@
 describe ::Question::Ruby::Constant::Reference do
   describe ".new" do
     let(:namespace) do
-      ::Question::Ruby::Constant::Namespace.new(kind: :module, name: "MyModule", parent: nil)
+      ::Question::Ruby::Namespace::Record.new(kind: :module, name: "MyModule", parent: nil)
     end
 
     let(:reference) do
