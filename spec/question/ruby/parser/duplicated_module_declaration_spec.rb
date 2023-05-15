@@ -24,16 +24,12 @@ describe ::Question::Ruby::Parser do
       references = detect_references(code)
 
       expect(references.find("Foo1")).to have_attributes(
-        namespace: have_attributes(name: "MyModule")
+        resolution: ["MyApp::MyModule", "MyApp"]
       )
 
       expect(references.find("Foo2")).to have_attributes(
-        namespace: have_attributes(name: "MyModule")
+        resolution: ["MyApp::MyModule", "MyApp"]
       )
-
-      expect(references.find("Foo1").namespace).to be(references.find("Foo2").namespace)
-
-      expect(references.find("Foo1").namespace.source_locations.size).to be(2)
     end
   end
 end

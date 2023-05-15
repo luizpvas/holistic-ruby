@@ -18,7 +18,7 @@ describe ::Question::Ruby::Parser do
       references = detect_references(code)
 
       expect(references.find("MyParentClass")).to have_attributes(
-        namespace: have_attributes(kind: :module, name: "MyModule")
+        resolution: ["MyModule"]
       )
     end
   end

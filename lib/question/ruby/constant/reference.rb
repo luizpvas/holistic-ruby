@@ -2,6 +2,6 @@
 
 module Question::Ruby
   module Constant
-    Reference = ::Struct.new(:name, :namespace, keyword_init: true)
+    Reference = ::Struct.new(:name, :resolution, keyword_init: true)
   end
 end

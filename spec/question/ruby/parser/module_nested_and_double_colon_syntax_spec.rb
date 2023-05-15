@@ -20,14 +20,7 @@ describe ::Question::Ruby::Parser do
       references = detect_references(code)
 
       expect(references.find("Name")).to have_attributes(
-        namespace: have_attributes(
-          kind: :module,
-          name: "MyModule1::MyModule2",
-          parent: have_attributes(
-            kind: :module,
-            name: "MyApp"
-          )
-        )
+        resolution: ["MyApp::MyModule1::MyModule2", "MyApp"]
       )
     end
   end

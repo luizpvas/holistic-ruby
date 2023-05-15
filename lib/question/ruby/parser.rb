@@ -2,7 +2,10 @@
 
 module Question::Ruby::Parser
   ParseCode = ->(application:, code:) do
-    Current.set(application:, namespace: application.root_namespace) do
+    namespace = application.root_namespace
+    resolution = ::Question::Ruby::Constant::Resolution.new
+
+    Current.set(application:, namespace:, resolution:) do
       program = ::SyntaxTree.parse(code)
 
       Visitor::ProgramVisitor.new.visit(program)

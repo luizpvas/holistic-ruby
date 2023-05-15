@@ -10,8 +10,8 @@ module Question::Ruby::Constant
 
     delegate :size, to: :items
 
-    def add(namespace:, name:)
-      items << Reference.new(namespace:, name:)
+    def add(resolution:, name:)
+      items << Reference.new(resolution:, name:)
     end
 
     def find(name)
