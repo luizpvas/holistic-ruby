@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Question::Ruby::Constant
+  # TODO: Move to Question::Ruby::Constant::Reference::{Record, Collection}
   class Repository::References
     attr_reader :items
 
