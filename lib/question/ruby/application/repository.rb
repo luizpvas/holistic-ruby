@@ -11,10 +11,12 @@ module Question::Ruby
     def create(name:, root_directory:)
       raise AlreadyExistsError if @items.key?(name)
 
-      application = Application.new(root_directory:)
+      application = Application.new(name:, root_directory:)
 
       @items[name] = application
     end
+
+    def list_all   = @items.values
 
     def find(name) = @items.fetch(name)
 
