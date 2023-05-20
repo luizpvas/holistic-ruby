@@ -12,12 +12,20 @@ describe ::Question::Ruby::Parser do
       RUBY
     end
 
-    it "stores a reference to the parent class" do
+    it "parses the code" do
       application = parse_snippet(code)
 
       expect(application.references.find("MyParentClass")).to have_attributes(
         resolution: ["MyModule"]
       )
+
+      expect(application.root_namespace.serialize).to eql({
+        "::" => {
+          "MyModule" => {
+            "MySubClass" => {}
+          }
+        }
+      })
     end
   end
 end

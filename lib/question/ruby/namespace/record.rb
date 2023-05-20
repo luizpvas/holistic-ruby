@@ -12,6 +12,17 @@ module Question::Ruby::Namespace
       @children = []
     end
 
+    def serialize
+      nested = {}
+      root = {name => nested}
+
+      children.each do |child|
+        nested.merge!(child.serialize)
+      end
+
+      root
+    end
+
     def fully_qualified_name
       return "" if root?
 

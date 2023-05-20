@@ -6,4 +6,8 @@ module SnippetParser
       ::Question::Ruby::Parser::ParseCode[application:, code:]
     end
   end
+
+  def unfold_namespace_tree(application)
+    
+  end
 end

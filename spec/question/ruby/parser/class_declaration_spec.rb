@@ -18,6 +18,12 @@ describe ::Question::Ruby::Parser do
       expect(application.references.find("Foo")).to have_attributes(
         resolution: ["MyClass"]
       )
+
+      expect(application.root_namespace.serialize).to eql({
+        "::" => {
+          "MyClass" => {}
+        }
+      })
     end
   end
 end

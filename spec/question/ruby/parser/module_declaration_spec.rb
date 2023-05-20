@@ -18,6 +18,12 @@ describe ::Question::Ruby::Parser do
       expect(application.references.find("Foo")).to have_attributes(
         resolution: ["MyModule"]
       )
+
+      expect(application.root_namespace.serialize).to eql({
+        "::" => {
+          "MyModule" => {}
+        }
+      })
     end
   end
 end
