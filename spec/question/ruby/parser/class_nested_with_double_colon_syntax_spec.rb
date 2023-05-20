@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative "support/snippet_parser"
-
 describe ::Question::Ruby::Parser do
   include SnippetParser
 

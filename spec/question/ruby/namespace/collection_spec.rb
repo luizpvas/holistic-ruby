@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative "../parser/support/snippet_parser"
-
 describe ::Question::Ruby::Namespace::Collection do
   include SnippetParser
 
