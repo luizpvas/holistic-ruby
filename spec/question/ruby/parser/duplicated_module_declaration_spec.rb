@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require_relative "support/detect_references"
+require_relative "support/snippet_parser"
 
 describe ::Question::Ruby::Parser do
-  include DetectReferences
+  include SnippetParser
 
   context "duplicated module declaration" do
     let(:code) do
@@ -21,13 +21,13 @@ describe ::Question::Ruby::Parser do
     end
 
     it "parses the code" do
-      references = detect_references(code)
+      application = parse_snippet(code)
 
-      expect(references.find("Foo1")).to have_attributes(
+      expect(application.references.find("Foo1")).to have_attributes(
         resolution: ["MyApp::MyModule", "MyApp"]
       )
 
-      expect(references.find("Foo2")).to have_attributes(
+      expect(application.references.find("Foo2")).to have_attributes(
         resolution: ["MyApp::MyModule", "MyApp"]
       )
     end

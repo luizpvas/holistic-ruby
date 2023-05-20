@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require_relative "../parser/support/detect_references"
+require_relative "../parser/support/snippet_parser"
 
 describe ::Question::Ruby::Namespace::Collection do
-  include DetectReferences
+  include SnippetParser
 
   let(:application) do
-    parse_dummy_application <<~RUBY
+    parse_snippet <<~RUBY
     module ModuleParent1::ModuleParent2
       module ModuleChild
         class ClassChild; end
