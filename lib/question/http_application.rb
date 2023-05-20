@@ -10,4 +10,10 @@ class Question::HttpApplication < ::Sinatra::Base
   get "/health_check" do
     { status: "ok" }.to_json
   end
+
+  get "/:application_name/namespaces" do
+    application = ::Question::Ruby::Application::Repository.find(params[:application_name])
+
+    application.root_namespace.serialize.to_json
+  end
 end
