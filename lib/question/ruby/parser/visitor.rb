@@ -12,6 +12,7 @@ module Question::Ruby::Parser
           when ::SyntaxTree::Const        then name_path << node.value
           when ::SyntaxTree::VarRef       then node.child_nodes.each(&append)
           when ::SyntaxTree::ConstPathRef then node.child_nodes.each(&append)
+          when ::SyntaxTree::TopConstRef  then name_path.mark_as_top_const_ref! and node.child_nodes.each(&append)
           else raise "Unexpected node type: #{node.class}"
           end
         end
@@ -47,7 +48,7 @@ module Question::Ruby::Parser
           if superclass
             superclass_name_path = Node::GetDeclarationNamePath[superclass]
 
-            add_reference!(superclass_name_path.to_s)
+            add_reference!(superclass_name_path)
           end
 
           name_path = Node::GetDeclarationNamePath[declaration]
@@ -59,14 +60,20 @@ module Question::Ruby::Parser
         end
 
         def visit_const(node)
-          add_reference!(node.value)
+          name_path = NamePath.new([node.value])
+
+          add_reference!(name_path)
         end
       end
 
       private
 
-      def add_reference!(name)
-        Current.application.references.add(resolution: Current.resolution.dup, name:)
+      def add_reference!(name_path)
+        if name_path.is_top_const_ref
+          Current.application.references.add(resolution: [], name: name_path.to_s)
+        else
+          Current.application.references.add(resolution: Current.resolution.dup, name: name_path.to_s)
+        end
       end
     end
   end
