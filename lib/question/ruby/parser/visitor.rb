@@ -3,20 +3,20 @@
 module Question::Ruby::Parser
   module Visitor
     module Node
-      GetDeclarationName = ->(node) do
-        parts = []
+      GetDeclarationNamePath = ->(node) do
+        name_path = NamePath.new
 
         append = ->(node) do
           case node
-          when ::SyntaxTree::ConstRef     then parts << node.child_nodes[0].value
-          when ::SyntaxTree::Const        then parts << node.value
+          when ::SyntaxTree::ConstRef     then name_path << node.child_nodes[0].value
+          when ::SyntaxTree::Const        then name_path << node.value
           when ::SyntaxTree::VarRef       then node.child_nodes.each(&append)
           when ::SyntaxTree::ConstPathRef then node.child_nodes.each(&append)
           else raise "Unexpected node type: #{node.class}"
           end
         end
 
-        append.(node) and parts.join("::")
+        append.(node) and return name_path
       end
 
       BuildSourceLocation = ->(node) do
@@ -32,11 +32,11 @@ module Question::Ruby::Parser
       visit_methods do
         def visit_module(node)
           declaration, statements = node.child_nodes
-          declaration_name = Node::GetDeclarationName[declaration]
 
-          source_location = Node::BuildSourceLocation.call(node)
+          name_path = Node::GetDeclarationNamePath[declaration]
+          source_location = Node::BuildSourceLocation[node]
 
-          Current::Namespace.nest_module(name: declaration_name, source_location:) do
+          Current::Namespace.nest_module(name_path:, source_location:) do
             visit(statements)
           end
         end
@@ -45,13 +45,15 @@ module Question::Ruby::Parser
           declaration, superclass, statements = node.child_nodes
 
           if superclass
-            add_reference!(Node::GetDeclarationName[superclass])
+            superclass_name_path = Node::GetDeclarationNamePath[superclass]
+
+            add_reference!(superclass_name_path.to_s)
           end
 
-          declaration_name = Node::GetDeclarationName[declaration]
-          source_location = Node::BuildSourceLocation.call(node)
+          name_path = Node::GetDeclarationNamePath[declaration]
+          source_location = Node::BuildSourceLocation[node]
 
-          Current::Namespace.nest_class(name: declaration_name, source_location:) do
+          Current::Namespace.nest_class(name_path:, source_location:) do
             visit(statements)
           end
         end

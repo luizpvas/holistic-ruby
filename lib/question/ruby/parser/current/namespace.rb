@@ -7,9 +7,9 @@ module Question::Ruby::Parser
   module Current::Namespace
     extend self
 
-    def nest_module(name:, source_location:, &block)
-      Current.namespace = Current.namespace.nest(kind: :module, name:, source_location:)
-      Current.resolution.unshift(name)
+    def nest_module(name_path:, source_location:, &block)
+      Current.namespace = Current.namespace.nest(kind: :module, name: name_path.to_s, source_location:)
+      Current.resolution.unshift(name_path.to_s)
 
       block.call
 
@@ -17,9 +17,9 @@ module Question::Ruby::Parser
       Current.resolution.shift
     end
 
-    def nest_class(name:, source_location:, &block)
-      Current.namespace = Current.namespace.nest(kind: :class, name:, source_location:)
-      Current.resolution.unshift(name)
+    def nest_class(name_path:, source_location:, &block)
+      Current.namespace = Current.namespace.nest(kind: :class, name: name_path.to_s, source_location:)
+      Current.resolution.unshift(name_path.to_s)
 
       block.call
 
