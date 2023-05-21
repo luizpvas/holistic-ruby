@@ -14,12 +14,9 @@ export async function fetchApplications(): Promise<Application[]> {
   const response = await apiClient.get<Application[]>("/applications");
 
   applications.splice(0, applications.length, ...response.data);
+  currentApplicationName.value = response.data[0].name;
 
   return applications;
-}
-
-export function setCurrentApplicationName(name: string) {
-  currentApplicationName.value = name;
 }
 
 export function getCurrentApplication(): Application {
