@@ -1,12 +1,24 @@
-import { Component, reactive } from "vue";
+import { Component, reactive, ref } from "vue";
 
 export interface Screen {
   title: string;
   component: Component;
 }
 
-export type Stack = Screen[];
+export interface Track {
+  currentStackIndex: number;
+  screens: Screen[];
+}
 
-export type Track = Stack[];
+export const tracks = reactive<Track[]>([]);
 
-export const track = reactive<Track>([]);
+export const currentTrackIndex = ref<number>(0);
+
+export function pushTrack(title: string, component: Component) {
+  const screen: Screen = { title, component };
+
+  tracks.push({
+    currentStackIndex: 0,
+    screens: [screen],
+  });
+}

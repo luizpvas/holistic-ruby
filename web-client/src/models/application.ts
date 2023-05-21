@@ -1,8 +1,35 @@
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
+import { apiClient } from "./api";
 
 export interface Application {
   name: string;
-  rootDirectory: string;
+  root_directory: string;
 }
 
 export const applications = reactive<Application[]>([]);
+
+export const currentApplicationName = ref<string | null>(null);
+
+export async function fetchApplications(): Promise<Application[]> {
+  const response = await apiClient.get<Application[]>("/applications");
+
+  applications.splice(0, applications.length, ...response.data);
+
+  return applications;
+}
+
+export function setCurrentApplicationName(name: string) {
+  currentApplicationName.value = name;
+}
+
+export function getCurrentApplication(): Application {
+  const app = applications.find(
+    (app) => app.name === currentApplicationName.value
+  );
+
+  if (!app) {
+    throw new Error("Current application not found");
+  }
+
+  return app;
+}
