@@ -1,14 +1,35 @@
 # frozen_string_literal: true
 
 require "sinatra"
+require "sinatra/cors"
 require "active_support/concern"
+require "active_support/core_ext/module/concerning"
 
 class Question::HttpApplication < ::Sinatra::Base
-  before { content_type :json }
+  concerning :Cors do
+    included do
+      register Sinatra::Cors
 
-  set :public_folder, ::File.expand_path("../../web-client/dist", __dir__)
+      set :allow_origin, "*"
+      set :allow_methods, "*"
+      set :allow_headers, "*"
+      set :expose_headers, "*"
+    end
+  end
 
-  include ::Question::Controllers::HealthCheckController
-  include ::Question::Controllers::ApplicationsController
-  include ::Question::Controllers::NamespacesController
+  concerning :JsonApi do
+    included do
+      before { content_type :json }
+    end
+
+    include ::Question::Controllers::HealthCheckController
+    include ::Question::Controllers::ApplicationsController
+    include ::Question::Controllers::NamespacesController
+  end
+
+  concerning :Frontend do
+    included do
+      set(:public_folder, ::File.expand_path("../../web-client/dist", __dir__))
+    end
+  end
 end
