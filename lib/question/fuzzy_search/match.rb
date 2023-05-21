@@ -2,8 +2,8 @@
 
 module Question::FuzzySearch
   Match = ::Struct.new(
-    :word,
-    :highlighted_word,
+    :document,
+    :highlighted_text,
     :score,
     keyword_init: true
   )

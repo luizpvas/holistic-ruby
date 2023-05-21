@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 describe ::Question::FuzzySearch::Search do
-  let(:words) do
+  let(:documents) do
     [
       "MyApplication",
       "MyApplication::MyClass",
       "MyApplication::MyClass::Foo"
-    ]
+    ].map { |text| ::Question::FuzzySearch::Document.new(text:)}
   end
 
   let(:examples) do
@@ -21,9 +21,9 @@ describe ::Question::FuzzySearch::Search do
 
   it "returns the expected results" do
     examples.each do |example|
-      matches = described_class.call(query: example[:query], words:)
+      matches = described_class.call(query: example[:query], documents:)
 
-      expect(matches[0].highlighted_word).to eql(example[:expected_first_result])
+      expect(matches[0].highlighted_text).to eql(example[:expected_first_result])
     end
   end
 end
