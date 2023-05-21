@@ -21,7 +21,7 @@ describe ::Question::Ruby::Application::SymbolIndex do
 
       expect(matches[0].document.record).to have_attributes(
         itself: be_a(::Question::Ruby::Namespace::Record),
-        name: "MyApplication",
+        name: "MyApplication"
       )
     end
 
