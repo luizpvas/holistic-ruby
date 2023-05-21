@@ -14,6 +14,10 @@ module Question::Ruby::Namespace
       @items[name]
     end
 
+    def search(query)
+      ::Question::FuzzySearch::Search.call(query:, words: @items.keys)
+    end
+
     private
       def build_index(namespace)
         @items[namespace.fully_qualified_name] = namespace

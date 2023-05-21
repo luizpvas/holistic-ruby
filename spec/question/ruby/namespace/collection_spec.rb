@@ -14,9 +14,9 @@ describe ::Question::Ruby::Namespace::Collection do
   end
 
   describe "#find" do
-    it "finds modules and classes by their fully qualified name" do
-      collection = described_class.new(application.root_namespace)
+    let(:collection) { described_class.new(application.root_namespace) }
 
+    it "finds modules and classes by their fully qualified name" do
       expect(collection.find("::")).to eql(application.root_namespace)
 
       # TODO: expect(collection.find("::ModuleParent1")).to be_truthy
@@ -32,6 +32,21 @@ describe ::Question::Ruby::Namespace::Collection do
       expect(collection.find("::ModuleParent1::ModuleParent2::ModuleChild::ClassChild")).to be_a(
         ::Question::Ruby::Namespace::Record
       )
+    end
+  end
+
+  describe "#search" do
+    let(:collection) { described_class.new(application.root_namespace) }
+
+    it "searches for namespaces by their fully qualified name" do
+      matches = collection.search("Child")
+
+      expect(matches.size).to eql(2)
+
+      expect(matches.pluck(:word)).to eql([
+        "::ModuleParent1::ModuleParent2::ModuleChild",
+        "::ModuleParent1::ModuleParent2::ModuleChild::ClassChild",
+      ])
     end
   end
 end
