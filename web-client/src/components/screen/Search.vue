@@ -1,7 +1,17 @@
 <template>
   <div>
-    This is the search screen.
+    <input class="border p-2" />
 
-    <input type="text" class="border" />
+    <ul>
+      <li v-for="namespace in rootNamespaces">
+        {{ namespace }}
+      </li>
+    </ul>
   </div>
 </template>
+
+<script setup lang="ts">
+import { useSearch } from "../../models/useSearch";
+
+const { rootNamespaces } = useSearch();
+</script>
