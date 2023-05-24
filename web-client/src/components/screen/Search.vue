@@ -1,17 +1,23 @@
 <template>
   <div>
-    <input class="border p-2" />
+    <input class="border p-2" v-model="query" />
 
     <ul>
-      <li v-for="namespace in rootNamespaces">
-        {{ namespace }}
+      <li v-for="match in matches">
+        <span v-html="match.highlighted_text"></span>
       </li>
     </ul>
   </div>
 </template>
 
+<style scope>
+em {
+  background-color: yellow;
+}
+</style>
+
 <script setup lang="ts">
 import { useSearch } from "../../models/useSearch";
 
-const { rootNamespaces } = useSearch();
+const { query, matches } = useSearch();
 </script>

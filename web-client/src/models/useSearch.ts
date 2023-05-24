@@ -1,19 +1,29 @@
-import { reactive } from "vue";
+import { reactive, ref, watch } from "vue";
 import { currentApplicationName } from "./application";
 import { apiClient } from "./api";
 
+interface Match {
+  uuid: string;
+  text: string;
+  highlighted_text: string;
+  score: number;
+}
+
 export function useSearch() {
-  const rootNamespaces: string[] = reactive<string[]>([]);
+  const query = ref<string>("");
+  const matches: Match[] = reactive<Match[]>([]);
 
-  apiClient
-    .get(`/applications/${currentApplicationName.value}/namespaces`)
-    .then((response) => {
-      const rootNamespace = response.data["::"];
-
-      Object.keys(rootNamespace).forEach((namespace) => {
-        rootNamespaces.push(namespace);
+  function runSearch(query: string) {
+    apiClient
+      .get<Match[]>(`/applications/${currentApplicationName.value}/search`, {
+        params: { query: query },
+      })
+      .then((response) => {
+        matches.splice(0, matches.length, ...response.data);
       });
-    });
+  }
 
-  return { rootNamespaces };
+  watch(query, runSearch);
+
+  return { query, matches };
 }
