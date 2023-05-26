@@ -23,9 +23,64 @@ module Question::FuzzySearch
       end
     end
 
+    MagneticBackwardPass = ->(query, document, matched_indices) do
+      index = query.length - 1
+
+      while index > 0
+        document_index = matched_indices[index]
+        previous_document_index = matched_indices[index - 1]
+
+        if document_index == previous_document_index + 1
+          index -= 1 and next
+        end
+
+        previous_query_character = query[index - 1]
+        previous_document_character = document.text[document_index - 1]
+
+        # TODO: remove the need to `downcase` by doing it once.
+        if previous_query_character.downcase == previous_document_character.downcase
+          matched_indices[index - 1] = document_index - 1
+        end
+
+        index -= 1
+      end
+
+      matched_indices
+    end
+
+    IsSeparator = ->(character) { character == ":" || character == "#" }
+    IsUpperCase = ->(character) { character.match?(/[A-Z]/) }
+    IsLowerCase = ->(character) { character.match?(/[a-z]/) }
+
+    CalculateScore = ->(document, matched_indices) do
+      unmatched_characters = document.text.length - matched_indices.length
+
+      # Score starts at -1 point per unmatched letter to penalize longer documents
+      score = unmatched_characters * -1
+
+      matched_indices.each_with_index do |document_index, loop_index|
+        # Consecutive match bonus: +5 points
+        if matched_indices[loop_index + 1] == document_index + 1
+          score += 5
+        end
+
+        # Separator bonus: +10 points
+        if document_index.zero? || IsSeparator[document.text[document_index - 1]]
+          score += 10
+        end
+
+        # CamelCase bonus: +10 points
+        if IsUpperCase[document.text[document_index]] && IsLowerCase[document.text[document_index + 1]]
+          score += 10
+        end
+      end
+
+      score
+    end
+
     MatchesQuery = ->(query, document) do
-      query_index = 0
-      document_index = 0
+      query_index     = 0
+      document_index  = 0
       matched_indices = []
 
       while query_index < query.length && document_index < document.text.length
@@ -38,16 +93,23 @@ module Question::FuzzySearch
       end
 
       if query_index == query.length
+        matched_indices = MagneticBackwardPass[query, document, matched_indices]
+
+        score = CalculateScore[document, matched_indices]
+
         Match.new(
           document:,
           highlighted_text: Highlight::Apply[document.text, matched_indices],
-          score: 0
+          score:
         )
       end
     end
 
     def call(query:, documents:)
-      documents.filter_map(&MatchesQuery.curry[query])
+      documents
+        .filter_map(&MatchesQuery.curry[query])
+        .sort_by(&:score)
+        .reverse
     end
   end
 end

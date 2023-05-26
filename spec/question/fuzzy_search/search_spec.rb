@@ -6,7 +6,7 @@ describe ::Question::FuzzySearch::Search do
       "MyApplication",
       "MyApplication::MyClass",
       "MyApplication::MyClass::Foo"
-    ].map { |text| ::Question::FuzzySearch::Document.new(text:)}
+    ].map { |text| ::Question::FuzzySearch::Document.new(text:) }
   end
 
   let(:examples) do
