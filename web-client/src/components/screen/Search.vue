@@ -5,6 +5,7 @@
     <ul>
       <li v-for="match in matches">
         <span v-html="match.highlighted_text"></span>
+        {{ match.score }}
       </li>
     </ul>
   </div>

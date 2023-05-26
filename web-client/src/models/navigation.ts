@@ -6,7 +6,7 @@ export interface Screen {
 }
 
 export interface Track {
-  currentStackIndex: number;
+  currentIndex: number;
   screens: Screen[];
 }
 
@@ -23,7 +23,7 @@ export function pushTrack(title: string, component: Component) {
   const screen: Screen = { title, component };
 
   navigation.tracks.push({
-    currentStackIndex: 0,
+    currentIndex: 0,
     screens: [screen],
   });
 }
@@ -31,5 +31,5 @@ export function pushTrack(title: string, component: Component) {
 export function replaceCurrentScreen(title: string, component: Component) {
   const track = navigation.tracks[currentTrackIndex.value];
 
-  track.screens[track.currentStackIndex] = { title, component };
+  track.screens[track.currentIndex] = { title, component };
 }
