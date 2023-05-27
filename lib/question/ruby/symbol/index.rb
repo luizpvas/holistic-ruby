@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-class Question::Ruby::Application
-  class SymbolIndex
+module Question::Ruby::Symbol
+  class Index
     attr_reader :application
 
     def initialize(application:)
@@ -11,13 +11,15 @@ class Question::Ruby::Application
       index_namespace_recursively!(application.root_namespace)
     end
 
+    def find(uuid) = @documents[uuid]
+
     def search(query)
       ::Question::FuzzySearch::Search.call(query:, documents: @documents.values)
     end
 
     private
       def index_namespace_recursively!(namespace)
-        uuid = ::SecureRandom.uuid
+        uuid = namespace.fully_qualified_name
 
         document = ::Question::FuzzySearch::Document.new(
           uuid:,
@@ -25,7 +27,7 @@ class Question::Ruby::Application
           record: namespace
         )
 
-        @documents[::SecureRandom.uuid] = document
+        @documents[uuid] = document
 
         namespace.children.each(&method(:index_namespace_recursively!))
       end

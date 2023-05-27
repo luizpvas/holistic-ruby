@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe ::Question::Ruby::Application::SymbolIndex do
+describe ::Question::Ruby::Symbol::Index do
   include SnippetParser
 
   let(:application) do

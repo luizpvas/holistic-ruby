@@ -13,7 +13,7 @@ module Question::Ruby
     end
 
     def symbol_index
-      @symbol_index ||= SymbolIndex.new(application: self)
+      @symbol_index ||= Symbol::Index.new(application: self)
     end
   end
 end
