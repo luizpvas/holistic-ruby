@@ -18,6 +18,7 @@ module Question::Ruby::Symbol
     end
 
     private
+      # TODO: I don't think symbols should know about namespaces. Invert this dependency.
       def index_namespace_recursively!(namespace)
         uuid = namespace.fully_qualified_name
 
