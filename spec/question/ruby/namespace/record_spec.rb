@@ -44,10 +44,10 @@ describe ::Question::Ruby::Namespace::Record do
       it "adds a new child for each new module" do
         parent = described_class.new(kind: :module, name: "MyModule", parent: nil)
 
-        source_location_1 = ::Question::Ruby::SourceLocation.new
+        source_location_1 = ::Question::Ruby::Source::Location.new
         child_1 = parent.nest(kind: :module, name: "MyChild1", source_location: source_location_1)
 
-        source_location_2 = ::Question::Ruby::SourceLocation.new
+        source_location_2 = ::Question::Ruby::Source::Location.new
         child_2 = parent.nest(kind: :module, name: "MyChild2", source_location: source_location_2)
 
         expect(parent.children.size).to be(2)
@@ -83,8 +83,8 @@ describe ::Question::Ruby::Namespace::Record do
       it "appends the source location to the existing namespace" do
         parent = described_class.new(kind: :module, name: "MyModule", parent: nil)
 
-        source_location_1 = ::Question::Ruby::SourceLocation.new
-        source_location_2 = ::Question::Ruby::SourceLocation.new
+        source_location_1 = ::Question::Ruby::Source::Location.new
+        source_location_2 = ::Question::Ruby::Source::Location.new
 
         parent.nest(kind: :module, name: "MyChild", source_location: source_location_1)
         child = parent.nest(kind: :module, name: "MyChild", source_location: source_location_2)

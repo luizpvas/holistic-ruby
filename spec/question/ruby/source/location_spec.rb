@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe ::Question::Ruby::SourceLocation do
+describe ::Question::Ruby::Source::Location do
   subject(:source_location) do
     described_class.new(
       file_path: "/home/user/my_project/lib/my_project.rb",
