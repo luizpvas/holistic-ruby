@@ -4,14 +4,14 @@ module Question::Ruby::Parser
   module Current::Namespace
     extend self
 
-    def nest_module(name_path:, source_location:, &block)
+    def nest_module(namespace_declaration:, source_location:, &block)
       starting_namespace = Current.namespace
 
-      name_path.each do |name|
+      namespace_declaration.each do |name|
         Current.namespace = Current.namespace.nest(kind: :module, name:, source_location:)
       end
 
-      Current.resolution.unshift(name_path.to_s)
+      Current.resolution.unshift(namespace_declaration.to_s)
 
       block.call
 
@@ -19,14 +19,14 @@ module Question::Ruby::Parser
       Current.resolution.shift
     end
 
-    def nest_class(name_path:, source_location:, &block)
+    def nest_class(namespace_declaration:, source_location:, &block)
       starting_namespace = Current.namespace
 
-      name_path.each do |name|
+      namespace_declaration.each do |name|
         Current.namespace = Current.namespace.nest(kind: :class, name:, source_location:)
       end
 
-      Current.resolution.unshift(name_path.to_s)
+      Current.resolution.unshift(namespace_declaration.to_s)
 
       block.call
 

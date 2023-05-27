@@ -3,21 +3,21 @@
 module Question::Ruby::Parser
   module Visitor
     module Node
-      GetDeclarationNamePath = ->(node) do
-        name_path = NamePath.new
+      GetNamespadeDeclaration = ->(node) do
+        namespace_declaration = NamespaceDeclaration.new
 
         append = ->(node) do
           case node
-          when ::SyntaxTree::ConstRef     then name_path << node.child_nodes[0].value
-          when ::SyntaxTree::Const        then name_path << node.value
+          when ::SyntaxTree::ConstRef     then namespace_declaration << node.child_nodes[0].value
+          when ::SyntaxTree::Const        then namespace_declaration << node.value
           when ::SyntaxTree::VarRef       then node.child_nodes.each(&append)
           when ::SyntaxTree::ConstPathRef then node.child_nodes.each(&append)
-          when ::SyntaxTree::TopConstRef  then name_path.mark_as_top_const_ref! and node.child_nodes.each(&append)
+          when ::SyntaxTree::TopConstRef  then namespace_declaration.mark_as_top_const_ref! and node.child_nodes.each(&append)
           else raise "Unexpected node type: #{node.class}"
           end
         end
 
-        append.(node) and return name_path
+        append.(node) and return namespace_declaration
       end
 
       BuildSourceLocation = ->(node) do
@@ -34,10 +34,10 @@ module Question::Ruby::Parser
         def visit_module(node)
           declaration, statements = node.child_nodes
 
-          name_path = Node::GetDeclarationNamePath[declaration]
+          namespace_declaration = Node::GetNamespadeDeclaration[declaration]
           source_location = Node::BuildSourceLocation[node]
 
-          Current::Namespace.nest_module(name_path:, source_location:) do
+          Current::Namespace.nest_module(namespace_declaration:, source_location:) do
             visit(statements)
           end
         end
@@ -46,34 +46,32 @@ module Question::Ruby::Parser
           declaration, superclass, statements = node.child_nodes
 
           if superclass
-            superclass_name_path = Node::GetDeclarationNamePath[superclass]
+            superclass_declaration = Node::GetNamespadeDeclaration[superclass]
 
-            add_reference!(superclass_name_path)
+            if superclass_declaration.root_scope_resolution?
+              add_reference!(name: superclass_declaration.to_s, resolution: [])
+            else
+              add_reference!(name: superclass_declaration.to_s)
+            end
           end
 
-          name_path = Node::GetDeclarationNamePath[declaration]
+          namespace_declaration = Node::GetNamespadeDeclaration[declaration]
           source_location = Node::BuildSourceLocation[node]
 
-          Current::Namespace.nest_class(name_path:, source_location:) do
+          Current::Namespace.nest_class(namespace_declaration:, source_location:) do
             visit(statements)
           end
         end
 
         def visit_const(node)
-          name_path = NamePath.new([node.value])
-
-          add_reference!(name_path)
+          add_reference!(name: node.value)
         end
       end
 
       private
 
-      def add_reference!(name_path)
-        if name_path.is_top_const_ref
-          Current.application.references.add(resolution: [], name: name_path.to_s)
-        else
-          Current.application.references.add(resolution: Current.resolution.dup, name: name_path.to_s)
-        end
+      def add_reference!(name:, resolution: Current.resolution.dup)
+        Current.application.references.add(name:, resolution:)
       end
     end
   end

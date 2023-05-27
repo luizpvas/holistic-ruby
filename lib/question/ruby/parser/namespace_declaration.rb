@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Question::Ruby::Parser
-  class NamePath
+  class NamespaceDeclaration
     attr_reader :value, :is_top_const_ref
 
     def initialize(value = [])
@@ -16,6 +16,8 @@ module Question::Ruby::Parser
     def to_s
       @value.join("::")
     end
+
+    def root_scope_resolution? = is_top_const_ref
 
     delegate :each, to: :value
     delegate :<<,   to: :value
