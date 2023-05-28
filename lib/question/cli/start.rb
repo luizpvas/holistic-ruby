@@ -10,6 +10,8 @@ module Question::Cli::Start
 
     ::Question::Ruby::Parser::ParseDirectory[application:, directory_path: root_directory]
 
+    ::Question::Ruby::Namespace::Index[application, application.root_namespace]
+
     ::Question::HttpApplication.run!
   end
 end

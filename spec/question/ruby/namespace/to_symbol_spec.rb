@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe ::Question::Ruby::Namespace::ToSymbol do
+describe ::Question::Ruby::Namespace::Symbol::ToEntity do
   describe ".call" do
     it "builds a symbol entity from a namespace" do
       source_location = ::Question::Ruby::Source::Location.new

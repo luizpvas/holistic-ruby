@@ -7,30 +7,22 @@ module Question::Ruby::Symbol
     def initialize(application:)
       @application = application
       @documents = {}
-
-      index_namespace_recursively!(application.root_namespace)
     end
 
-    def find(uuid) = @documents[uuid]
+    def index(symbol)
+      raise ::ArgumentError unless symbol.is_a?(::Question::Ruby::Symbol::Entity)
+
+      document = ToDocument[symbol]
+
+      @documents[document.uuid] = document
+    end
+
+    def find(uuid)
+      @documents[uuid]
+    end
 
     def search(query)
       ::Question::FuzzySearch::Search.call(query:, documents: @documents.values)
     end
-
-    private
-      # TODO: I don't think symbols should know about namespaces. Invert this dependency.
-      def index_namespace_recursively!(namespace)
-        uuid = namespace.fully_qualified_name
-
-        document = ::Question::FuzzySearch::Document.new(
-          uuid:,
-          text: namespace.fully_qualified_name,
-          record: namespace
-        )
-
-        @documents[uuid] = document
-
-        namespace.children.each(&method(:index_namespace_recursively!))
-      end
   end
 end

@@ -16,12 +16,12 @@ describe ::Question::Ruby::Symbol::Index do
   end
 
   describe ".call" do
-    it "finds namespaces" do
+    it "finds namespace declarations" do
       matches = application.symbol_index.search("Application")
 
       expect(matches[0].document.record).to have_attributes(
-        itself: be_a(::Question::Ruby::Namespace::Record),
-        name: "MyApplication"
+        itself: be_a(::Question::Ruby::Symbol::Entity),
+        identifier: "::MyApplication"
       )
     end
 
