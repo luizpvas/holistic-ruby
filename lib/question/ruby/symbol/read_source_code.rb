@@ -11,8 +11,8 @@ module Question::Ruby::Symbol
       :column_number
     )
 
-    def self.call(application:, symbol_uuid:)
-      symbol_document = application.symbol_index.find(symbol_uuid)
+    def self.call(application:, symbol_identifier:)
+      symbol = application.symbol_index.find(symbol_identifier)
     end
   end
 end

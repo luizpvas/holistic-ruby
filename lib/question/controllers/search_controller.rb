@@ -5,7 +5,7 @@ module Question::Controllers::SearchController
 
   Serialize = ->(match) do
     {
-      uuid: match.document.uuid,
+      identifier: match.document.identifier,
       text: match.document.text,
       highlighted_text: match.highlighted_text,
       score: match.score

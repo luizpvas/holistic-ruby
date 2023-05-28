@@ -3,9 +3,8 @@
 module Question::Ruby::Symbol
   ToDocument = ->(symbol) do
     ::Question::FuzzySearch::Document.new(
-      uuid: symbol.identifier,
-      text: symbol.identifier,
-      record: symbol
+      identifier: symbol.identifier,
+      text: symbol.identifier
     )
   end
 end

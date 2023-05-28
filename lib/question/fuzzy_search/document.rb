@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
 module Question::FuzzySearch
-  Document = ::Struct.new(:uuid, :text, :record, keyword_init: true)
+  # TODO: do we really need two attributes? Will identifier ever differ from text?
+  Document = ::Struct.new(:identifier, :text, keyword_init: true)
 end

@@ -14,11 +14,11 @@ module Question::Ruby::Symbol
 
       document = ToDocument[symbol]
 
-      @documents[document.uuid] = document
+      @documents[document.identifier] = document
     end
 
-    def find(uuid)
-      @documents[uuid]
+    def find(identifier)
+      @documents[identifier]
     end
 
     def search(query)

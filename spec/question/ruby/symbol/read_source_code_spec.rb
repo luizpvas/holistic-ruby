@@ -15,7 +15,7 @@ describe ::Question::Ruby::Symbol::ReadSourceCode do
     end
 
     it "returns the source" do
-      result = described_class.call(application:, symbol_uuid: "::MyApp::MyModule")
+      result = described_class.call(application:, symbol_identifier: "::MyApp::MyModule")
 
       expect(result).to have_attributes(
         file_path: "snippet.rb",
