@@ -26,6 +26,7 @@ class Question::HttpApplication < ::Sinatra::Base
     include ::Question::Controllers::ApplicationsController
     include ::Question::Controllers::NamespacesController
     include ::Question::Controllers::SearchController
+    include ::Question::Controllers::SourceCodeController
   end
 
   concerning :Frontend do
