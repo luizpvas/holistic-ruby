@@ -18,7 +18,7 @@ module Question::Ruby::Symbol
     end
 
     def find(identifier)
-      @documents[identifier]
+      @documents[identifier]&.record
     end
 
     def search(query)

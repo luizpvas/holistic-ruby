@@ -4,8 +4,6 @@ describe ::Question::Ruby::Symbol::ReadSourceCode do
   include SnippetParser
 
   context "when symbol exists and has a single source location" do
-
-
     let(:application) do
       parse_snippet <<~RUBY
         module MyApp
@@ -18,10 +16,9 @@ describe ::Question::Ruby::Symbol::ReadSourceCode do
       result = described_class.call(application:, symbol_identifier: "::MyApp::MyModule")
 
       expect(result).to have_attributes(
-        file_path: "snippet.rb",
-        code: be_a(::String),
-        line_number: nil,
-        column_number: nil
+        source_code: be_a(::Question::SourceCode::FromFile),
+        start_line: 2,
+        end_line: 2
       )
     end
   end

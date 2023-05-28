@@ -2,9 +2,11 @@
 
 module SnippetParser
   def parse_snippet(code)
-    application = ::Question::Ruby::Application.new(name: 'Snippet', root_directory: 'fake_snippet_parser')
+    application = ::Question::Ruby::Application.new(name: "Snippet", root_directory: "snippet_parser")
 
-    ::Question::Ruby::Parser::ParseCode[application:, code:]
+    ::Question::Ruby::Parser::Current.set(file_path: "snippet.rb") do
+      ::Question::Ruby::Parser::ParseCode[application:, code:]
+    end
 
     ::Question::Ruby::Namespace::Symbol::Index[application, application.root_namespace]
 
