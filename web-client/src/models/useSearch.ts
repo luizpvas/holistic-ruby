@@ -3,7 +3,7 @@ import { currentApplicationName } from "./application";
 import { apiClient } from "./api";
 
 interface Match {
-  uuid: string;
+  identifier: string;
   text: string;
   highlighted_text: string;
   score: number;

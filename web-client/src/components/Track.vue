@@ -1,6 +1,13 @@
 <template>
-  <div v-for="screen in screens">
-    <Screen :title="screen.title" :component="screen.component" />
+  <div class="relative h-full">
+    <div v-for="(screen, index) in screens" class="h-full">
+      <Screen
+        :title="screen.title"
+        :index="index"
+        :current-index="currentIndex"
+        :component="screen.component"
+      />
+    </div>
   </div>
 </template>
 
@@ -10,6 +17,6 @@ import Screen from "./Screen.vue";
 
 defineProps<{
   screens: NavigationScreen[];
-  index: number;
+  currentIndex: number;
 }>();
 </script>

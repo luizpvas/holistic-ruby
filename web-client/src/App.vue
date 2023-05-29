@@ -5,6 +5,7 @@
 </template>
 
 <script setup lang="ts">
+import { h } from "vue";
 import { navigation, pushTrack } from "./models/navigation";
 import { fetchApplications } from "./models/application";
 import Navigation from "./components/Navigation.vue";
@@ -12,6 +13,8 @@ import Search from "./components/screen/Search.vue";
 import Debugbar from "./components/Debugbar.vue";
 
 fetchApplications().then(() => {
-  pushTrack("Search", Search);
+  const searchInstance = h(Search);
+
+  pushTrack("Search", searchInstance);
 });
 </script>

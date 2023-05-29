@@ -1,6 +1,10 @@
 <template>
-  <div v-for="track in tracks">
-    <Track :screens="track.screens" :index="track.currentIndex" />
+  <div class="h-screen w-screen flex items-center justify-center">
+    <div class="w-[960px] h-[500px] bg-yellow-100">
+      <div v-for="track in tracks" class="h-full">
+        <Track :screens="track.screens" :current-index="track.currentIndex" />
+      </div>
+    </div>
   </div>
 </template>
 

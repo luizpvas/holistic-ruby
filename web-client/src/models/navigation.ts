@@ -17,7 +17,12 @@ export interface Navigation {
 
 export const navigation = reactive<Navigation>({ tracks: [], currentIndex: 0 });
 
-export const currentTrackIndex = ref<number>(0);
+export function updateCurrenTitle(title: string) {
+  const track = navigation.tracks[navigation.currentIndex];
+  const screen = track.screens[track.currentIndex];
+
+  screen.title = title;
+}
 
 export function pushTrack(title: string, component: Component) {
   const screen: Screen = { title, component };
@@ -28,8 +33,9 @@ export function pushTrack(title: string, component: Component) {
   });
 }
 
-export function replaceCurrentScreen(title: string, component: Component) {
-  const track = navigation.tracks[currentTrackIndex.value];
+export function pushScreen(title: string, component: Component) {
+  const track = navigation.tracks[navigation.currentIndex];
 
-  track.screens[track.currentIndex] = { title, component };
+  track.screens.push({ title, component });
+  track.currentIndex = track.currentIndex + 1;
 }
