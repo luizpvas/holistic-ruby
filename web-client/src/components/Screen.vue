@@ -2,7 +2,7 @@
   <div
     :data-index="index"
     :data-offset="offsetPosition"
-    class="absolute w-full h-full border border-red-500 bg-white"
+    class="absolute w-full h-full overflow-auto border border-red-500 bg-white"
     :style="{ zIndex: index, top: offsetPosition, left: offsetPosition }"
   >
     <component v-if="index == currentIndex" :is="component" />
