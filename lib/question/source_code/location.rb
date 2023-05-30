@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Question::Ruby::Source
+module Question::SourceCode
   Location = ::Struct.new(
     :file_path,
     :start_line,

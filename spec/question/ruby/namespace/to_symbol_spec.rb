@@ -3,7 +3,7 @@
 describe ::Question::Ruby::Namespace::Symbol::ToEntity do
   describe ".call" do
     it "builds a symbol entity from a namespace" do
-      source_location = ::Question::Ruby::Source::Location.new
+      source_location = ::Question::SourceCode::Location.new
 
       namespace = ::Question::Ruby::Namespace::Record.new(
         kind: :module,
