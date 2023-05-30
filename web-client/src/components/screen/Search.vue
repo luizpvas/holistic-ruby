@@ -35,8 +35,6 @@ watch(query, () => {
 });
 
 function navigateToSourceCode(_event: MouseEvent, identifier: string) {
-  console.log("called?");
-
   const component = h(SourceCode, { identifier });
 
   pushScreen(`source: ${identifier}`, component);

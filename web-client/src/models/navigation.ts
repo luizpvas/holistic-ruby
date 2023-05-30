@@ -1,4 +1,4 @@
-import { Component, reactive, ref } from "vue";
+import { Component, reactive } from "vue";
 
 export interface Screen {
   title: string;
@@ -22,6 +22,13 @@ export function updateCurrenTitle(title: string) {
   const screen = track.screens[track.currentIndex];
 
   screen.title = title;
+}
+
+export function navigateBackToScreen(index: number) {
+  const track = navigation.tracks[navigation.currentIndex];
+
+  track.screens.splice(index + 1, track.screens.length - index - 1);
+  track.currentIndex = index;
 }
 
 export function pushTrack(title: string, component: Component) {
