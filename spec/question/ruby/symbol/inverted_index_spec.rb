@@ -34,4 +34,18 @@ describe ::Question::Ruby::Symbol::InvertedIndex do
       expect(inverted_index.data).to eql({ "file.rb" => [symbol_1, symbol_2, symbol_3] })
     end
   end
+
+  describe "#destroy" do
+    let(:application) { ::Question::Ruby::Application.new(name: "Example", root_directory: "example") }
+
+    it "deletes the stored symbols" do
+      inverted_index = application.symbol_inverted_index
+
+      inverted_index.index("file.rb", ::Question::Ruby::Symbol::Record.new)
+
+      inverted_index.destroy("file.rb")
+
+      expect(inverted_index.data).to be_empty
+    end
+  end
 end

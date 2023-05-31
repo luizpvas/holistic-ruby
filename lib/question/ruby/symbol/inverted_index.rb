@@ -10,10 +10,11 @@ module Question::Ruby::Symbol
     end
 
     def index(key, symbol)
-      raise ::ArgumentError, "#{key.inspect} must be a string" unless key.is_a?(::String)
-      raise ::ArgumentError, "#{symbol.inspect} must be a symbol" unless symbol.is_a?(Record)
-
       @data[key] << symbol
+    end
+
+    def destroy(key)
+      @data.delete(key)
     end
   end
 end
