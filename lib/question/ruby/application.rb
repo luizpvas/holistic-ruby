@@ -15,5 +15,9 @@ module Question::Ruby
     def symbol_index
       @symbol_index ||= Symbol::Index.new(application: self)
     end
+
+    def symbol_inverted_index
+      @symbol_inverted_index ||= Symbol::InvertedIndex.new(application: self)
+    end
   end
 end
