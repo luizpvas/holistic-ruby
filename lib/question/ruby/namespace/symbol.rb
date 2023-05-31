@@ -2,8 +2,8 @@
 
 module Question::Ruby
   module Namespace::Symbol
-    ToEntity = ->(namespace) do
-      Symbol::Entity.new(
+    ToRecord = ->(namespace) do
+      Symbol::Record.new(
         identifier: namespace.fully_qualified_name,
         kind: :namespace,
         record: namespace,
@@ -12,7 +12,7 @@ module Question::Ruby
     end
 
     Index = ->(application, namespace) do
-      application.symbol_index.index(ToEntity[namespace])
+      application.symbol_index.index(ToRecord[namespace])
 
       namespace.children.each(&Index.curry[application])
     end

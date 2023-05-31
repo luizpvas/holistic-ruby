@@ -10,7 +10,7 @@ module Question::Ruby::Symbol
     end
 
     def index(symbol)
-      raise ::ArgumentError unless symbol.is_a?(::Question::Ruby::Symbol::Entity)
+      raise ::ArgumentError unless symbol.is_a?(::Question::Ruby::Symbol::Record)
 
       document = ToDocument[symbol]
 

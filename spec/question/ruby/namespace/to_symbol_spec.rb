@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe ::Question::Ruby::Namespace::Symbol::ToEntity do
+describe ::Question::Ruby::Namespace::Symbol::ToRecord do
   describe ".call" do
     it "builds a symbol entity from a namespace" do
       source_location = ::Question::SourceCode::Location.new
@@ -15,7 +15,7 @@ describe ::Question::Ruby::Namespace::Symbol::ToEntity do
       symbol = described_class.call(namespace)
 
       expect(symbol).to have_attributes(
-        itself: be_a(::Question::Ruby::Symbol::Entity),
+        itself: be_a(::Question::Ruby::Symbol::Record),
         identifier: namespace.fully_qualified_name,
         kind: :namespace,
         record: namespace,
