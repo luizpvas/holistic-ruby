@@ -5,11 +5,11 @@ describe ::Question::Ruby::Symbol::Record do
     it "delegates to the record's #destroy method" do
       record = double
 
-      expect(record).to receive(:destroy)
+      expect(record).to receive(:destroy).with(file_path: "example.rb")
 
       symbol = described_class.new(record:)
 
-      symbol.destroy
+      symbol.destroy(file_path: "example.rb")
     end
   end
 end
