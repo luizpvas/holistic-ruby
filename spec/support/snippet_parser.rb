@@ -12,4 +12,22 @@ module SnippetParser
 
     application
   end
+
+  # TODO: find a better name for this helper
+  def parse_snippet_collection(&block)
+    application = ::Question::Ruby::Application.new(name: "Snippet", root_directory: "snippet_parser")
+
+    files = ::Object.new
+    files.define_singleton_method(:add) do |file_path, code|
+      ::Question::Ruby::Parser::Current.set(file_path:) do
+        ::Question::Ruby::Parser::ParseCode[application:, code:]
+      end
+    end
+
+    block.call(files)
+
+    ::Question::Ruby::Namespace::Symbol::Index[application, application.root_namespace]
+
+    application
+  end
 end
