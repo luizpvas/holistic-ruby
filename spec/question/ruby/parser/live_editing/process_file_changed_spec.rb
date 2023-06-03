@@ -5,5 +5,7 @@ describe ::Question::Ruby::Parser::LiveEditing::ProcessFileChanged do
     it "ends up in the same state as before"
   end
 
-  context "when file content is different"
+  context "when file content is different" do
+    it "deletes symbols from previous content and parses the new one"
+  end
 end
