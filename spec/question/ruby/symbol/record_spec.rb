@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
 describe ::Question::Ruby::Symbol::Record do
-  describe "#destroy" do
-    it "delegates to the record's #destroy method" do
+  describe "#delete" do
+    it "delegates to the record's #delete method" do
       record = double
 
-      expect(record).to receive(:destroy).with(file_path: "example.rb")
+      expect(record).to receive(:delete).with("example.rb")
 
       symbol = described_class.new(record:)
 
-      symbol.destroy(file_path: "example.rb")
+      symbol.delete("example.rb")
     end
   end
 end
