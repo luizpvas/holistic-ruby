@@ -6,7 +6,8 @@ module Question::Ruby::Symbol
 
     def initialize(application:)
       @application = application
-      @documents = {}
+      @from_identifier_to_document = {}
+      @from_file_path_to_identifier = ::Hash.new { |hash, key| hash[key] = [] }
     end
 
     def index(symbol)
@@ -14,15 +15,23 @@ module Question::Ruby::Symbol
 
       document = ToDocument[symbol]
 
-      @documents[document.identifier] = document
+      @from_identifier_to_document[document.identifier] = document
+
+      symbol.source_locations.each do |source_location|
+        @from_file_path_to_identifier[source_location.file_path] << document.identifier
+      end
     end
 
     def find(identifier)
-      @documents[identifier]&.record
+      @from_identifier_to_document[identifier]&.record
+    end
+
+    def get_symbols_in_file(file_path)
+      @from_file_path_to_identifier[file_path].map { find(_1) }
     end
 
     def search(query)
-      ::Question::FuzzySearch::Search.call(query:, documents: @documents.values)
+      ::Question::FuzzySearch::Search.call(query:, documents: @from_identifier_to_document.values)
     end
   end
 end
