@@ -5,7 +5,7 @@ module Question::Ruby::Symbol
     extend self
 
     Result = ::Struct.new(
-      :source_code,
+      :file,
       :start_line,
       :end_line
     )
@@ -19,7 +19,8 @@ module Question::Ruby::Symbol
       source_location = symbol.source_locations.first
 
       Result.new(
-        source_code: ::Question::SourceCode::FromFile.new(source_location.file_path),
+        # TODO: could be fake? and it should work
+        file: ::Question::SourceCode::File::Disk.new(source_location.file_path),
         start_line: source_location.start_line,
         end_line: source_location.end_line
       )

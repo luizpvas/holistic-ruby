@@ -16,7 +16,10 @@ describe ::Question::Ruby::Symbol::ReadSourceCode do
       result = described_class.call(application:, symbol_identifier: "::MyApp::MyModule")
 
       expect(result).to have_attributes(
-        source_code: be_a(::Question::SourceCode::FromFile),
+        file: have_attributes(
+          itself: be_a(::Question::SourceCode::File::Disk),
+          path: "snippet.rb",
+        ),
         start_line: 2,
         end_line: 2
       )
