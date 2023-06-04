@@ -22,12 +22,23 @@ module Question::Ruby::Symbol
       end
     end
 
+    # TODO: rename to `find_symbol`
     def find(identifier)
       @from_identifier_to_document[identifier]&.record
     end
 
     def get_symbols_in_file(file_path)
       @from_file_path_to_identifier[file_path].map { find(_1) }
+    end
+
+    def delete_symbols_in_file(file_path)
+      @from_file_path_to_identifier[file_path].each do |identifier|
+        find(identifier).delete(file_path)
+
+        @from_identifier_to_document.delete(identifier)
+      end
+
+      @from_file_path_to_identifier[file_path].clear
     end
 
     def search(query)

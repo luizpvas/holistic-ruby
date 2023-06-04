@@ -5,15 +5,12 @@ module Question::Ruby::Parser::LiveEditing
     extend self
 
     def call(application:, file_path:)
-      delete_all_symbols_defined_in_file(application:, file_path:)
+      application.symbol_index.delete_symbols_in_file(file_path)
+
       parse_again(application:, file_path:)
     end
 
     private
-
-    def delete_all_symbols_defined_in_file(application:, file_path:)
-      raise "todo"
-    end
 
     def parse_again(application:, file_path:)
       raise "todo"
