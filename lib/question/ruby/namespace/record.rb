@@ -33,7 +33,13 @@ module Question::Ruby::Namespace
       append_source_location_to_existing_namespace(name:, source_location:) || add_new_namespace(kind:, name:, source_location:)
     end
 
-    def root? = parent.nil?
+    def root?
+      parent.nil?
+    end
+
+    def delete(file_path)
+      Delete.call(namespace: self, file_path: file_path)
+    end
 
     private
       def append_source_location_to_existing_namespace(name:, source_location:)
