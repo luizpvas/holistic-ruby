@@ -3,7 +3,7 @@
 describe ::Question::Ruby::Parser::LiveEditing::ProcessFileChanged do
   include ::SnippetParser
 
-  context "when file content does not change" do
+  context "when file content did not change" do
     let(:application) do
       parse_snippet <<~RUBY
         module MyApp

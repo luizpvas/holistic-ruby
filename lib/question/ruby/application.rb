@@ -12,10 +12,13 @@ module Question::Ruby
       @references = Constant::Repository::References.new
     end
 
+    # TODO: rename to `symbols`? I think it reads better. `application.symbols.find("::MyApp")`.
+    # Perhapes `Symbol::Index` should be renamed to `Symbol::Collection`?
     def symbol_index
       @symbol_index ||= Symbol::Index.new(application: self)
     end
 
+    # TODO: remove
     def symbol_inverted_index
       @symbol_inverted_index ||= Symbol::InvertedIndex.new(application: self)
     end

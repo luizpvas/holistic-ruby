@@ -22,7 +22,7 @@ module Question::Ruby::Parser
 
       BuildSourceLocation = ->(node) do
         ::Question::SourceCode::Location.new(
-          file_path: Current.file_path,
+          file_path: Current.file.path,
           start_line: node.location.start_line,
           end_line: node.location.end_line
         )

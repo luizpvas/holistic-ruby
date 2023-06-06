@@ -12,15 +12,17 @@ module Question::Ruby::Parser
     end
   end
 
-  ParseFile = ->(application:, file_path:) do
-    Current.set(file_path:) do
-      ParseCode[application:, code: ::File.read(file_path)]
+  ParseFile = ->(application:, file:) do
+    Current.set(file:) do
+      ParseCode[application:, code: file.read]
     end
   end
 
   ParseDirectory = ->(application:, directory_path:) do
     ::Dir.glob("#{directory_path}/**/*.rb").map do |file_path|
-      ParseFile[application:, file_path:]
+      file = ::Question::SourceCode::File::Disk.new(path: file_path)
+
+      ParseFile[application:, file:]
     end
   end
 end
