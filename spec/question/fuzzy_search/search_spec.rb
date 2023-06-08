@@ -21,7 +21,7 @@ describe ::Question::FuzzySearch::Search do
 
   it "returns the expected results" do
     examples.each do |example|
-      matches = described_class.call(query: example[:query], documents:)
+      matches = described_class.call(query: example[:query], documents:).matches
 
       expect(matches[0].highlighted_text).to eql(example[:expected_first_result])
     end

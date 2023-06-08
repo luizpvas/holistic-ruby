@@ -5,7 +5,7 @@ module Question::Controllers::SourceCodeController
 
   Serialize = ->(read_source_code_result) do
     {
-      file_path: read_source_code_result.file.wpath,
+      file_path: read_source_code_result.file.path,
       code: read_source_code_result.file.read,
       highlight_start_line: read_source_code_result.start_line,
       highlight_end_line: read_source_code_result.end_line

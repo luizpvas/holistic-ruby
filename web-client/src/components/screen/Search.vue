@@ -2,8 +2,10 @@
   <div class="p-4">
     <input class="border p-2" v-model="query" />
 
+    {{ result?.elapsed_time_in_seconds }}
+
     <ul>
-      <li v-for="match in matches">
+      <li v-for="match in result?.matches">
         <Action @click="navigateToSourceCode($event, match.identifier)">
           <span v-html="match.highlighted_text"></span>
           {{ match.score }}
@@ -28,7 +30,7 @@ import { useSearch } from "../../models/useSearch";
 import Action from "../Action.vue";
 import SourceCode from "./SourceCode.vue";
 
-const { query, matches } = useSearch();
+const { query, result } = useSearch();
 
 watch(query, () => {
   updateCurrenTitle(`search: ${query.value}`);

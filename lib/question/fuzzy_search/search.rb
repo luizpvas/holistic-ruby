@@ -105,11 +105,23 @@ module Question::FuzzySearch
       end
     end
 
+    Result = ::Struct.new(
+      :elapsed_time_in_seconds,
+      :matches,
+      keyword_init: true
+    )
+
     def call(query:, documents:)
-      documents
-        .filter_map(&MatchesQuery.curry[query])
-        .sort_by(&:score)
-        .reverse
+      starting_time = ::Process.clock_gettime(::Process::CLOCK_MONOTONIC)
+
+      matches = documents.filter_map(&MatchesQuery.curry[query]).sort_by(&:score).reverse
+
+      ending_time = ::Process.clock_gettime(::Process::CLOCK_MONOTONIC)
+
+      Result.new(
+        elapsed_time_in_seconds: ending_time - starting_time,
+        matches:
+      )
     end
   end
 end

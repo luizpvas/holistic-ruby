@@ -16,7 +16,12 @@ module Question::Controllers::SearchController
     get "/applications/:application_name/search" do
       application = ::Question::Ruby::Application::Repository.find(params[:application_name])
 
-      application.symbol_index.search(params[:query]).map(&Serialize).to_json
+      result = application.symbol_index.search(params[:query])
+
+      {
+        elapsed_time_in_seconds: result.elapsed_time_in_seconds,
+        matches: result.matches.map(&Serialize)
+      }.to_json
     end
   end
 end

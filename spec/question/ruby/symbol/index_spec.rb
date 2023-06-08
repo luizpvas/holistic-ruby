@@ -126,7 +126,7 @@ describe ::Question::Ruby::Symbol::Index do
     end
 
     it "finds namespace declarations" do
-      matches = application.symbol_index.search("Application")
+      matches = application.symbol_index.search("Application").matches
 
       expect(matches[0].document).to have_attributes(
         identifier: "::MyApplication",

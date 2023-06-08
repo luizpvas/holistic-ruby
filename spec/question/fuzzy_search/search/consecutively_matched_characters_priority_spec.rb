@@ -9,7 +9,7 @@ describe ::Question::FuzzySearch::Search do
   end
 
   it "returns the document with the full word match first" do
-    matches = described_class.call(query: "node", documents:)
+    matches = described_class.call(query: "node", documents:).matches
 
     expect(matches.pluck(:highlighted_text)).to eql([
       "::Question::Ruby::Parser::Visitor::<em>Node</em>",
