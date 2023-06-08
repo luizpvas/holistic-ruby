@@ -8,9 +8,9 @@ module Question::Cli::Start
 
     application = ::Question::Ruby::Application::Repository.create(name:, root_directory:)
 
-    ::Question::Ruby::Parser::ParseDirectory[application:, directory_path: root_directory]
-
-    ::Question::Ruby::Namespace::Symbol::Index[application, application.root_namespace]
+    ::Question::Ruby::Parser::WrapParsingUnitWithProcessAtTheEnd[application:] do
+      ::Question::Ruby::Parser::ParseDirectory[application:, directory_path: root_directory]
+    end
 
     ::Question::HttpApplication.run!
   end

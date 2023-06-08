@@ -13,6 +13,8 @@ module Question::Ruby::Parser
   end
 
   ParseFile = ->(application:, file:) do
+    application.files.register_parsed_file(file)
+
     Current.set(file:) do
       ParseCode[application:, code: file.read]
     end
@@ -24,5 +26,14 @@ module Question::Ruby::Parser
 
       ParseFile[application:, file:]
     end
+  end
+
+  # TODO: find a better name or a better abstraction
+  WrapParsingUnitWithProcessAtTheEnd = ->(application:, &block) do
+    registration_queue = Current::RegistrationQueue.new(application:)
+
+    Current.set(registration_queue:, &block)
+
+    registration_queue.process
   end
 end

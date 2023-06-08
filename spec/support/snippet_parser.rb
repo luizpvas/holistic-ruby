@@ -6,9 +6,9 @@ module SnippetParser
 
     file = ::Question::SourceCode::File::Fake.new("snippet.rb", code)
 
-    ::Question::Ruby::Parser::ParseFile[application:, file:]
-
-    ::Question::Ruby::Namespace::Symbol::Index[application, application.root_namespace]
+    ::Question::Ruby::Parser::WrapParsingUnitWithProcessAtTheEnd.call(application:) do
+      ::Question::Ruby::Parser::ParseFile.call(application:, file:)
+    end
 
     application
   end
@@ -24,9 +24,9 @@ module SnippetParser
       ::Question::Ruby::Parser::ParseFile[application:, file:]
     end
 
-    block.call(files)
-
-    ::Question::Ruby::Namespace::Symbol::Index[application, application.root_namespace]
+    ::Question::Ruby::Parser::WrapParsingUnitWithProcessAtTheEnd.call(application:) do
+      block.call(files)
+    end
 
     application
   end

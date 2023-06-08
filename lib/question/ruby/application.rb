@@ -17,5 +17,9 @@ module Question::Ruby
     def symbol_index
       @symbol_index ||= Symbol::Index.new(application: self)
     end
+
+    def files
+      @files ||= ::Question::SourceCode::File::Collection.new(application: self)
+    end
   end
 end

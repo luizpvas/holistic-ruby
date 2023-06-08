@@ -13,10 +13,19 @@ describe ::Question::Ruby::Parser::LiveEditing::ProcessFileChanged do
     end
 
     it "ends up in the same state as before the change" do
-      described_class.call(application:, file_path: "snippet.rb")
+      my_app_before = application.symbol_index.find("::MyApp")
+      my_app_example_before = application.symbol_index.find("::MyApp::Example")
 
-      expect(application.symbol_index.find("::MyApp")).to exist
-      expect(application.symbol_index.find("::MyApp::Example")).to exist
+      described_class.call(application:, file: application.files.find("snippet.rb"))
+
+      my_app_after = application.symbol_index.find("::MyApp")
+      my_app_example_after = application.symbol_index.find("::MyApp::Example")
+
+      expect(my_app_before.identifier).to eql(my_app_after.identifier)
+      expect(my_app_before).not_to be(my_app_after)
+
+      expect(my_app_example_before.identifier).to eql(my_app_example_after.identifier)
+      expect(my_app_example_before).not_to be(my_app_example_after)
     end
   end
 

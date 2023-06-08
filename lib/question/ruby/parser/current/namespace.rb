@@ -12,6 +12,8 @@ module Question::Ruby::Parser
 
       namespace_declaration.each do |name|
         Current.namespace = Current.namespace.nest(kind: :module, name:, source_location:)
+
+        Current.registration_queue.register(::Question::Ruby::Namespace::ToSymbol[Current.namespace])
       end
 
       Current.resolution.unshift(namespace_declaration.to_s)
@@ -27,6 +29,8 @@ module Question::Ruby::Parser
 
       namespace_declaration.each do |name|
         Current.namespace = Current.namespace.nest(kind: :class, name:, source_location:)
+
+        Current.registration_queue.register(::Question::Ruby::Namespace::ToSymbol[Current.namespace])
       end
 
       Current.resolution.unshift(namespace_declaration.to_s)

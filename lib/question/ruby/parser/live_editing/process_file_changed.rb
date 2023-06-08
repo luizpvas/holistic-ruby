@@ -7,7 +7,9 @@ module Question::Ruby::Parser
     def call(application:, file:)
       application.symbol_index.delete_symbols_in_file(file.path)
 
-      ParseFile.call(application:, file:)
+      WrapParsingUnitWithProcessAtTheEnd.call(application:) do
+        ParseFile.call(application:, file:)
+      end
     end
   end
 end
