@@ -20,7 +20,7 @@ module Question::Ruby::Symbol
 
       Result.new(
         # TODO: could be fake? and it should work
-        file: ::Question::SourceCode::File::Disk.new(source_location.file_path),
+        file: ::Question::SourceCode::File::Disk.new(path: source_location.file_path),
         start_line: source_location.start_line,
         end_line: source_location.end_line
       )
