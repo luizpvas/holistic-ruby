@@ -9,6 +9,7 @@ module Question::Ruby::Parser
       @is_top_const_ref = false
     end
 
+    # TODO: top_const_ref is a term inherited from the syntax_tree gem. I think I can come up with a more descriptive name.
     def mark_as_top_const_ref!
       @is_top_const_ref = true
     end
