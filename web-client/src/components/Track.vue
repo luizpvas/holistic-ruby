@@ -1,13 +1,12 @@
 <template>
   <div class="relative h-full">
-    <div v-for="(screen, index) in screens" class="h-full">
-      <Screen
-        :title="screen.title"
-        :index="index"
-        :current-index="currentIndex"
-        :component="screen.component"
-      />
-    </div>
+    <Screen
+      v-for="(screen, index) in screens"
+      :title="screen.title"
+      :index="index"
+      :current-index="currentIndex"
+      :component="screen.component"
+    />
   </div>
 </template>
 
