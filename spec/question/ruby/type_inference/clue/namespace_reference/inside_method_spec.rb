@@ -3,11 +3,13 @@
 describe ::Question::Ruby::TypeInference::Clue::NamespaceReference do
   include ::SnippetParser
 
-  context "when namespace is referenced inside const lambda definition" do
+  context "when namespace is referenced inside class method" do
     let(:application) do
       parse_snippet <<~RUBY
       module MyApp
-        MyThing = -> { Example.call }
+        class MyClass
+          def foo = Example.call
+        end
       end
       RUBY
     end
@@ -21,7 +23,7 @@ describe ::Question::Ruby::TypeInference::Clue::NamespaceReference do
       expect(symbols.first.record.clues.first).to have_attributes(
         itself: be_a(::Question::Ruby::TypeInference::Clue::NamespaceReference),
         name: "Example",
-        resolution: ["MyApp"]
+        resolution: ["MyApp::MyClass", "MyApp"]
       )
     end
   end
