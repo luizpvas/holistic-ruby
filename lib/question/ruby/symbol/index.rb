@@ -41,6 +41,10 @@ module Question::Ruby::Symbol
       @from_file_path_to_identifier[file_path].clear
     end
 
+    def list_symbols_of(kind:)
+      @from_identifier_to_document.values.select { _1.record.kind == kind }.map(&:record)
+    end
+
     def search(query)
       ::Question::FuzzySearch::Search.call(query:, documents: @from_identifier_to_document.values)
     end

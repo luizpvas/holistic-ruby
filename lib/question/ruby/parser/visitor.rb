@@ -66,11 +66,24 @@ module Question::Ruby::Parser
         end
 
         def visit_const(node)
-          add_reference!(name: node.value)
+          add_reference!(name: node.value) # TODO: remove
+          register_namespace_reference(name: node.value, source_location: Node::BuildSourceLocation[node])
         end
       end
 
       private
+
+      def register_namespace_reference(name:, source_location:, resolution: Current.resolution.dup)
+        namespace_reference_clue =
+          ::Question::Ruby::TypeInference::Clue::NamespaceReference.new(name:, resolution:)
+
+        something = ::Question::Ruby::TypeInference::Something.new(
+          clues: [namespace_reference_clue],
+          source_location:
+        )
+
+        Current.registration_queue.register(something.to_symbol)
+      end
 
       def add_reference!(name:, resolution: Current.resolution.dup)
         Current.application.references.add(name:, resolution:)
