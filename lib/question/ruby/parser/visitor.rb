@@ -24,7 +24,9 @@ module Question::Ruby::Parser
         ::Question::SourceCode::Location.new(
           file_path: Current.file.path,
           start_line: node.location.start_line,
-          end_line: node.location.end_line
+          start_column: node.location.start_column,
+          end_line: node.location.end_line,
+          end_column: node.location.end_column
         )
       end
     end

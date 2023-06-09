@@ -8,7 +8,9 @@ module Question::Controllers::SourceCodeController
       file_path: read_source_code_result.file.path,
       code: read_source_code_result.file.read,
       highlight_start_line: read_source_code_result.start_line,
-      highlight_end_line: read_source_code_result.end_line
+      highlight_start_column: read_source_code_result.start_column,
+      highlight_end_line: read_source_code_result.end_line,
+      highlight_end_column: read_source_code_result.end_column
     }
   end
   
