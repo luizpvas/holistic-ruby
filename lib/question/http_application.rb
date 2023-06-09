@@ -6,7 +6,7 @@ require "active_support/concern"
 require "active_support/core_ext/module/concerning"
 
 class Question::HttpApplication < ::Sinatra::Base
-  concerning :Cors do
+  concerning :CORS do
     included do
       register Sinatra::Cors
 
@@ -17,7 +17,7 @@ class Question::HttpApplication < ::Sinatra::Base
     end
   end
 
-  concerning :JsonApi do
+  concerning :API do
     included do
       before { content_type :json }
     end
@@ -29,7 +29,7 @@ class Question::HttpApplication < ::Sinatra::Base
     include ::Question::Controllers::SourceCodeController
   end
 
-  concerning :Frontend do
+  concerning :WebClient do
     included do
       set(:public_folder, ::File.expand_path("../../web-client/dist", __dir__))
     end
