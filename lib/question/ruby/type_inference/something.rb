@@ -2,8 +2,8 @@
 
 module Question::Ruby::TypeInference
   Something = ::Struct.new(
-    :source_location,
     :clues,
+    :source_location,
     keyword_init: true
   )
 end
