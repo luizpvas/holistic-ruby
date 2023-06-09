@@ -76,6 +76,14 @@ module Question::Ruby::Parser
           end
         end
 
+        def visit_assign(node)
+          assign, expression = node.child_nodes
+
+          # TODO: do something about assign?
+
+          visit(expression)
+        end
+
         def visit_const(node)
           add_reference!(name: node.value) # TODO: remove
           register_namespace_reference(name: node.value, source_location: Node::BuildSourceLocation[node])
