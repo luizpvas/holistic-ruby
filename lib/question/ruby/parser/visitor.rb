@@ -51,9 +51,20 @@ module Question::Ruby::Parser
             superclass_declaration = Node::GetNamespadeDeclaration[superclass]
 
             if superclass_declaration.root_scope_resolution?
-              add_reference!(name: superclass_declaration.to_s, resolution: [])
+              add_reference!(name: superclass_declaration.to_s, resolution: []) # TODO: Remove
+
+              register_namespace_reference(
+                name: superclass_declaration.to_s,
+                source_location: Node::BuildSourceLocation[node],
+                resolution: []
+              )
             else
-              add_reference!(name: superclass_declaration.to_s)
+              add_reference!(name: superclass_declaration.to_s) # TODO: Remove
+
+              register_namespace_reference(
+                name: superclass_declaration.to_s,
+                source_location: Node::BuildSourceLocation[node]
+              )
             end
           end
 
