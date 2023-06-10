@@ -34,6 +34,7 @@ describe ::Question::Ruby::TypeInference::Solve do
   end
 
   context "when the clue is a namespace reference and the namespace is found via ancestry scope" do
+    # TODO. How?
   end
 
   context "when the clue is a namespace reference and the namespace does not exist" do
