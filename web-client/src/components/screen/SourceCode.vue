@@ -1,11 +1,10 @@
 <template>
-  <div class="p-2">
-    <pre class="text-sm">{{ sourceCode?.code }}</pre>
-  </div>
+  <CodeEditor v-if="sourceCode" :code="sourceCode.code" />
 </template>
 
 <script setup lang="ts">
 import { useSourceCode } from "../../models/useSoureCode";
+import CodeEditor from "../CodeEditor.vue";
 
 const props = defineProps<{
   identifier: string;

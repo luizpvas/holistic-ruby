@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "ace-builds": "^1.22.0",
     "vue": "^3.2.47"
   },
   "devDependencies": {

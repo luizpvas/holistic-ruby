@@ -2,7 +2,7 @@
   <div
     :data-index="index"
     :data-offset="offsetPosition"
-    class="absolute w-full h-full overflow-auto rounded-sm shadow ring-1 ring-black ring-opacity-5 bg-theme-current-screen"
+    class="absolute w-full h-full overflow-auto rounded-sm shadow ring-1 ring-black ring-opacity-10 bg-theme-current-screen"
     :style="{
       zIndex: index,
       top: offsetPosition,
