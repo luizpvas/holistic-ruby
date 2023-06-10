@@ -25,6 +25,8 @@ module Question::Ruby::TypeInference
 
         if target.present?
           something.conclusion = Conclusion.with_strong_confidence(target)
+
+          return true
         end
       end
     end
