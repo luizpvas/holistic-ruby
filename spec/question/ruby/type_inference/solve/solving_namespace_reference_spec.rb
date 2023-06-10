@@ -26,7 +26,7 @@ describe ::Question::Ruby::TypeInference::Solve do
         itself: be_a(::Question::Ruby::TypeInference::Something),
         conclusion: have_attributes(
           itself: be_a(::Question::Ruby::TypeInference::Conclusion),
-          symbol: application.symbol_index.find("::MyApp::Example"),
+          symbol_identifier: "::MyApp::Example",
           confidence: :strong
         )
       )

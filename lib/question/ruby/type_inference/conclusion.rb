@@ -2,12 +2,12 @@
 
 module Question::Ruby::TypeInference
   Conclusion = ::Struct.new(
-    :symbol,
+    :symbol_identifier,
     :confidence,
     keyword_init: true
   ) do
-    def self.with_strong_confidence(symbol)
-      new(symbol:, confidence: :strong)
+    def self.with_strong_confidence(symbol_identifier)
+      new(symbol_identifier:, confidence: :strong)
     end
   end
 end

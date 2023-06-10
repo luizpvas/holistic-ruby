@@ -21,10 +21,8 @@ module Question::Ruby::TypeInference
       namespace_reference.resolution.each do |resolution_candidate|
         target_identifier = "::#{resolution_candidate}::#{namespace_reference.name}"
 
-        target = application.symbol_index.find(target_identifier)
-
-        if target.present?
-          something.conclusion = Conclusion.with_strong_confidence(target)
+        if application.symbol_index.find(target_identifier).present?
+          something.conclusion = Conclusion.with_strong_confidence(target_identifier)
 
           return true
         end
