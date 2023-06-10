@@ -12,7 +12,7 @@ module Question::Ruby::TypeInference
 
     def solve_namespace_reference(application:, something:)
       has_namespace_reference_clue =
-        something.clues.one? && something.clues.first.is_a?(::Question::Ruby::TypeInference::Clue::NamespaceReference)
+        something.clues.one? && something.clues.first.is_a?(Clue::NamespaceReference)
 
       return unless has_namespace_reference_clue
 
