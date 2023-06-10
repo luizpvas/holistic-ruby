@@ -41,6 +41,10 @@ class Question::Ruby::Parser::Current
         update_search_index(symbol)
       end
 
+      @symbols.each do |symbol|
+        solve_type_inference(symbol)
+      end
+
       @symbols.clear
     end
 
@@ -48,6 +52,15 @@ class Question::Ruby::Parser::Current
 
     def update_search_index(symbol)
       application.symbol_index.index(symbol)
+    end
+  
+    def solve_type_inference(symbol)
+      return unless symbol.record.is_a?(::Question::Ruby::TypeInference::Something)
+
+      ::Question::Ruby::TypeInference::Solve.call(
+        application:,
+        something: symbol.record
+      )
     end
   end
 end
