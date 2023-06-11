@@ -84,6 +84,31 @@ module Question::Ruby::Parser
           visit(expression)
         end
 
+        def visit_const_path_ref(node)
+          namespace_declaration = Node::GetNamespadeDeclaration.call(node)
+
+          if namespace_declaration.root_scope_resolution?
+            register_namespace_reference(
+              name: namespace_declaration.to_s,
+              source_location: Node::BuildSourceLocation.call(node),
+              resolution: []
+            )
+          else
+            register_namespace_reference(
+              name: namespace_declaration.to_s,
+              source_location: Node::BuildSourceLocation.call(node)
+            )
+          end
+        end
+
+        def visit_top_const_ref(node)
+          register_namespace_reference(
+            name: node.child_nodes.first.value,
+            source_location: Node::BuildSourceLocation[node],
+            resolution: []
+          )
+        end
+
         def visit_const(node)
           add_reference!(name: node.value) # TODO: remove
           register_namespace_reference(name: node.value, source_location: Node::BuildSourceLocation[node])

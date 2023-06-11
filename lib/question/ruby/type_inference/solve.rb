@@ -22,6 +22,8 @@ module Question::Ruby::TypeInference
         target_identifier = "::#{resolution_candidate}::#{namespace_reference.name}"
 
         if application.symbol_index.find(target_identifier).present?
+          # at this point we could update the target's `who knows about me?` index
+
           something.conclusion = Conclusion.with_strong_confidence(target_identifier)
 
           return true

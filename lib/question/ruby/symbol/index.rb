@@ -40,6 +40,10 @@ module Question::Ruby::Symbol
 
       @from_file_path_to_identifier[file_path].clear
     end
+    
+    def list_symbols_in_file(file_path)
+      @from_file_path_to_identifier[file_path].map { find(_1) }
+    end
 
     def list_symbols_of(kind:)
       @from_identifier_to_document.values.select { _1.record.kind == kind }.map(&:record)
