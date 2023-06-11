@@ -4,8 +4,8 @@ describe ::Question::Ruby::Parser do
   include SnippetParser
 
   context "module declaration in the root namespace" do
-    let(:code) do
-      <<-RUBY
+    let(:application) do
+      parse_snippet <<~RUBY
       module MyModule
         Foo.bar()
       end
@@ -13,8 +13,6 @@ describe ::Question::Ruby::Parser do
     end
 
     it "parses the code" do
-      application = parse_snippet(code)
-
       symbols = application.symbol_index.list_symbols_of(kind: :type_inference)
 
       expect(symbols.size).to eql(1)

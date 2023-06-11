@@ -4,8 +4,8 @@ describe ::Question::Ruby::Parser do
   include SnippetParser
 
   context "duplicated module declaration" do
-    let(:code) do
-      <<-RUBY
+    let(:application) do
+      parse_snippet <<~RUBY
       module MyApp
         module MyModule
           Foo1.bar()
@@ -19,8 +19,6 @@ describe ::Question::Ruby::Parser do
     end
 
     it "parses the code" do
-      application = parse_snippet(code)
-
       symbols = application.symbol_index.list_symbols_of(kind: :type_inference)
 
       expect(symbols.size).to eql(2)
