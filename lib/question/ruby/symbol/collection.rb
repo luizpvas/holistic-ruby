@@ -22,7 +22,6 @@ module Question::Ruby::Symbol
       end
     end
 
-    # TODO: rename to `find_symbol`
     def find(identifier)
       @from_identifier_to_document[identifier]&.record
     end
