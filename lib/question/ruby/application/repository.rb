@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module Question::Ruby
-  module Application::Repository
+module Question::Ruby::Application
+  module Repository
     extend self
 
     AlreadyExistsError = ::Class.new(::StandardError)
@@ -11,7 +11,7 @@ module Question::Ruby
     def create(name:, root_directory:)
       raise AlreadyExistsError if @items.key?(name)
 
-      application = Application.new(name:, root_directory:)
+      application = Record.new(name:, root_directory:)
 
       @items[name] = application
     end

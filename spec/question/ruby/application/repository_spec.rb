@@ -9,7 +9,7 @@ describe ::Question::Ruby::Application::Repository do
         application = described_class.create(name: 'app_name', root_directory: '.')
 
         expect(application).to have_attributes(
-          itself: be_a(::Question::Ruby::Application),
+          itself: be_a(::Question::Ruby::Application::Record),
           root_directory: '.'
         )
       end

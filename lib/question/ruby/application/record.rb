@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 module Question::Ruby
-  # TODO: Move to Application::Record
-  class Application
+  class Application::Record
     attr_reader :name, :root_directory, :root_namespace
 
     def initialize(name:, root_directory:)

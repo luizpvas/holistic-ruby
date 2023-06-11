@@ -5,7 +5,7 @@ describe ::Question::Ruby::Symbol::Index do
 
   describe "#index" do
     context "when symbol does not have source locations" do
-      let(:application) { ::Question::Ruby::Application.new(name: "dummy", root_directory: ".") }
+      let(:application) { ::Question::Ruby::Application::Record.new(name: "dummy", root_directory: ".") }
       let(:symbol) { ::Question::Ruby::Symbol::Record.new(identifier: "::MySymbol", source_locations: []) }
 
       it "stores the symbol in the identifier index" do
@@ -16,7 +16,7 @@ describe ::Question::Ruby::Symbol::Index do
     end
 
     context "when symbol has one source location" do
-      let(:application) { ::Question::Ruby::Application.new(name: "dummy", root_directory: ".") }
+      let(:application) { ::Question::Ruby::Application::Record.new(name: "dummy", root_directory: ".") }
       let(:source_locations) { [::Question::SourceCode::Location.new(file_path: "my_symbol.rb")] }
       let(:symbol) { ::Question::Ruby::Symbol::Record.new(identifier: "::MySymbol", source_locations:) }
 
@@ -34,7 +34,7 @@ describe ::Question::Ruby::Symbol::Index do
     end
 
     context "when symbol has multiple source locations" do
-      let(:application) { ::Question::Ruby::Application.new(name: "dummy", root_directory: ".") }
+      let(:application) { ::Question::Ruby::Application::Record.new(name: "dummy", root_directory: ".") }
 
       let(:source_locations) do
         [
@@ -62,7 +62,7 @@ describe ::Question::Ruby::Symbol::Index do
 
   describe "#delete_symbols_in_file" do
     context "when file is not indexed" do
-      let(:application) { ::Question::Ruby::Application.new(name: "dummy", root_directory: ".") }
+      let(:application) { ::Question::Ruby::Application::Record.new(name: "dummy", root_directory: ".") }
 
       it "does nothing" do
         expect(application.symbol_index.delete_symbols_in_file("non_existing.rb")).to eql([])
@@ -70,7 +70,7 @@ describe ::Question::Ruby::Symbol::Index do
     end
 
     context "when file has symbols" do
-      let(:application) { ::Question::Ruby::Application.new(name: "dummy", root_directory: ".") }
+      let(:application) { ::Question::Ruby::Application::Record.new(name: "dummy", root_directory: ".") }
 
       let(:source_location) { ::Question::SourceCode::Location.new(file_path: "my_app.rb") }
 
