@@ -3,7 +3,7 @@
 module Question::Ruby::TypeInference::Clue
   NamespaceReference = ::Struct.new(
     :name,
-    :resolution,
+    :resolution_possibilities,
     keyword_init: true
   )
 end

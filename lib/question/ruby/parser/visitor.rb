@@ -92,7 +92,7 @@ module Question::Ruby::Parser
             register_namespace_reference(
               name: namespace_declaration.to_s,
               source_location: Node::BuildSourceLocation.call(node),
-              resolution: []
+              resolution_possibilities: []
             )
           else
             register_namespace_reference(
@@ -106,7 +106,7 @@ module Question::Ruby::Parser
           register_namespace_reference(
             name: node.child_nodes.first.value,
             source_location: Node::BuildSourceLocation[node],
-            resolution: []
+            resolution_possibilities: []
           )
         end
 
@@ -118,19 +118,15 @@ module Question::Ruby::Parser
 
       private
 
-      def register_namespace_reference(name:, source_location:, resolution: Current.resolution.dup)
-        namespace_reference_clue =
-          ::Question::Ruby::TypeInference::Clue::NamespaceReference.new(name:, resolution:)
+      def register_namespace_reference(name:, source_location:, resolution_possibilities: Current.constant_resolution_possibilities.dup)
+        clue = ::Question::Ruby::TypeInference::Clue::NamespaceReference.new(name:, resolution_possibilities:)
 
-        something = ::Question::Ruby::TypeInference::Something.new(
-          clues: [namespace_reference_clue],
-          source_location:
-        )
+        something = ::Question::Ruby::TypeInference::Something.new(clues: [clue], source_location:)
 
         Current.registration_queue.register(something.to_symbol)
       end
 
-      def add_reference!(name:, resolution: Current.resolution.dup)
+      def add_reference!(name:, resolution: Current.constant_resolution_possibilities.dup)
         Current.application.references.add(name:, resolution:)
       end
     end

@@ -23,7 +23,7 @@ describe ::Question::Ruby::TypeInference::Clue::NamespaceReference do
       expect(symbols.first.record.clues.first).to have_attributes(
         itself: be_a(::Question::Ruby::TypeInference::Clue::NamespaceReference),
         name: "Example",
-        resolution: ["MyApp::MyClass", "MyApp"]
+        resolution_possibilities: ["MyApp::MyClass", "MyApp"]
       )
     end
   end

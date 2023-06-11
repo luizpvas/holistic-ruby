@@ -19,7 +19,7 @@ module Question::Ruby::TypeInference
       namespace_reference = something.clues.first
   
       # TODO: use more meaningful name to describe `resolves at root scope`?
-      if namespace_reference.resolution.empty? 
+      if namespace_reference.resolution_possibilities.empty? 
         target_identifier = namespace_reference.name
 
         if application.symbol_index.find(target_identifier).present?
@@ -31,7 +31,7 @@ module Question::Ruby::TypeInference
         end
       end
 
-      namespace_reference.resolution.each do |resolution_candidate|
+      namespace_reference.resolution_possibilities.each do |resolution_candidate|
         target_identifier = "::#{resolution_candidate}::#{namespace_reference.name}"
 
         if application.symbol_index.find(target_identifier).present?

@@ -16,12 +16,12 @@ module Question::Ruby::Parser
         Current.registration_queue.register(::Question::Ruby::Namespace::ToSymbol[Current.namespace])
       end
 
-      Current.resolution.unshift(namespace_declaration.to_s)
+      Current.constant_resolution_possibilities.unshift(namespace_declaration.to_s)
 
       block.call
 
       Current.namespace = starting_namespace
-      Current.resolution.shift
+      Current.constant_resolution_possibilities.shift
     end
 
     def nest_class(namespace_declaration:, source_location:, &block)
@@ -33,12 +33,12 @@ module Question::Ruby::Parser
         Current.registration_queue.register(::Question::Ruby::Namespace::ToSymbol[Current.namespace])
       end
 
-      Current.resolution.unshift(namespace_declaration.to_s)
+      Current.constant_resolution_possibilities.unshift(namespace_declaration.to_s)
 
       block.call
 
       Current.namespace = starting_namespace
-      Current.resolution.shift
+      Current.constant_resolution_possibilities.shift
     end
   end
 end
