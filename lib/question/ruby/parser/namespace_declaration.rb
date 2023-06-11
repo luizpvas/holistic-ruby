@@ -15,7 +15,7 @@ module Question::Ruby::Parser
     end
 
     def to_s
-      @value.join("::")
+      is_top_const_ref ? "::#{@value.join("::")}" : @value.join("::")
     end
 
     def root_scope_resolution? = is_top_const_ref

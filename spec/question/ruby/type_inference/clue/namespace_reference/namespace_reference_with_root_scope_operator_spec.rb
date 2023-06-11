@@ -20,7 +20,7 @@ describe ::Question::Ruby::TypeInference::Clue::NamespaceReference do
       expect(symbols.first.record).to be_a(::Question::Ruby::TypeInference::Something)
       expect(symbols.first.record.clues.first).to have_attributes(
         itself: be_a(::Question::Ruby::TypeInference::Clue::NamespaceReference),
-        name: "MyLib::String",
+        name: "::MyLib::String",
         resolution: []
       )
     end

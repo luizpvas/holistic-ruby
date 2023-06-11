@@ -10,10 +10,11 @@ module Question::Ruby::Parser
           case node
           when ::SyntaxTree::ConstRef     then namespace_declaration << node.child_nodes[0].value
           when ::SyntaxTree::Const        then namespace_declaration << node.value
+          when ::SyntaxTree::VCall        then namespace_declaration << node.value # not sure what to do here e.g. `described_class::Error`
           when ::SyntaxTree::VarRef       then node.child_nodes.each(&append)
           when ::SyntaxTree::ConstPathRef then node.child_nodes.each(&append)
           when ::SyntaxTree::TopConstRef  then namespace_declaration.mark_as_top_const_ref! and node.child_nodes.each(&append)
-          else raise "Unexpected node type: #{node.class}"
+          else pp(node) and raise "Unexpected node type: #{node.class}"
           end
         end
 

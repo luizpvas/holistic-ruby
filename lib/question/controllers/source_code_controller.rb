@@ -21,7 +21,7 @@ module Question::Controllers::SourceCodeController
       when ::Question::Ruby::Namespace::Record
         { namespace_symbol_identifier: symbol.record.fully_qualified_name }
       when ::Question::Ruby::TypeInference::Something
-        { related_symbol_identifier: symbol.record.conclusion }
+        { related_symbol_identifier: symbol.record.conclusion&.symbol_identifier }
       else
         raise ::NotImplementedError, "unknown symbol subtype: #{symbol.record.inspect}"
       end
