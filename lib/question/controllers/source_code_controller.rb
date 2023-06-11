@@ -19,7 +19,7 @@ module Question::Controllers::SourceCodeController
     serialized_subtype =
       case symbol.record
       when ::Question::Ruby::Namespace::Record
-        { namespace_symbol_identifier: symbol.record.fully_qualified_name }
+        { fully_qualified_name: symbol.record.fully_qualified_name }
       when ::Question::Ruby::TypeInference::Something
         { related_symbol_identifier: symbol.record.conclusion&.symbol_identifier }
       else

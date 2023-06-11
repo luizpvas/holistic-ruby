@@ -1,10 +1,12 @@
 import { currentApplicationName } from "./application";
 import { apiClient } from "./api";
 import { ref } from "vue";
+import { Symbol } from "./symbol";
 
 interface SourceCode {
   file_path: string;
   code: string;
+  symbols: Symbol[];
   highlight_start_line: number;
   highlight_end_line: number;
 }

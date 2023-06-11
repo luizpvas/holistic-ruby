@@ -1,5 +1,10 @@
 <template>
-  <CodeEditor v-if="sourceCode" :code="sourceCode.code" />
+  <CodeEditor
+    v-if="sourceCode"
+    :file-path="sourceCode.file_path"
+    :code="sourceCode.code"
+    :symbols="sourceCode.symbols"
+  />
 </template>
 
 <script setup lang="ts">
