@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-module Question::Ruby::Constant
+module Question::Ruby::Parser
   # TODO: Remove Array inheritance.
-  class Resolution < ::Array
+  class ConstantResolutionPossibilities < ::Array
     def unshift(name)
       if empty?
         super(name)
