@@ -15,7 +15,7 @@ module Question::Ruby::Symbol
     )
 
     def self.call(application:, symbol_identifier:)
-      symbol = application.symbol_index.find(symbol_identifier)
+      symbol = application.symbols.find(symbol_identifier)
 
       raise ::ArgumentError, "symbol not found" if symbol.nil?
       raise ::NotImplementedError if symbol.source_locations.size != 1
@@ -25,7 +25,7 @@ module Question::Ruby::Symbol
       Result.new(
         # TODO: could be fake? and it should work
         file: ::Question::SourceCode::File::Disk.new(path: source_location.file_path),
-        symbols: application.symbol_index.list_symbols_in_file(source_location.file_path),
+        symbols: application.symbols.list_symbols_in_file(source_location.file_path),
         start_line: source_location.start_line,
         start_column: source_location.start_column,
         end_line: source_location.end_line,

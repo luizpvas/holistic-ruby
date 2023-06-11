@@ -22,7 +22,7 @@ module Question::Ruby::TypeInference
       if namespace_reference.resolution_possibilities.empty? 
         target_identifier = namespace_reference.name
 
-        if application.symbol_index.find(target_identifier).present?
+        if application.symbols.find(target_identifier).present?
           # at this point we could update the target's `who knows about me?` index
 
           something.conclusion = Conclusion.with_strong_confidence(target_identifier)
@@ -34,7 +34,7 @@ module Question::Ruby::TypeInference
       namespace_reference.resolution_possibilities.each do |resolution_candidate|
         target_identifier = "::#{resolution_candidate}::#{namespace_reference.name}"
 
-        if application.symbol_index.find(target_identifier).present?
+        if application.symbols.find(target_identifier).present?
           # at this point we could update the target's `who knows about me?` index
 
           something.conclusion = Conclusion.with_strong_confidence(target_identifier)

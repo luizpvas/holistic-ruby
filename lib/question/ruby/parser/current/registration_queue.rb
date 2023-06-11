@@ -51,7 +51,7 @@ class Question::Ruby::Parser::Current
     private
 
     def update_search_index(symbol)
-      application.symbol_index.index(symbol)
+      application.symbols.index(symbol)
     end
   
     def solve_type_inference(symbol)

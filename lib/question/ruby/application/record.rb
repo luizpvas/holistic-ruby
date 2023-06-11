@@ -10,10 +10,8 @@ module Question::Ruby
       @root_namespace = Namespace::Record.new(kind: :root, name: "::", parent: nil)
     end
 
-    # TODO: rename to `symbols`? I think it reads better. `application.symbols.find("::MyApp")`.
-    # Perhapes `Symbol::Index` should be renamed to `Symbol::Collection`?
-    def symbol_index
-      @symbol_index ||= Symbol::Index.new(application: self)
+    def symbols
+      @symbols ||= Symbol::Collection.new(application: self)
     end
 
     def files

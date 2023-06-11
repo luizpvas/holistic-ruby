@@ -13,13 +13,13 @@ describe ::Question::Ruby::Parser::LiveEditing::ProcessFileChanged do
     end
 
     it "ends up in the same state as before the change" do
-      my_app_before = application.symbol_index.find("::MyApp")
-      my_app_example_before = application.symbol_index.find("::MyApp::Example")
+      my_app_before = application.symbols.find("::MyApp")
+      my_app_example_before = application.symbols.find("::MyApp::Example")
 
       described_class.call(application:, file: application.files.find("snippet.rb"))
 
-      my_app_after = application.symbol_index.find("::MyApp")
-      my_app_example_after = application.symbol_index.find("::MyApp::Example")
+      my_app_after = application.symbols.find("::MyApp")
+      my_app_example_after = application.symbols.find("::MyApp::Example")
 
       expect(my_app_before.identifier).to eql(my_app_after.identifier)
       expect(my_app_before).not_to be(my_app_after)
@@ -53,15 +53,15 @@ describe ::Question::Ruby::Parser::LiveEditing::ProcessFileChanged do
     end
 
     it "deletes symbols from previous content and parses new ones" do
-      my_app_before = application.symbol_index.find("::MyApp")
-      my_app_example_1_before = application.symbol_index.find("::MyApp::Example1")
-      my_app_example_2_before = application.symbol_index.find("::MyApp::Example2")
+      my_app_before = application.symbols.find("::MyApp")
+      my_app_example_1_before = application.symbols.find("::MyApp::Example1")
+      my_app_example_2_before = application.symbols.find("::MyApp::Example2")
 
       described_class.call(application:, file: application.files.find("snippet.rb"))
 
-      my_app_after = application.symbol_index.find("::MyApp")
-      my_app_example_1_after = application.symbol_index.find("::MyApp::Example1")
-      my_app_example_2_after = application.symbol_index.find("::MyApp::Example2")
+      my_app_after = application.symbols.find("::MyApp")
+      my_app_example_1_after = application.symbols.find("::MyApp::Example1")
+      my_app_example_2_after = application.symbols.find("::MyApp::Example2")
 
       expect(my_app_before.identifier).to eql(my_app_after.identifier)
       expect(my_app_before).not_to be(my_app_after)

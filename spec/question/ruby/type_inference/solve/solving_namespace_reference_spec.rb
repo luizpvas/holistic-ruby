@@ -18,7 +18,7 @@ describe ::Question::Ruby::TypeInference::Solve do
     end
 
     it "solves the namespace reference" do
-      symbols = application.symbol_index.list_symbols_of(kind: :type_inference)
+      symbols = application.symbols.list_symbols_of(kind: :type_inference)
 
       expect(symbols.size).to eql(1)
 
@@ -47,7 +47,7 @@ describe ::Question::Ruby::TypeInference::Solve do
     end
 
     it "leaves the conclusion empty" do
-      symbols = application.symbol_index.list_symbols_of(kind: :type_inference)
+      symbols = application.symbols.list_symbols_of(kind: :type_inference)
 
       expect(symbols.size).to eql(1)
 

@@ -19,7 +19,7 @@ describe ::Question::Ruby::Parser do
     end
 
     it "parses the code" do
-      symbols = application.symbol_index.list_symbols_of(kind: :type_inference)
+      symbols = application.symbols.list_symbols_of(kind: :type_inference)
 
       expect(symbols.size).to eql(2)
 

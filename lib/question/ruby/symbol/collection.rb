@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Question::Ruby::Symbol
-  class Index
+  class Collection
     attr_reader :application
 
     def initialize(application:)

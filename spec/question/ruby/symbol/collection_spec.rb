@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe ::Question::Ruby::Symbol::Index do
+describe ::Question::Ruby::Symbol::Collection do
   include ::SnippetParser
 
   describe "#index" do
@@ -9,9 +9,9 @@ describe ::Question::Ruby::Symbol::Index do
       let(:symbol) { ::Question::Ruby::Symbol::Record.new(identifier: "::MySymbol", source_locations: []) }
 
       it "stores the symbol in the identifier index" do
-        application.symbol_index.index(symbol)
+        application.symbols.index(symbol)
 
-        expect(application.symbol_index.find("::MySymbol")).to eql(symbol)
+        expect(application.symbols.find("::MySymbol")).to eql(symbol)
       end
     end
 
@@ -21,15 +21,15 @@ describe ::Question::Ruby::Symbol::Index do
       let(:symbol) { ::Question::Ruby::Symbol::Record.new(identifier: "::MySymbol", source_locations:) }
 
       it "stores the symbol in the identifier index" do
-        application.symbol_index.index(symbol)
+        application.symbols.index(symbol)
 
-        expect(application.symbol_index.find("::MySymbol")).to eql(symbol)
+        expect(application.symbols.find("::MySymbol")).to eql(symbol)
       end
 
       it "stores one entry for the symbol in the file path index" do
-        application.symbol_index.index(symbol)
+        application.symbols.index(symbol)
 
-        expect(application.symbol_index.get_symbols_in_file("my_symbol.rb")).to eql([symbol])
+        expect(application.symbols.get_symbols_in_file("my_symbol.rb")).to eql([symbol])
       end
     end
 
@@ -46,16 +46,16 @@ describe ::Question::Ruby::Symbol::Index do
       let(:symbol) { ::Question::Ruby::Symbol::Record.new(identifier: "::MySymbol", source_locations:) }
 
       it "stores the symbol in the identifier index" do
-        application.symbol_index.index(symbol)
+        application.symbols.index(symbol)
 
-        expect(application.symbol_index.find("::MySymbol")).to eql(symbol)
+        expect(application.symbols.find("::MySymbol")).to eql(symbol)
       end
 
       it "stores multiple entries for the symbol in the file path index" do
-        application.symbol_index.index(symbol)
+        application.symbols.index(symbol)
 
-        expect(application.symbol_index.get_symbols_in_file("my_symbol_1.rb")).to eql([symbol])
-        expect(application.symbol_index.get_symbols_in_file("my_symbol_2.rb")).to eql([symbol])
+        expect(application.symbols.get_symbols_in_file("my_symbol_1.rb")).to eql([symbol])
+        expect(application.symbols.get_symbols_in_file("my_symbol_2.rb")).to eql([symbol])
       end
     end
   end
@@ -65,7 +65,7 @@ describe ::Question::Ruby::Symbol::Index do
       let(:application) { ::Question::Ruby::Application::Record.new(name: "dummy", root_directory: ".") }
 
       it "does nothing" do
-        expect(application.symbol_index.delete_symbols_in_file("non_existing.rb")).to eql([])
+        expect(application.symbols.delete_symbols_in_file("non_existing.rb")).to eql([])
       end
     end
 
@@ -81,33 +81,33 @@ describe ::Question::Ruby::Symbol::Index do
       let(:symbol_2) { ::Question::Ruby::Symbol::Record.new(identifier: "::MySymbol2", source_locations: [source_location], record: record_2) }
 
       before do
-        application.symbol_index.index(symbol_1)
-        application.symbol_index.index(symbol_2)
+        application.symbols.index(symbol_1)
+        application.symbols.index(symbol_2)
       end
 
       it "deletes symbols from the file index" do
-        expect(application.symbol_index.get_symbols_in_file("my_app.rb")).to eql([symbol_1, symbol_2])
+        expect(application.symbols.get_symbols_in_file("my_app.rb")).to eql([symbol_1, symbol_2])
 
-        application.symbol_index.delete_symbols_in_file("my_app.rb")
+        application.symbols.delete_symbols_in_file("my_app.rb")
 
-        expect(application.symbol_index.get_symbols_in_file("my_app.rb")).to eql([])
+        expect(application.symbols.get_symbols_in_file("my_app.rb")).to eql([])
       end
 
       it "deletes symbols from the identifier index" do
-        expect(application.symbol_index.find("::MySymbol1")).to eql(symbol_1)
-        expect(application.symbol_index.find("::MySymbol2")).to eql(symbol_2)
+        expect(application.symbols.find("::MySymbol1")).to eql(symbol_1)
+        expect(application.symbols.find("::MySymbol2")).to eql(symbol_2)
 
-        application.symbol_index.delete_symbols_in_file("my_app.rb")
+        application.symbols.delete_symbols_in_file("my_app.rb")
 
-        expect(application.symbol_index.find("::MySymbol1")).to be_nil
-        expect(application.symbol_index.find("::MySymbol2")).to be_nil
+        expect(application.symbols.find("::MySymbol1")).to be_nil
+        expect(application.symbols.find("::MySymbol2")).to be_nil
       end
 
       it "calls the delete method on the symbol" do
         expect(record_1).to receive(:delete).with("my_app.rb")
         expect(record_2).to receive(:delete).with("my_app.rb")
 
-        application.symbol_index.delete_symbols_in_file("my_app.rb")
+        application.symbols.delete_symbols_in_file("my_app.rb")
       end
     end
   end
@@ -126,7 +126,7 @@ describe ::Question::Ruby::Symbol::Index do
     end
 
     it "finds namespace declarations" do
-      matches = application.symbol_index.search("Application").matches
+      matches = application.symbols.search("Application").matches
 
       expect(matches[0].document).to have_attributes(
         identifier: "::MyApplication",

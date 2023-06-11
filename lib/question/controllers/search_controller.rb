@@ -16,7 +16,7 @@ module Question::Controllers::SearchController
     get "/applications/:application_name/search" do
       application = ::Question::Ruby::Application::Repository.find(params[:application_name])
 
-      result = application.symbol_index.search(params[:query])
+      result = application.symbols.search(params[:query])
 
       {
         elapsed_time_in_seconds: result.elapsed_time_in_seconds,
