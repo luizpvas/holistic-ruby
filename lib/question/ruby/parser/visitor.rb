@@ -52,16 +52,12 @@ module Question::Ruby::Parser
             superclass_declaration = Node::GetNamespadeDeclaration[superclass]
 
             if superclass_declaration.root_scope_resolution?
-              add_reference!(name: superclass_declaration.to_s, resolution: []) # TODO: Remove
-
               register_namespace_reference(
                 name: superclass_declaration.to_s,
                 source_location: Node::BuildSourceLocation[node],
                 resolution: []
               )
             else
-              add_reference!(name: superclass_declaration.to_s) # TODO: Remove
-
               register_namespace_reference(
                 name: superclass_declaration.to_s,
                 source_location: Node::BuildSourceLocation[node]
@@ -111,7 +107,6 @@ module Question::Ruby::Parser
         end
 
         def visit_const(node)
-          add_reference!(name: node.value) # TODO: remove
           register_namespace_reference(name: node.value, source_location: Node::BuildSourceLocation[node])
         end
       end
@@ -124,10 +119,6 @@ module Question::Ruby::Parser
         something = ::Question::Ruby::TypeInference::Something.new(clues: [clue], source_location:)
 
         Current.registration_queue.register(something.to_symbol)
-      end
-
-      def add_reference!(name:, resolution: Current.constant_resolution_possibilities.dup)
-        Current.application.references.add(name:, resolution:)
       end
     end
   end

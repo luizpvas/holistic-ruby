@@ -17,8 +17,12 @@ describe ::Question::Ruby::Parser do
     it "parses the code" do
       application = parse_snippet(code)
 
-      expect(application.references.find("Name")).to have_attributes(
-        resolution: ["MyApp::MyModule1::MyModule2", "MyApp"]
+      symbols = application.symbol_index.list_symbols_of(kind: :type_inference)
+
+      expect(symbols.size).to eql(1)
+      expect(symbols.first.record.clues.first).to have_attributes(
+        name: "Name",
+        resolution_possibilities: ["MyApp::MyModule1::MyModule2", "MyApp"]
       )
 
       expect(application.root_namespace.serialize).to eql({
