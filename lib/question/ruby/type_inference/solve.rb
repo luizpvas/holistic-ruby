@@ -23,6 +23,7 @@ module Question::Ruby::TypeInference
 
         if application.symbols.find(target_identifier).present?
           # at this point we could update the target's `who knows about me?` index
+          # TODO: we should also mark there's a dependency from something -> target so that the conclusion is reevaluated when the target changes
 
           something.conclusion = Conclusion.with_strong_confidence(target_identifier)
 
