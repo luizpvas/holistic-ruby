@@ -44,22 +44,24 @@ module Question::Ruby::Symbol
       @from_file_path_to_identifier[file_path].map { find(_1) }
     end
 
-    def find_reference_to(name)
-      candidates =
-        @from_identifier_to_document.values.select do |document|
-          symbol = document.record
-
-          symbol.kind == :type_inference && symbol.record.clues.find { _1.name == name }
-        end
-
-      raise "could not find reference to #{name.inspect}" if candidates.empty?
-      raise "found multiple references to #{name.inspect}" if candidates.size > 1
-
-      candidates.first.record.record
-    end
-
     def search(query)
       ::Question::FuzzySearch::Search.call(query:, documents: @from_identifier_to_document.values)
+    end
+
+    concerning :TestingHelpers do
+      def find_reference_to(name)
+        candidates =
+          @from_identifier_to_document.values.select do |document|
+            symbol = document.record
+
+            symbol.kind == :type_inference && symbol.record.clues.find { _1.name == name }
+          end
+
+        raise "could not find reference to #{name.inspect}" if candidates.empty?
+        raise "found multiple references to #{name.inspect}" if candidates.size > 1
+
+        candidates.first.record.record
+      end
     end
   end
 end
