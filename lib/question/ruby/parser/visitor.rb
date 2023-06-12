@@ -88,7 +88,7 @@ module Question::Ruby::Parser
             register_namespace_reference(
               name: namespace_declaration.to_s,
               source_location: Node::BuildSourceLocation.call(node),
-              resolution_possibilities: []
+              resolution_possibilities: ConstantResolutionPossibilities.root_scope
             )
           else
             register_namespace_reference(
@@ -102,7 +102,7 @@ module Question::Ruby::Parser
           register_namespace_reference(
             name: node.child_nodes.first.value,
             source_location: Node::BuildSourceLocation[node],
-            resolution_possibilities: []
+            resolution_possibilities: ConstantResolutionPossibilities.root_scope
           )
         end
 

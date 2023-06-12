@@ -17,9 +17,8 @@ module Question::Ruby::TypeInference
       return unless has_namespace_reference_clue
 
       namespace_reference = something.clues.first
-  
-      # TODO: use more meaningful name to describe `resolves at root scope`?
-      if namespace_reference.resolution_possibilities.empty? 
+
+      if namespace_reference.resolution_possibilities.root_scope?
         target_identifier = namespace_reference.name
 
         if application.symbols.find(target_identifier).present?
