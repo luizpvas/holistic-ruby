@@ -13,15 +13,14 @@ describe ::Question::Ruby::TypeInference::Clue::NamespaceReference do
     end
 
     it "infers the namespace reference clue" do
-      symbols = application.symbols.list_symbols_of(kind: :type_inference)
-
-      expect(symbols.size).to eql(1)
-
-      expect(symbols.first.record).to be_a(::Question::Ruby::TypeInference::Something)
-      expect(symbols.first.record.clues.first).to have_attributes(
-        itself: be_a(::Question::Ruby::TypeInference::Clue::NamespaceReference),
-        name: "::MyLib::String",
-        resolution_possibilities: []
+      expect(application.symbols.find_reference_to("::MyLib::String")).to have_attributes(
+        clues: [
+          have_attributes(
+            itself: be_a(::Question::Ruby::TypeInference::Clue::NamespaceReference),
+            name: "::MyLib::String",
+            resolution_possibilities: []
+          )
+        ]
       )
     end
   end
@@ -36,15 +35,15 @@ describe ::Question::Ruby::TypeInference::Clue::NamespaceReference do
     end
 
     it "infers the namespace reference clue" do
-      symbols = application.symbols.list_symbols_of(kind: :type_inference)
-
-      expect(symbols.size).to eql(1)
-
-      expect(symbols.first.record).to be_a(::Question::Ruby::TypeInference::Something)
-      expect(symbols.first.record.clues.first).to have_attributes(
-        itself: be_a(::Question::Ruby::TypeInference::Clue::NamespaceReference),
-        name: "String",
-        resolution_possibilities: []
+      # TODO: this should be `::String`, shouldn't it?
+      expect(application.symbols.find_reference_to("String")).to have_attributes(
+        clues: [
+          have_attributes(
+            itself: be_a(::Question::Ruby::TypeInference::Clue::NamespaceReference),
+            name: "String",
+            resolution_possibilities: []
+          )
+        ]
       )
     end
   end

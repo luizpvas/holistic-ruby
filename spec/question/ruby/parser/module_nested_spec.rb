@@ -15,12 +15,13 @@ describe ::Question::Ruby::Parser do
     end
 
     it "parses the code" do
-      symbols = application.symbols.list_symbols_of(kind: :type_inference)
-
-      expect(symbols.size).to eql(1)
-      expect(symbols.first.record.clues.first).to have_attributes(
-        name: "Foo",
-        resolution_possibilities: ["MyApp::MyModule", "MyApp"]
+      expect(application.symbols.find_reference_to("Foo")).to have_attributes(
+        clues: [
+          have_attributes(
+            itself: be_a(::Question::Ruby::TypeInference::Clue::NamespaceReference),
+            resolution_possibilities: ["MyApp::MyModule", "MyApp"]
+          )
+        ]
       )
 
       expect(application.root_namespace.serialize).to eql({

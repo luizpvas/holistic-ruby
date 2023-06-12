@@ -19,18 +19,22 @@ describe ::Question::Ruby::Parser do
     end
 
     it "parses the code" do
-      symbols = application.symbols.list_symbols_of(kind: :type_inference)
-
-      expect(symbols.size).to eql(2)
-
-      expect(symbols[0].record.clues.first).to have_attributes(
-        name: "Foo1",
-        resolution_possibilities: ["MyApp::MyModule", "MyApp"]
+      expect(application.symbols.find_reference_to("Foo1")).to have_attributes(
+        clues: [
+          have_attributes(
+            itself: be_a(::Question::Ruby::TypeInference::Clue::NamespaceReference),
+            resolution_possibilities: ["MyApp::MyModule", "MyApp"]
+          )
+        ]
       )
 
-      expect(symbols[1].record.clues.first).to have_attributes(
-        name: "Foo2",
-        resolution_possibilities: ["MyApp::MyModule", "MyApp"]
+      expect(application.symbols.find_reference_to("Foo2")).to have_attributes(
+        clues: [
+          have_attributes(
+            itself: be_a(::Question::Ruby::TypeInference::Clue::NamespaceReference),
+            resolution_possibilities: ["MyApp::MyModule", "MyApp"]
+          )
+        ]
       )
 
       expect(application.root_namespace.serialize).to eql({

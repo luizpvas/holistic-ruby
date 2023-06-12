@@ -18,11 +18,7 @@ describe ::Question::Ruby::TypeInference::Solve do
     end
 
     it "solves the namespace reference" do
-      symbols = application.symbols.list_symbols_of(kind: :type_inference)
-
-      expect(symbols.size).to eql(1)
-
-      expect(symbols.first.record).to have_attributes(
+      expect(application.symbols.find_reference_to("Example")).to have_attributes(
         itself: be_a(::Question::Ruby::TypeInference::Something),
         conclusion: have_attributes(
           itself: be_a(::Question::Ruby::TypeInference::Conclusion),
@@ -47,11 +43,7 @@ describe ::Question::Ruby::TypeInference::Solve do
     end
 
     it "leaves the conclusion empty" do
-      symbols = application.symbols.list_symbols_of(kind: :type_inference)
-
-      expect(symbols.size).to eql(1)
-
-      expect(symbols.first.record).to have_attributes(
+      expect(application.symbols.find_reference_to("Unknown")).to have_attributes(
         itself: be_a(::Question::Ruby::TypeInference::Something),
         conclusion: be_nil
       )

@@ -13,15 +13,14 @@ describe ::Question::Ruby::TypeInference::Clue::NamespaceReference do
     end
 
     it "infers the namespace reference clue" do
-      symbols = application.symbols.list_symbols_of(kind: :type_inference)
-
-      expect(symbols.size).to eql(1)
-
-      expect(symbols.first.record).to be_a(::Question::Ruby::TypeInference::Something)
-      expect(symbols.first.record.clues.first).to have_attributes(
-        itself: be_a(::Question::Ruby::TypeInference::Clue::NamespaceReference),
-        name: "Example",
-        resolution_possibilities: ["MyApp"]
+      expect(application.symbols.find_reference_to("Example")).to have_attributes(
+        clues: [
+          have_attributes(
+            itself: be_a(::Question::Ruby::TypeInference::Clue::NamespaceReference),
+            name: "Example",
+            resolution_possibilities: ["MyApp"]
+          )
+        ]
       )
     end
   end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe ::Question::Ruby::Parser do
-  include SnippetParser
+  include ::SnippetParser
 
   context "class declaration in the root namespace" do
     let(:application) do
@@ -13,12 +13,13 @@ describe ::Question::Ruby::Parser do
     end
 
     it "parses the code" do
-      symbols = application.symbols.list_symbols_of(kind: :type_inference)
-
-      expect(symbols.size).to eql(1)
-      expect(symbols.first.record.clues.first).to have_attributes(
-        name: "Foo",
-        resolution_possibilities: ["MyClass"]
+      expect(application.symbols.find_reference_to("Foo")).to have_attributes(
+        clues: [
+          have_attributes(
+            itself: be_a(::Question::Ruby::TypeInference::Clue::NamespaceReference),
+            resolution_possibilities: ["MyClass"]
+          )
+        ]
       )
 
       expect(application.root_namespace.serialize).to eql({
