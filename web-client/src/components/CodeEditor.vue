@@ -1,5 +1,5 @@
 <template>
-  <div ref="element" class="h-full">{{ code }}</div>
+  <div ref="element">{{ code }}</div>
 </template>
 
 <style>
@@ -23,6 +23,10 @@ const props = defineProps<{
   symbols: Symbol[];
 }>();
 
+const emit = defineEmits<{
+  (e: "change", value: string): void;
+}>();
+
 const element = ref<HTMLElement | null>(null);
 
 onMounted(() => {
@@ -34,6 +38,10 @@ onMounted(() => {
     editor.setOptions({
       fontFamily: "Dejavu Sans Mono",
       fontSize: "12px",
+    });
+
+    editor.on("change", (_ev) => {
+      emit("change", editor.getValue());
     });
 
     props.symbols.forEach((symbol) => {
@@ -62,25 +70,6 @@ onMounted(() => {
         "text"
       );
     });
-
-    // editor.on("click", (ev) => {
-    //   const cursorPosition = editor.getCursorPosition();
-    //   const token = editor.session.getTokenAt(
-    //     cursorPosition.row,
-    //     cursorPosition.column
-    //   );
-
-    //   const range = new ace.Range(
-    //     cursorPosition.row,
-    //     token?.start || 0,
-    //     cursorPosition.row,
-    //     token.start + token.value.length
-    //   );
-
-    //   editor.session.addMarker(range, "ace_bracket red");
-
-    //   console.log(token);
-    // });
   }
 });
 </script>

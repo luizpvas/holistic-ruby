@@ -27,5 +27,23 @@ export function useSourceCode(symbolIdentifier: string) {
       sourceCode.value = response.data;
     });
 
-  return { sourceCode };
+  const write = (content: string) => {
+    if (sourceCode.value === null) {
+      throw new Error("source code is not loaded");
+    }
+
+    return apiClient
+      .post<SourceCode>(
+        `/applications/${currentApplicationName.value}/source_code`,
+        {
+          file_path: sourceCode.value.file_path,
+          content: content,
+        }
+      )
+      .then((response) => {
+        sourceCode.value = response.data;
+      });
+  };
+
+  return { sourceCode, write };
 }
