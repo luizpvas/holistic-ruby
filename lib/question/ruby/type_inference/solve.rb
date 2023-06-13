@@ -10,6 +10,22 @@ module Question::Ruby::TypeInference
 
     private
 
+    RegisterTypeInferenceDependency = ->(application:, something:, target:) do
+      raise "TODO: multiple source locations" if target.source_locations.many?
+
+      dependency_source_location = target.source_locations.first
+
+      dependency_is_declared_in_the_same_file =
+        dependency_source_location.file_path == something.source_location.file_path
+
+      return if dependency_is_declared_in_the_same_file
+
+      application.symbols.register_type_inference_dependency(
+        dependency_source_location.file_path,
+        something.identifier
+      )
+    end
+
     def solve_namespace_reference(application:, something:)
       has_namespace_reference_clue =
         something.clues.one? && something.clues.first.is_a?(Clue::NamespaceReference)
@@ -24,13 +40,9 @@ module Question::Ruby::TypeInference
         target = application.symbols.find(target_identifier)
 
         if target.present?
-          # at this point we could update the target's `who knows about me?` index
+          RegisterTypeInferenceDependency.call(application:, something:, target:)
 
-          something.source_locations.each do |source_location|
-            application.symbols.register_type_inference_dependency(source_location.file_path, target_identifier)
-          end
-
-          something.conclusion = Conclusion.with_strong_confidence(target_identifier)
+          something.conclusion = Conclusion.with_strong_confidence(target.identifier)
 
           return true
         end
@@ -39,10 +51,12 @@ module Question::Ruby::TypeInference
       namespace_reference.resolution_possibilities.each do |resolution_candidate|
         target_identifier = "::#{resolution_candidate}::#{namespace_reference.name}"
 
-        if application.symbols.find(target_identifier).present?
-          # at this point we could update the target's `who knows about me?` index
+        target = application.symbols.find(target_identifier)
 
-          something.conclusion = Conclusion.with_strong_confidence(target_identifier)
+        if target.present?
+          RegisterTypeInferenceDependency.call(application:, something:, target:)
+
+          something.conclusion = Conclusion.with_strong_confidence(target.identifier)
 
           return true
         end
