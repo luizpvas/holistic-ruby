@@ -58,6 +58,39 @@ describe ::Question::Ruby::Symbol::Collection do
         expect(application.symbols.get_symbols_in_file("my_symbol_2.rb")).to eql([symbol])
       end
     end
+
+    context "when indexing the same symbol with the same source locations multiple times" do
+      let(:application) { ::Question::Ruby::Application::Record.new(name: "dummy", root_directory: ".") }
+      let(:source_location) { ::Question::SourceCode::Location.new(file_path: "my_symbol_1.rb") }
+      let(:symbol) { ::Question::Ruby::Symbol::Record.new(identifier: "::MySymbol", source_locations: [source_location]) }
+
+      it "does nothing" do
+        application.symbols.index(symbol)
+        application.symbols.index(symbol)
+
+        expect(application.symbols.find("::MySymbol")).to eql(symbol)
+        expect(application.symbols.get_symbols_in_file("my_symbol_1.rb").to_a).to eql([symbol])
+      end
+    end
+
+    context "when indexing the same symbol multiple times with extra source locations" do
+      let(:application) { ::Question::Ruby::Application::Record.new(name: "dummy", root_directory: ".") }
+      let(:source_location_1) { ::Question::SourceCode::Location.new(file_path: "my_symbol_1.rb") }
+      let(:source_location_2) { ::Question::SourceCode::Location.new(file_path: "my_symbol_2.rb") }
+      let(:symbol) { ::Question::Ruby::Symbol::Record.new(identifier: "::MySymbol", source_locations: [source_location_1]) }
+
+      it "does nothing" do
+        application.symbols.index(symbol)
+
+        symbol.source_locations << source_location_2
+
+        application.symbols.index(symbol)
+
+        expect(application.symbols.find("::MySymbol")).to eql(symbol)
+        expect(application.symbols.get_symbols_in_file("my_symbol_1.rb").to_a).to eql([symbol])
+        expect(application.symbols.get_symbols_in_file("my_symbol_2.rb").to_a).to eql([symbol])
+      end
+    end
   end
 
   describe "#delete_symbols_in_file" do
@@ -65,7 +98,7 @@ describe ::Question::Ruby::Symbol::Collection do
       let(:application) { ::Question::Ruby::Application::Record.new(name: "dummy", root_directory: ".") }
 
       it "does nothing" do
-        expect(application.symbols.delete_symbols_in_file("non_existing.rb")).to eql([])
+        expect(application.symbols.delete_symbols_in_file("non_existing.rb").to_a).to eql([])
       end
     end
 

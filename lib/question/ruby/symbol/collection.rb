@@ -2,23 +2,31 @@
 
 module Question::Ruby::Symbol
   class Collection
-    attr_reader :application
+    attr_reader :application, :from_file_path_to_identifier
 
     def initialize(application:)
       @application = application
       @from_identifier_to_document = {}
-      @from_file_path_to_identifier = ::Hash.new { |hash, key| hash[key] = [] }
+      @from_file_path_to_identifier = ::Hash.new { |hash, key| hash[key] = ::Set.new }
     end
+
+    AttemptingToIndexDifferentSymbolWithSameIdentifier = ::Class.new(::StandardError)
 
     def index(symbol)
       raise ::ArgumentError unless symbol.is_a?(::Question::Ruby::Symbol::Record)
 
       document = ToDocument[symbol]
 
-      @from_identifier_to_document[document.identifier] = document
+      if @from_identifier_to_document.key?(symbol.identifier)
+        if find(symbol.identifier) != symbol
+          raise AttemptingToIndexDifferentSymbolWithSameIdentifier, "symbol #{symbol.identifier} already indexed"
+        end
+      else
+        @from_identifier_to_document[document.identifier] = document
+      end
 
       symbol.source_locations.each do |source_location|
-        @from_file_path_to_identifier[source_location.file_path] << document.identifier
+        @from_file_path_to_identifier[source_location.file_path].add(document.identifier)
       end
     end
 
