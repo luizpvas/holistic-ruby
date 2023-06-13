@@ -55,6 +55,12 @@ module Question::Controllers::SourceCodeController
 
     post "/applications/:application_name/source_code" do
       application = ::Question::Ruby::Application::Repository.find(params[:application_name])
+
+      file = application.files.find(params[:file_path])
+
+      file.write(params[:content])
+
+      { status: "ok" }.to_json
     end
   end
 end
