@@ -8,7 +8,7 @@ require "active_support/core_ext/module/concerning"
 class Question::HttpApplication < ::Sinatra::Base
   concerning :CORS do
     included do
-      register Sinatra::Cors
+      register ::Sinatra::Cors
 
       set :allow_origin, "*"
       set :allow_methods, "*"
