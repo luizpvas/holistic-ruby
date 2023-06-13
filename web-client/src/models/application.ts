@@ -1,4 +1,4 @@
-import { reactive, ref } from "vue";
+import { reactive, ref, watch } from "vue";
 import { apiClient } from "./api";
 
 export interface Application {
@@ -9,6 +9,12 @@ export interface Application {
 export const applications = reactive<Application[]>([]);
 
 export const currentApplicationName = ref<string | null>(null);
+
+watch(currentApplicationName, (name) => {
+  if (name === null) return;
+
+  document.title = name;
+});
 
 export async function fetchApplications(): Promise<Application[]> {
   const response = await apiClient.get<Application[]>("/applications");
