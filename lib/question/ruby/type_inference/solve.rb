@@ -21,9 +21,14 @@ module Question::Ruby::TypeInference
       if namespace_reference.resolution_possibilities.root_scope?
         target_identifier = namespace_reference.name
 
-        if application.symbols.find(target_identifier).present?
+        target = application.symbols.find(target_identifier)
+
+        if target.present?
           # at this point we could update the target's `who knows about me?` index
-          # TODO: we should also mark there's a dependency from something -> target so that the conclusion is reevaluated when the target changes
+
+          something.source_locations.each do |source_location|
+            application.symbols.register_type_inference_dependency(source_location.file_path, target_identifier)
+          end
 
           something.conclusion = Conclusion.with_strong_confidence(target_identifier)
 

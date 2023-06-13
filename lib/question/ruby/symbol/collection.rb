@@ -2,12 +2,13 @@
 
 module Question::Ruby::Symbol
   class Collection
-    attr_reader :application, :from_file_path_to_identifier
+    attr_reader :application, :from_file_path_to_identifier, :from_file_path_to_type_inference_dependencies
 
     def initialize(application:)
       @application = application
       @from_identifier_to_document = {}
       @from_file_path_to_identifier = ::Hash.new { |hash, key| hash[key] = ::Set.new }
+      @from_file_path_to_type_inference_dependencies = ::Hash.new { |hash, key| hash[key] = ::Set.new }
     end
 
     AttemptingToIndexDifferentSymbolWithSameIdentifier = ::Class.new(::StandardError)
@@ -30,12 +31,21 @@ module Question::Ruby::Symbol
       end
     end
 
-    def find(identifier)
-      @from_identifier_to_document[identifier]&.record
+    def register_type_inference_dependency(file_path, symbol_identifier)
+      # whenever the `file_path` changes, we need to re-evaluate the type inference for all `symbol_identifier`
+      @from_file_path_to_type_inference_dependencies[file_path].add(symbol_identifier)
     end
 
-    def get_symbols_in_file(file_path)
-      @from_file_path_to_identifier[file_path].map { find(_1) }
+    def delete_type_inference_dependencies(file_path)
+      @from_file_path_to_type_inference_dependencies[file_path].clear
+    end
+
+    def list_symbols_where_type_inference_resolves_to_file(file_path)
+      @from_file_path_to_type_inference_dependencies[file_path].map { find(_1) }
+    end
+
+    def find(identifier)
+      @from_identifier_to_document[identifier]&.record
     end
 
     def delete_symbols_in_file(file_path)

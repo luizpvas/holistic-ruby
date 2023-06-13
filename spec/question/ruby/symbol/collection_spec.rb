@@ -29,7 +29,7 @@ describe ::Question::Ruby::Symbol::Collection do
       it "stores one entry for the symbol in the file path index" do
         application.symbols.index(symbol)
 
-        expect(application.symbols.get_symbols_in_file("my_symbol.rb")).to eql([symbol])
+        expect(application.symbols.list_symbols_in_file("my_symbol.rb")).to eql([symbol])
       end
     end
 
@@ -54,8 +54,8 @@ describe ::Question::Ruby::Symbol::Collection do
       it "stores multiple entries for the symbol in the file path index" do
         application.symbols.index(symbol)
 
-        expect(application.symbols.get_symbols_in_file("my_symbol_1.rb")).to eql([symbol])
-        expect(application.symbols.get_symbols_in_file("my_symbol_2.rb")).to eql([symbol])
+        expect(application.symbols.list_symbols_in_file("my_symbol_1.rb")).to eql([symbol])
+        expect(application.symbols.list_symbols_in_file("my_symbol_2.rb")).to eql([symbol])
       end
     end
 
@@ -69,7 +69,7 @@ describe ::Question::Ruby::Symbol::Collection do
         application.symbols.index(symbol)
 
         expect(application.symbols.find("::MySymbol")).to eql(symbol)
-        expect(application.symbols.get_symbols_in_file("my_symbol_1.rb").to_a).to eql([symbol])
+        expect(application.symbols.list_symbols_in_file("my_symbol_1.rb").to_a).to eql([symbol])
       end
     end
 
@@ -87,8 +87,8 @@ describe ::Question::Ruby::Symbol::Collection do
         application.symbols.index(symbol)
 
         expect(application.symbols.find("::MySymbol")).to eql(symbol)
-        expect(application.symbols.get_symbols_in_file("my_symbol_1.rb").to_a).to eql([symbol])
-        expect(application.symbols.get_symbols_in_file("my_symbol_2.rb").to_a).to eql([symbol])
+        expect(application.symbols.list_symbols_in_file("my_symbol_1.rb").to_a).to eql([symbol])
+        expect(application.symbols.list_symbols_in_file("my_symbol_2.rb").to_a).to eql([symbol])
       end
     end
   end
@@ -119,11 +119,11 @@ describe ::Question::Ruby::Symbol::Collection do
       end
 
       it "deletes symbols from the file index" do
-        expect(application.symbols.get_symbols_in_file("my_app.rb")).to eql([symbol_1, symbol_2])
+        expect(application.symbols.list_symbols_in_file("my_app.rb")).to eql([symbol_1, symbol_2])
 
         application.symbols.delete_symbols_in_file("my_app.rb")
 
-        expect(application.symbols.get_symbols_in_file("my_app.rb")).to eql([])
+        expect(application.symbols.list_symbols_in_file("my_app.rb")).to eql([])
       end
 
       it "deletes symbols from the identifier index" do
