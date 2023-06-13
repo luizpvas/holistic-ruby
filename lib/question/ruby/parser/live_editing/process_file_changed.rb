@@ -7,7 +7,7 @@ module Question::Ruby::Parser
     def call(application:, file:)
       delete_symbols_in_file(application:, file:)
       parse_again(application:, file:)
-      recalculate_dependants_of_symbols_declared_in_file(application:, file:)
+      recalculate_dependants_of_file(application:, file:)
     end
 
     private
@@ -22,7 +22,7 @@ module Question::Ruby::Parser
       end
     end
 
-    def recalculate_dependants_of_symbols_declared_in_file(application:, file:)
+    def recalculate_dependants_of_file(application:, file:)
       symbols = application.symbols.list_symbols_where_type_inference_resolves_to_file(file.path)
 
       application.symbols.delete_type_inference_dependencies(file.path)
