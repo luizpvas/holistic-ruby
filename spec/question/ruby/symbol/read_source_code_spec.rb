@@ -17,11 +17,32 @@ describe ::Question::Ruby::Symbol::ReadSourceCode do
 
       expect(result).to have_attributes(
         file: have_attributes(
-          itself: be_a(::Question::SourceCode::File::Disk),
+          itself: be_a(::Question::SourceCode::File::Fake),
           path: "snippet.rb",
         ),
         start_line: 2,
         end_line: 2
+      )
+    end
+  end
+
+  context "when file_path is specified as argument" do
+    let(:application) do
+      parse_snippet <<~RUBY
+        module MyApp
+          module MyModule; end
+        end
+      RUBY
+    end
+
+    it "returns the source" do
+      result = described_class.call(application:, file_path: "snippet.rb")
+
+      expect(result).to have_attributes(
+        file: have_attributes(
+          itself: be_a(::Question::SourceCode::File::Fake),
+          path: "snippet.rb",
+        )
       )
     end
   end

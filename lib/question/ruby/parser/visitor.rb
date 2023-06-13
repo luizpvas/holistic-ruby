@@ -55,7 +55,7 @@ module Question::Ruby::Parser
               register_namespace_reference(
                 name: superclass_declaration.to_s,
                 source_location: Node::BuildSourceLocation[node],
-                resolution: []
+                resolution_possibilities: ConstantResolutionPossibilities.root_scope
               )
             else
               register_namespace_reference(
