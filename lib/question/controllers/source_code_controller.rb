@@ -53,6 +53,7 @@ module Question::Controllers::SourceCodeController
       ::Question::Ruby::Symbol::ReadSourceCode.call(application:, symbol_identifier:).then(&Serialize).to_json
     end
 
+    # TODO: extract this logic to a use case
     post "/applications/:application_name/source_code" do
       application = ::Question::Ruby::Application::Repository.find(params[:application_name])
 
@@ -61,6 +62,8 @@ module Question::Controllers::SourceCodeController
       file = application.files.find(payload["file_path"])
 
       file.write(payload["content"])
+
+      ::Question::Ruby::Parser::LiveEditing::ProcessFileChanged.call(application:, file:)
 
       ::Question::Ruby::Symbol::ReadSourceCode.call(application:, file_path: file.path).then(&Serialize).to_json
     end
