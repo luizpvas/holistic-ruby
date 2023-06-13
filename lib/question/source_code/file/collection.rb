@@ -7,15 +7,13 @@ module Question::SourceCode::File
       @parsed_files = {}
     end
 
-    # TODO: is this only used in tests? Perhaps move to something that is test-specific?
-    # ==================================================================================
-
     def register_parsed_file(file)
       @parsed_files[file.path] = file
     end
 
     def find(path)
-      @parsed_files.fetch(path) || Disk.new(path:)
+      # TODO: make sure path is inside application's root directory. Throw an error if not.
+      @parsed_files[path] || Disk.new(path:)
     end
   end
 end
