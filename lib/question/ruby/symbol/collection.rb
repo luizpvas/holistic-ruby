@@ -40,6 +40,7 @@ module Question::Ruby::Symbol
       @from_file_path_to_type_inference_dependencies[file_path].clear
     end
 
+    # TODO: rename to `list_dependants_of_file`
     def list_symbols_where_type_inference_resolves_to_file(file_path)
       @from_file_path_to_type_inference_dependencies[file_path].map { find(_1) }
     end
