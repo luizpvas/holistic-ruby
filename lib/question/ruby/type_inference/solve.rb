@@ -10,10 +10,9 @@ module Question::Ruby::TypeInference
 
     private
 
-    RegisterTypeInferenceDependency = ->(application:, something:, target:) do
-      raise "TODO: multiple source locations" if target.source_locations.many?
-
-      dependency_source_location = target.source_locations.first
+    RegisterTypeInferenceDependency = ->(application:, something:, dependency:) do
+      # TODO: try to guess the main source location. Perhaps based on the file name?
+      dependency_source_location = dependency.source_locations.first
 
       dependency_is_declared_in_the_same_file =
         dependency_source_location.file_path == something.source_location.file_path
@@ -26,6 +25,18 @@ module Question::Ruby::TypeInference
       )
     end
 
+    SolveNamespaceReferenceForIdentifier = ->(application:, something:, dependency_identifier:) do
+      dependency = application.symbols.find(dependency_identifier)
+
+      if dependency.present?
+        RegisterTypeInferenceDependency.call(application:, something:, dependency:)
+
+        something.conclusion = Conclusion.with_strong_confidence(dependency.identifier)
+
+        return true
+      end
+    end
+
     def solve_namespace_reference(application:, something:)
       has_namespace_reference_clue =
         something.clues.one? && something.clues.first.is_a?(Clue::NamespaceReference)
@@ -34,33 +45,23 @@ module Question::Ruby::TypeInference
 
       namespace_reference = something.clues.first
 
+      # 1. Try to solve at root scope if the user asked for root scope via "::" operator
       if namespace_reference.resolution_possibilities.root_scope?
-        target_identifier = namespace_reference.name
+        dependency_identifier = namespace_reference.name
 
-        target = application.symbols.find(target_identifier)
-
-        if target.present?
-          RegisterTypeInferenceDependency.call(application:, something:, target:)
-
-          something.conclusion = Conclusion.with_strong_confidence(target.identifier)
-
-          return true
-        end
+        SolveNamespaceReferenceForIdentifier.call(application:, something:, dependency_identifier:) and return true
       end
 
+      # 2. Try to solve with the resolution possibilities
       namespace_reference.resolution_possibilities.each do |resolution_candidate|
-        target_identifier = "::#{resolution_candidate}::#{namespace_reference.name}"
+        dependency_identifier = "::#{resolution_candidate}::#{namespace_reference.name}"
 
-        target = application.symbols.find(target_identifier)
-
-        if target.present?
-          RegisterTypeInferenceDependency.call(application:, something:, target:)
-
-          something.conclusion = Conclusion.with_strong_confidence(target.identifier)
-
-          return true
-        end
+        SolveNamespaceReferenceForIdentifier.call(application:, something:, dependency_identifier:) and return true
       end
+
+      # 3. Try to solve with at root scope
+      dependency_identifier = "::#{namespace_reference.name}"
+      SolveNamespaceReferenceForIdentifier.call(application:, something:, dependency_identifier:)
     end
   end
 end

@@ -71,6 +71,39 @@ describe ::Question::Ruby::TypeInference::Solve do
     end
   end
 
+  context "when the referenced namespace is declared in multiple files" do
+    let(:application) do
+      parse_snippet_collection do |files|
+        files.add "my_app/example_1.rb", <<~RUBY
+        module MyApp
+          def self.call; end
+
+          module Example1; end
+        end
+        RUBY
+
+        files.add "my_app/example_2.rb", <<~RUBY
+        module MyApp
+          module Example2; end
+        end
+        RUBY
+
+        files.add "something.rb", <<~RUBY
+        module Something
+          MyApp.call
+        end
+        RUBY
+      end
+    end
+
+    it "tries its best to guess the source location" do
+      symbols = application.symbols.list_symbols_where_type_inference_resolves_to_file("my_app/example_1.rb")
+
+      expect(symbols.size).to eql(1)
+      expect(symbols.first.record).to eql(application.symbols.find_reference_to("MyApp"))
+    end
+  end
+
   context "when the clue is a namespace reference and the namespace is found via ancestry scope" do
     # TODO. How?
   end
@@ -88,6 +121,34 @@ describe ::Question::Ruby::TypeInference::Solve do
       expect(application.symbols.find_reference_to("Unknown")).to have_attributes(
         itself: be_a(::Question::Ruby::TypeInference::Something),
         conclusion: be_nil
+      )
+    end
+  end
+
+  context "when the dependency is declared on root scope without root scope operator" do
+    let(:application) do
+      parse_snippet_collection do |files|
+        files.add "example_1.rb", <<~RUBY
+        module Example1
+          def self.call; end
+        end
+        RUBY
+
+        files.add "my_app/example_2.rb", <<~RUBY
+        module MyApp
+          module Example2
+            Example1.call
+          end
+        end
+        RUBY
+      end
+    end
+
+    it "solves the dependency" do
+      expect(application.symbols.find_reference_to("Example1")).to have_attributes(
+        conclusion: have_attributes(
+          symbol_identifier: "::Example1"
+        )
       )
     end
   end
