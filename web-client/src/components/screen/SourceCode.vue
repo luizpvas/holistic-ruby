@@ -19,8 +19,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, onUnmounted, ref } from "vue";
 import { useSourceCode } from "../../models/useSoureCode";
+import { registerShortcut } from "../../models/shortcut";
 import CodeEditor from "../CodeEditor.vue";
 
 const props = defineProps<{
@@ -29,9 +30,23 @@ const props = defineProps<{
 
 const { sourceCode, write } = useSourceCode(props.identifier);
 
-const hasUnsavedChanges = ref(false);
+const unsavedContent = ref<string | null>(null);
 
 const onChange = (value: string) => {
-  hasUnsavedChanges.value = value != sourceCode.value?.code;
+  unsavedContent.value = value;
 };
+
+const hasUnsavedChanges = computed((): boolean => {
+  return unsavedContent.value != sourceCode.value?.code;
+});
+
+onUnmounted(
+  registerShortcut("ctrl+s", () => {
+    if (typeof unsavedContent.value === "string") {
+      console.log("writing");
+
+      write(unsavedContent.value);
+    }
+  })
+);
 </script>

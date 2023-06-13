@@ -4,15 +4,22 @@ require "sinatra"
 require "sinatra/cors"
 require "active_support/concern"
 require "active_support/core_ext/module/concerning"
+require "logger"
 
 class Question::HttpApplication < ::Sinatra::Base
+  concerning :Logging do
+    def logger
+      @logger ||= ::Logger.new(STDOUT)
+    end
+  end
+
   concerning :CORS do
     included do
       register ::Sinatra::Cors
 
       set :allow_origin, "*"
-      set :allow_methods, "*"
-      set :allow_headers, "*"
+      set :allow_methods, "GET,POST"
+      set :allow_headers, "Content-Type"
       set :expose_headers, "*"
     end
   end

@@ -56,9 +56,11 @@ module Question::Controllers::SourceCodeController
     post "/applications/:application_name/source_code" do
       application = ::Question::Ruby::Application::Repository.find(params[:application_name])
 
-      file = application.files.find(params[:file_path])
+      payload = JSON.parse(request.body.read)
 
-      file.write(params[:content])
+      file = application.files.find(payload["file_path"])
+
+      file.write(payload["content"])
 
       ::Question::Ruby::Symbol::ReadSourceCode.call(application:, file_path: file.path).then(&Serialize).to_json
     end
