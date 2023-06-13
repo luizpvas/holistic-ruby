@@ -60,7 +60,7 @@ module Question::Controllers::SourceCodeController
 
       file.write(params[:content])
 
-      { status: "ok" }.to_json
+      ::Question::Ruby::Symbol::ReadSourceCode.call(application:, file_path: file.path).then(&Serialize).to_json
     end
   end
 end
