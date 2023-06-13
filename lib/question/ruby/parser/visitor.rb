@@ -14,7 +14,7 @@ module Question::Ruby::Parser
           when ::SyntaxTree::VarRef       then node.child_nodes.each(&append)
           when ::SyntaxTree::ConstPathRef then node.child_nodes.each(&append)
           when ::SyntaxTree::TopConstRef  then namespace_declaration.mark_as_root_scope! and node.child_nodes.each(&append)
-          else pp(node) and raise "Unexpected node type: #{node.class}"
+          else raise "Unexpected node type: #{node.class}"
           end
         end
 
