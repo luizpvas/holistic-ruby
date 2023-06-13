@@ -25,14 +25,14 @@ describe ::Question::Ruby::Parser::LiveEditing::ProcessFileChanged do
     end
 
     it "ends up in the same state" do
-      symbols_before = application.symbols.list_symbols_where_type_inference_resolves_to_file("my_app/example_1.rb")
+      symbols_before = application.dependencies.list_dependants(dependency_file_path: "my_app/example_1.rb")
 
       expect(symbols_before.size).to eql(1)
       expect(symbols_before.first.record.conclusion).to have_attributes(symbol_identifier: "::MyApp::Example1")
 
       described_class.call(application:, file: application.files.find("my_app/example_1.rb"))
 
-      symbols_after = application.symbols.list_symbols_where_type_inference_resolves_to_file("my_app/example_1.rb")
+      symbols_after = application.dependencies.list_dependants(dependency_file_path: "my_app/example_1.rb")
 
       expect(symbols_after.size).to eql(1)
       expect(symbols_after.first.record.conclusion).to have_attributes(symbol_identifier: "::MyApp::Example1")

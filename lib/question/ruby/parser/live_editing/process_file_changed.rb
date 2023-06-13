@@ -23,9 +23,9 @@ module Question::Ruby::Parser
     end
 
     def recalculate_dependants_of_file(application:, file:)
-      symbols = application.symbols.list_symbols_where_type_inference_resolves_to_file(file.path)
+      symbols = application.dependencies.list_dependants(dependency_file_path: file.path)
 
-      application.symbols.delete_type_inference_dependencies(file.path)
+      application.dependencies.delete_dependants(dependency_file_path: file.path)
 
       symbols.each do |symbol|
         something = symbol.record

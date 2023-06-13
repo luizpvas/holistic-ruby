@@ -29,7 +29,7 @@ describe ::Question::Ruby::TypeInference::Solve do
     end
 
     it "does not register a dependency" do
-      expect(application.symbols.list_symbols_where_type_inference_resolves_to_file("snippet.rb")).to be_empty
+      expect(application.dependencies.list_dependants(dependency_file_path: "snippet.rb")).to be_empty
     end
   end
 
@@ -64,7 +64,7 @@ describe ::Question::Ruby::TypeInference::Solve do
     end
 
     it "registers a dependency" do
-      symbols = application.symbols.list_symbols_where_type_inference_resolves_to_file("my_app/example.rb")
+      symbols = application.dependencies.list_dependants(dependency_file_path: "my_app/example.rb")
 
       expect(symbols.size).to eql(1)
       expect(symbols.first.record).to eql(application.symbols.find_reference_to("Example"))
@@ -97,7 +97,7 @@ describe ::Question::Ruby::TypeInference::Solve do
     end
 
     it "tries its best to guess the source location" do
-      symbols = application.symbols.list_symbols_where_type_inference_resolves_to_file("my_app/example_1.rb")
+      symbols = application.dependencies.list_dependants(dependency_file_path: "my_app/example_1.rb")
 
       expect(symbols.size).to eql(1)
       expect(symbols.first.record).to eql(application.symbols.find_reference_to("MyApp"))

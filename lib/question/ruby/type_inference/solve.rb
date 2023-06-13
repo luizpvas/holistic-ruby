@@ -19,9 +19,9 @@ module Question::Ruby::TypeInference
 
       return if dependency_is_declared_in_the_same_file
 
-      application.symbols.register_type_inference_dependency(
-        dependency_source_location.file_path,
-        something.identifier
+      application.dependencies.register(
+        dependency_file_path: dependency_source_location.file_path,
+        dependant_identifier: something.identifier
       )
     end
 
