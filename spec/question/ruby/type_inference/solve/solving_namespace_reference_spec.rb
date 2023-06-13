@@ -22,7 +22,7 @@ describe ::Question::Ruby::TypeInference::Solve do
         itself: be_a(::Question::Ruby::TypeInference::Something),
         conclusion: have_attributes(
           itself: be_a(::Question::Ruby::TypeInference::Conclusion),
-          symbol_identifier: "::MyApp::Example",
+          dependency_identifier: "::MyApp::Example",
           confidence: :strong
         )
       )
@@ -57,7 +57,7 @@ describe ::Question::Ruby::TypeInference::Solve do
         itself: be_a(::Question::Ruby::TypeInference::Something),
         conclusion: have_attributes(
           itself: be_a(::Question::Ruby::TypeInference::Conclusion),
-          symbol_identifier: "::MyApp::Example",
+          dependency_identifier: "::MyApp::Example",
           confidence: :strong
         )
       )
@@ -147,7 +147,7 @@ describe ::Question::Ruby::TypeInference::Solve do
     it "solves the dependency" do
       expect(application.symbols.find_reference_to("Example1")).to have_attributes(
         conclusion: have_attributes(
-          symbol_identifier: "::Example1"
+          dependency_identifier: "::Example1"
         )
       )
     end

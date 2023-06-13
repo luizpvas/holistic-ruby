@@ -2,13 +2,12 @@
 
 module Question::Ruby::TypeInference
   Conclusion = ::Struct.new(
-    # TODO: rename to `dependency_identifier`
-    :symbol_identifier,
+    :dependency_identifier,
     :confidence,
     keyword_init: true
   ) do
-    def self.with_strong_confidence(symbol_identifier)
-      new(symbol_identifier:, confidence: :strong)
+    def self.with_strong_confidence(dependency_identifier)
+      new(dependency_identifier:, confidence: :strong)
     end
   end
 end

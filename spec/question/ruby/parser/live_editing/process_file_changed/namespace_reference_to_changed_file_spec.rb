@@ -28,14 +28,14 @@ describe ::Question::Ruby::Parser::LiveEditing::ProcessFileChanged do
       symbols_before = application.dependencies.list_dependants(dependency_file_path: "my_app/example_1.rb")
 
       expect(symbols_before.size).to eql(1)
-      expect(symbols_before.first.record.conclusion).to have_attributes(symbol_identifier: "::MyApp::Example1")
+      expect(symbols_before.first.record.conclusion).to have_attributes(dependency_identifier: "::MyApp::Example1")
 
       described_class.call(application:, file: application.files.find("my_app/example_1.rb"))
 
       symbols_after = application.dependencies.list_dependants(dependency_file_path: "my_app/example_1.rb")
 
       expect(symbols_after.size).to eql(1)
-      expect(symbols_after.first.record.conclusion).to have_attributes(symbol_identifier: "::MyApp::Example1")
+      expect(symbols_after.first.record.conclusion).to have_attributes(dependency_identifier: "::MyApp::Example1")
     end
   end
 
@@ -72,7 +72,7 @@ describe ::Question::Ruby::Parser::LiveEditing::ProcessFileChanged do
 
     it "re-evaluates type inference for the referencer" do
       expect(application.symbols.find_reference_to("Example1")).to have_attributes(
-        conclusion: have_attributes(symbol_identifier: "::MyApp::Example1")
+        conclusion: have_attributes(dependency_identifier: "::MyApp::Example1")
       )
 
       application.files.find("my_app/example_1.rb").write(file_1_new_source_code)
