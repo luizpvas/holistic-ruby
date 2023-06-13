@@ -14,10 +14,10 @@ module Question::Ruby::TypeInference
       # TODO: try to guess the main source location. Perhaps based on the file name?
       dependency_source_location = dependency.source_locations.first
 
-      dependency_is_declared_in_the_same_file =
+      dependency_and_dependant_are_declared_in_the_same_file =
         dependency_source_location.file_path == something.source_location.file_path
 
-      return if dependency_is_declared_in_the_same_file
+      return if dependency_and_dependant_are_declared_in_the_same_file
 
       application.dependencies.register(
         dependency_file_path: dependency_source_location.file_path,
