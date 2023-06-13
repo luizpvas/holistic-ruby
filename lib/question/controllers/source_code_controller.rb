@@ -52,5 +52,9 @@ module Question::Controllers::SourceCodeController
 
       ::Question::Ruby::Symbol::ReadSourceCode.call(application:, symbol_identifier:).then(&Serialize).to_json
     end
+
+    post "/applications/:application_name/source_code" do
+      application = ::Question::Ruby::Application::Repository.find(params[:application_name])
+    end
   end
 end

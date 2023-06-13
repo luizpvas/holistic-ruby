@@ -75,7 +75,7 @@ describe ::Question::Ruby::Parser::LiveEditing::ProcessFileChanged do
         conclusion: have_attributes(symbol_identifier: "::MyApp::Example1")
       )
 
-      expect(application.files.find("my_app/example_1.rb")).to receive(:read).and_return(file_1_new_source_code)
+      application.files.find("my_app/example_1.rb").write(file_1_new_source_code)
       described_class.call(application:, file: application.files.find("my_app/example_1.rb"))
 
       expect(application.symbols.find_reference_to("Example1")).to have_attributes(

@@ -15,7 +15,7 @@ module Question::SourceCode::File
     end
 
     def find(path)
-      @parsed_files.fetch(path)
+      @parsed_files.fetch(path) || Disk.new(path:)
     end
   end
 end

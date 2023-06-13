@@ -57,12 +57,6 @@ describe ::Question::Ruby::Parser::LiveEditing::ProcessFileChanged do
       RUBY
     end
 
-    before do
-      expect(application.files.find("snippet.rb"))
-        .to receive(:read)
-        .and_return(new_source_code)
-    end
-
     it "deletes symbols from previous content and parses new ones" do
       my_app_before = application.symbols.find("::MyApp")
       my_app_example_1_before = application.symbols.find("::MyApp::Example1")
@@ -70,6 +64,7 @@ describe ::Question::Ruby::Parser::LiveEditing::ProcessFileChanged do
       foo_1_reference_before = application.symbols.find_reference_to("Foo1")
       foo_2_reference_before = application.symbols.find_reference_to("Foo2") rescue nil
 
+      application.files.find("snippet.rb").write(new_source_code)
       described_class.call(application:, file: application.files.find("snippet.rb"))
 
       my_app_after = application.symbols.find("::MyApp")

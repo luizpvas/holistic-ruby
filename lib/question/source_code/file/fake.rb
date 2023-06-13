@@ -12,5 +12,9 @@ module Question::SourceCode::File
     def read
       @content
     end
+
+    def write(content)
+      @content = content
+    end
   end
 end

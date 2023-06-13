@@ -11,5 +11,9 @@ module Question::SourceCode::File
     def read
       ::File.read(path)
     end
+
+    def write(content)
+      ::File.write(path, content)
+    end
   end
 end
