@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onUnmounted, ref } from "vue";
+import { computed, onUnmounted, ref, watch } from "vue";
 import { useSourceCode } from "../../models/useSoureCode";
 import { registerShortcut } from "../../models/shortcut";
 import CodeEditor from "../CodeEditor.vue";
@@ -35,6 +35,12 @@ const unsavedContent = ref<string | null>(null);
 const onChange = (value: string) => {
   unsavedContent.value = value;
 };
+
+watch(sourceCode, (newSourceCode) => {
+  if (newSourceCode !== null) {
+    unsavedContent.value = newSourceCode.code;
+  }
+});
 
 const hasUnsavedChanges = computed((): boolean => {
   return unsavedContent.value != sourceCode.value?.code;

@@ -1,6 +1,10 @@
 <template>
-  <div class="p-4">
-    <input class="border p-2" v-model="query" />
+  <div class="max-w-[700px] mx-auto p-4">
+    <input
+      class="block w-full p-2 border-2 rounded-full"
+      v-model="query"
+      placeholder="Search..."
+    />
 
     {{ result?.elapsed_time_in_seconds }}
 
