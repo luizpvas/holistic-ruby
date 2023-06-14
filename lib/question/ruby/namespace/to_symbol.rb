@@ -7,7 +7,8 @@ module Question::Ruby
         identifier: namespace.fully_qualified_name,
         kind: :namespace,
         record: namespace,
-        source_locations: namespace.source_locations
+        source_locations: namespace.source_locations,
+        searchable?: true
       )
     end
   end

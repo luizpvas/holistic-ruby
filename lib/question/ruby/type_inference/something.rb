@@ -15,7 +15,8 @@ module Question::Ruby::TypeInference
         identifier:,
         kind: :type_inference,
         record: self,
-        source_locations: [source_location]
+        source_locations: [source_location],
+        searchable?: false
       )
     end
 
