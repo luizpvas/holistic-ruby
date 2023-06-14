@@ -54,13 +54,13 @@ module Question::Ruby::Parser
             if superclass_declaration.root_scope_resolution?
               register_namespace_reference(
                 name: superclass_declaration.to_s,
-                source_location: Node::BuildSourceLocation[node],
+                source_location: Node::BuildSourceLocation[superclass],
                 resolution_possibilities: ConstantResolutionPossibilities.root_scope
               )
             else
               register_namespace_reference(
                 name: superclass_declaration.to_s,
-                source_location: Node::BuildSourceLocation[node]
+                source_location: Node::BuildSourceLocation[superclass]
               )
             end
           end
