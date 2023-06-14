@@ -4,7 +4,6 @@
 
 <style>
 .type-inference-symbol {
-  background: red;
 }
 </style>
 
@@ -39,13 +38,26 @@ function setupEditorTheme(editor: ace.Ace.Editor) {
   });
 }
 
+interface MarkerForSymbol {
+  id: number;
+  startAnchor: ace.Ace.Anchor;
+  endAnchor: ace.Ace.Anchor;
+}
+
+const markersForSymbols: MarkerForSymbol[] = [];
+
 function addMarkersForSymbols(editor: ace.Ace.Editor, symbols: Symbol[]) {
-  Object.keys(editor.getSession().getMarkers()).forEach((markerId) => {
-    editor.getSession().removeMarker(parseInt(markerId));
+  markersForSymbols.forEach((markerForSymbol) => {
+    markerForSymbol.startAnchor.detach();
+    markerForSymbol.endAnchor.detach();
+
+    editor.getSession().removeMarker(markerForSymbol.id);
   });
 
+  markersForSymbols.length = 0;
+
   symbols.forEach((symbol) => {
-    if (symbol.kind == "namespace") {
+    if (symbol.kind !== "type_inference") {
       return;
     }
 
@@ -64,11 +76,27 @@ function addMarkersForSymbols(editor: ace.Ace.Editor, symbols: Symbol[]) {
       thisParticularSourceLocation.end_column
     );
 
-    editor.session.addMarker(
+    // It looks like ace's `.d.ts` is missing some overloading with different signatures.
+    // @ts-ignore
+    const startAnchor = editor.session.doc.createAnchor(range.start);
+    // @ts-ignore
+    const endAnchor = editor.session.doc.createAnchor(range.end);
+    // @ts-ignore
+    range.start = startAnchor;
+    // @ts-ignore
+    range.end = endAnchor;
+
+    const markerId = editor.session.addMarker(
       range,
       "ace_bracket type-inference-symbol",
       "text"
     );
+
+    markersForSymbols.push({
+      id: markerId,
+      startAnchor: startAnchor,
+      endAnchor: endAnchor,
+    });
   });
 }
 
