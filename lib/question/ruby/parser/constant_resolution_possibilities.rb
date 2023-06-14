@@ -3,16 +3,12 @@
 module Question::Ruby::Parser
   # TODO: Remove Array inheritance.
   class ConstantResolutionPossibilities < ::Array
-    def self.root_scope
-      new
+    def self.root_scope 
+      new(["::"])
     end
 
     def unshift(name)
-      if empty?
-        super(name)
-      else
-        super(join("::") + "::" + name)
-      end
+      one? ? super("::" + name) : super(first + "::" + name)
     end
 
     def root_scope?

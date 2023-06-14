@@ -19,7 +19,7 @@ describe ::Question::Ruby::Parser do
         clues: [
           have_attributes(
             itself: be_a(::Question::Ruby::TypeInference::Clue::NamespaceReference),
-            resolution_possibilities: ["MyApp::MyModule1::MyModule2", "MyApp"]
+            resolution_possibilities: ["::MyApp::MyModule1::MyModule2", "::MyApp", "::"]
           )
         ]
       )

@@ -20,7 +20,7 @@ describe ::Question::Ruby::TypeInference::Clue::NamespaceReference do
           have_attributes(
             itself: be_a(::Question::Ruby::TypeInference::Clue::NamespaceReference),
             name: "Example",
-            resolution_possibilities: ["MyApp::MyClass", "MyApp"]
+            resolution_possibilities: ["::MyApp::MyClass", "::MyApp", "::"]
           )
         ]
       )

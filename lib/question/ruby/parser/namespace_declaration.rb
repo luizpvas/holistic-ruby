@@ -14,7 +14,7 @@ module Question::Ruby::Parser
     end
 
     def to_s
-      is_root_scope ? "::#{@value.join("::")}" : @value.join("::")
+      @value.join("::")
     end
 
     def root_scope_resolution? = is_root_scope

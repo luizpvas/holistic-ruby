@@ -3,7 +3,7 @@
 module Question::Ruby::Parser
   ParseCode = ->(application:, code:) do
     namespace = application.root_namespace
-    constant_resolution_possibilities = ConstantResolutionPossibilities.new
+    constant_resolution_possibilities = ConstantResolutionPossibilities.root_scope
 
     Current.set(application:, namespace:, constant_resolution_possibilities:) do
       program = ::SyntaxTree.parse(code)
