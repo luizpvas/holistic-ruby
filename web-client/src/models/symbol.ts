@@ -13,5 +13,5 @@ export interface TypeInferenceSymbol {
   identifier: string;
   source_locations: SourceLocation[];
   kind: "type_inference";
-  related_symbol_identifier: string;
+  dependency_identifier: string | null;
 }

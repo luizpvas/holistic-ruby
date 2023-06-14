@@ -7,6 +7,7 @@
       :code="sourceCode.code"
       :symbols="sourceCode.symbols"
       @change="onChange"
+      @click-symbol="onClickSymbol"
     />
 
     <div
@@ -19,10 +20,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onUnmounted, ref, watch } from "vue";
+import { computed, onUnmounted, ref, watch, h } from "vue";
 import { useSourceCode } from "../../models/useSoureCode";
 import { registerShortcut } from "../../models/shortcut";
+import { Symbol } from "../../models/symbol";
 import CodeEditor from "../CodeEditor.vue";
+import { pushScreen } from "../../models/navigation";
+import SourceCode from "./SourceCode.vue";
 
 const props = defineProps<{
   identifier: string;
@@ -34,6 +38,23 @@ const unsavedContent = ref<string | null>(null);
 
 const onChange = (value: string) => {
   unsavedContent.value = value;
+};
+
+const onClickSymbol = (ev: MouseEvent, symbol: Symbol) => {
+  if (
+    symbol.kind === "type_inference" &&
+    symbol.dependency_identifier !== null
+  ) {
+    if (ev.ctrlKey) {
+      const component = h(SourceCode, {
+        identifier: symbol.dependency_identifier,
+      });
+
+      pushScreen(`source: ${symbol.dependency_identifier}`, component);
+    }
+  }
+
+  console.log(symbol);
 };
 
 watch(sourceCode, (newSourceCode) => {

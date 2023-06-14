@@ -46,3 +46,9 @@ export function pushScreen(title: string, component: Component) {
   track.screens.push({ title, component });
   track.currentIndex = track.currentIndex + 1;
 }
+
+export function replaceCurrentScreen(title: string, component: Component) {
+  const track = navigation.tracks[navigation.currentIndex];
+
+  track.screens.splice(track.currentIndex, 1, { title, component });
+}

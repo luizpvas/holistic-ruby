@@ -2,11 +2,6 @@
   <div ref="element"></div>
 </template>
 
-<style>
-.type-inference-symbol {
-}
-</style>
-
 <script setup lang="ts">
 import { onMounted, ref, watch } from "vue";
 import * as ace from "ace-builds";
@@ -24,6 +19,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: "change", value: string): void;
+  (e: "click-symbol", event: MouseEvent, symbol: Symbol): void;
 }>();
 
 const element = ref<HTMLElement | null>(null);
@@ -46,6 +42,7 @@ function disableAceShortcutsToAvoidConflictWithStandShortcuts(
 
 interface MarkerForSymbol {
   id: number;
+  symbol: Symbol;
   startAnchor: ace.Ace.Anchor;
   endAnchor: ace.Ace.Anchor;
 }
@@ -100,10 +97,25 @@ function addMarkersForSymbols(editor: ace.Ace.Editor, symbols: Symbol[]) {
 
     markersForSymbols.push({
       id: markerId,
+      symbol: symbol,
       startAnchor: startAnchor,
       endAnchor: endAnchor,
     });
   });
+}
+
+function findSymbolByPosition(row: number, column: number): Symbol | undefined {
+  return markersForSymbols.find((markerForSymbol) => {
+    const start = markerForSymbol.startAnchor.getPosition();
+    const end = markerForSymbol.endAnchor.getPosition();
+
+    return (
+      row >= start.row &&
+      row <= end.row &&
+      column >= start.column &&
+      column <= end.column
+    );
+  })?.symbol;
 }
 
 onMounted(() => {
@@ -124,6 +136,19 @@ onMounted(() => {
 
     editor.on("change", (_ev) => {
       emit("change", editor.getValue());
+    });
+
+    editor.on("click", (ev) => {
+      console.log(ev);
+
+      const symbol = findSymbolByPosition(
+        ev.getDocumentPosition().row,
+        ev.getDocumentPosition().column
+      );
+
+      if (symbol !== undefined) {
+        emit("click-symbol", ev.domEvent, symbol);
+      }
     });
   }
 });
