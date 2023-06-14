@@ -49,8 +49,6 @@ const hasUnsavedChanges = computed((): boolean => {
 onUnmounted(
   registerShortcut("ctrl+s", () => {
     if (typeof unsavedContent.value === "string") {
-      console.log("writing");
-
       write(unsavedContent.value);
     }
   })

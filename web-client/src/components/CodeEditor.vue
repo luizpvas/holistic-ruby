@@ -38,6 +38,12 @@ function setupEditorTheme(editor: ace.Ace.Editor) {
   });
 }
 
+function disableAceShortcutsToAvoidConflictWithStandShortcuts(
+  editor: ace.Ace.Editor
+) {
+  editor.keyBinding.removeKeyboardHandler(editor.commands);
+}
+
 interface MarkerForSymbol {
   id: number;
   startAnchor: ace.Ace.Anchor;
@@ -103,7 +109,10 @@ function addMarkersForSymbols(editor: ace.Ace.Editor, symbols: Symbol[]) {
 onMounted(() => {
   if (element.value) {
     const editor = ace.edit(element.value);
+
     setupEditorTheme(editor);
+
+    disableAceShortcutsToAvoidConflictWithStandShortcuts(editor);
 
     const updateEditorContent = () => {
       editor.getSession().setValue(props.code);
