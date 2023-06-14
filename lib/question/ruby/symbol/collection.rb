@@ -47,7 +47,7 @@ module Question::Ruby::Symbol
     end
 
     def search(query)
-      documents = @from_identifier_to_symbol.values.map(&:to_search_document).compact
+      documents = @from_identifier_to_symbol.values.filter(&:searchable?).map(&:to_search_document)
 
       ::Question::FuzzySearch::Search.call(query:, documents:)
     end

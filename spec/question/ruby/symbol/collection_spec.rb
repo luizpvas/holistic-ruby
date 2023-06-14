@@ -167,6 +167,14 @@ describe ::Question::Ruby::Symbol::Collection do
       )
     end
 
+    it "does not find type inference results" do
+      matches = application.symbols.search("").matches
+
+      identifiers = matches.map { _1.document.identifier }
+
+      expect(identifiers).to match_array(["::MyApplication", "::MyApplication::MyController"])
+    end
+
     # TODO: find references? find method declarations? find lambda declarations?
     # This should be optimized for the "I know what I'm looking for" mode, and not the exploration mode.
   end
