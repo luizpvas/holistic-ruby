@@ -24,7 +24,7 @@ class Question::HttpApplication < ::Sinatra::Base
     end
   end
 
-  concerning :API do
+  concerning :Routes do
     included do
       before { content_type :json }
     end
