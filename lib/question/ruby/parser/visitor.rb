@@ -76,7 +76,24 @@ module Question::Ruby::Parser
         def visit_assign(node)
           assign, expression = node.child_nodes
 
-          # TODO: do something about assign?
+          declaration_kind =
+            if expression.is_a?(::SyntaxTree::Lambda)
+              :lambda
+            elsif expression.is_a?(::SyntaxTree::CallNode)
+              return # TODO
+            else
+              raise "not implemented"
+            end
+
+          declaration =
+            ::Question::Ruby::Declaration::Record.new(
+              name: assign.child_nodes.first.value,
+              kind: declaration_kind,
+              namespace: Current.namespace,
+              source_location: Node::BuildSourceLocation[node]
+            )
+
+          Current.registration_queue.register(declaration.to_symbol)
 
           visit(expression)
         end
