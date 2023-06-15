@@ -34,10 +34,10 @@ function setupEditorTheme(editor: ace.Ace.Editor) {
   });
 }
 
-function disableAceShortcutsToAvoidConflictWithStandShortcuts(
+function disableAceShortcutsConflictingWithStandShortcuts(
   editor: ace.Ace.Editor
 ) {
-  editor.keyBinding.removeKeyboardHandler(editor.commands);
+  editor.commands.removeCommand("jumptomatching");
 }
 
 interface MarkerForSymbol {
@@ -124,7 +124,7 @@ onMounted(() => {
 
     setupEditorTheme(editor);
 
-    disableAceShortcutsToAvoidConflictWithStandShortcuts(editor);
+    disableAceShortcutsConflictingWithStandShortcuts(editor);
 
     const updateEditorContent = () => {
       editor.getSession().setValue(props.code);
