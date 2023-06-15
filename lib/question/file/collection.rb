@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Question::SourceCode::File
+module Question::File
   class Collection
     def initialize(application:)
       @application = application

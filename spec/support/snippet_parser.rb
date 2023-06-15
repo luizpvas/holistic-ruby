@@ -4,7 +4,7 @@ module SnippetParser
   def parse_snippet(code)
     application = ::Question::Ruby::Application::Record.new(name: "Snippet", root_directory: "snippet_parser")
 
-    file = ::Question::SourceCode::File::Fake.new("snippet.rb", code)
+    file = ::Question::File::Fake.new("snippet.rb", code)
 
     ::Question::Ruby::Parser::WrapParsingUnitWithProcessAtTheEnd.call(application:) do
       ::Question::Ruby::Parser::ParseFile.call(application:, file:)
@@ -19,7 +19,7 @@ module SnippetParser
 
     files = ::Object.new
     files.define_singleton_method(:add) do |file_path, code|
-      file = ::Question::SourceCode::File::Fake.new(file_path, code)
+      file = ::Question::File::Fake.new(file_path, code)
 
       ::Question::Ruby::Parser::ParseFile[application:, file:]
     end

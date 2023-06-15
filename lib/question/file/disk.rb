@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Question::SourceCode::File
+module Question::File
   class Disk
     attr_reader :path
 

@@ -19,7 +19,7 @@ module Question::Ruby
     end
 
     def files
-      @files ||= ::Question::SourceCode::File::Collection.new(application: self)
+      @files ||= ::Question::File::Collection.new(application: self)
     end
   end
 end

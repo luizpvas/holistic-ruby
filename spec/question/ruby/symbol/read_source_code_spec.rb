@@ -17,7 +17,7 @@ describe ::Question::Ruby::Symbol::ReadSourceCode do
 
       expect(result).to have_attributes(
         file: have_attributes(
-          itself: be_a(::Question::SourceCode::File::Fake),
+          itself: be_a(::Question::File::Fake),
           path: "snippet.rb",
         ),
         start_line: 2,
@@ -40,7 +40,7 @@ describe ::Question::Ruby::Symbol::ReadSourceCode do
 
       expect(result).to have_attributes(
         file: have_attributes(
-          itself: be_a(::Question::SourceCode::File::Fake),
+          itself: be_a(::Question::File::Fake),
           path: "snippet.rb",
         )
       )
