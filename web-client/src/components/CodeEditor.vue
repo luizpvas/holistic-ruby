@@ -1,9 +1,35 @@
 <template>
-  <div ref="element"></div>
+  <div :class="{ 'ctrl-pressed': isCtrlPressed }">
+    <div ref="element" class="h-full"></div>
+  </div>
 </template>
+
+<style>
+.type-inference-symbol {
+  display: none;
+  position: absolute;
+  margin: -1px 0 0 -1px;
+  z-index: 6;
+}
+
+.type-inference-symbol--with-conclusion {
+  @apply border border-indigo-400 pointer-events-auto cursor-pointer;
+  @apply hover:border-indigo-700 hover:bg-indigo-50;
+}
+
+.type-inference-symbol--without-conclusion {
+  @apply border border-gray-300;
+}
+
+.ctrl-pressed .type-inference-symbol {
+  display: block;
+}
+</style>
 
 <script setup lang="ts">
 import { onMounted, ref, watch } from "vue";
+import { useCtrlPressed } from "../models/shortcut";
+
 import * as ace from "ace-builds";
 import "ace-builds/css/ace.css";
 
@@ -23,6 +49,8 @@ const emit = defineEmits<{
 }>();
 
 const element = ref<HTMLElement | null>(null);
+
+const { isCtrlPressed } = useCtrlPressed();
 
 function setupEditorTheme(editor: ace.Ace.Editor) {
   editor.setTheme("ace/theme/github");
@@ -89,9 +117,13 @@ function addMarkersForSymbols(editor: ace.Ace.Editor, symbols: Symbol[]) {
     // @ts-ignore
     range.end = endAnchor;
 
+    const conclusionClass = symbol.dependency_identifier
+      ? "type-inference-symbol--with-conclusion"
+      : "type-inference-symbol--without-conclusion";
+
     const markerId = editor.session.addMarker(
       range,
-      "ace_bracket type-inference-symbol",
+      `type-inference-symbol ${conclusionClass}`,
       "text"
     );
 
@@ -139,8 +171,6 @@ onMounted(() => {
     });
 
     editor.on("click", (ev) => {
-      console.log(ev);
-
       const symbol = findSymbolByPosition(
         ev.getDocumentPosition().row,
         ev.getDocumentPosition().column
