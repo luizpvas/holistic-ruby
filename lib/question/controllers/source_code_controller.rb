@@ -22,6 +22,8 @@ module Question::Controllers::SourceCodeController
         { fully_qualified_name: symbol.record.fully_qualified_name }
       when ::Question::Ruby::TypeInference::Something
         { dependency_identifier: symbol.record.conclusion&.dependency_identifier }
+      when ::Question::Ruby::Declaration::Record
+        {} # TODO: what should be here?
       else
         raise ::NotImplementedError, "unknown symbol subtype: #{symbol.record.inspect}"
       end

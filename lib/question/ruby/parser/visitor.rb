@@ -76,19 +76,17 @@ module Question::Ruby::Parser
         def visit_assign(node)
           assign, expression = node.child_nodes
 
-          declaration_kind =
-            if expression.is_a?(::SyntaxTree::Lambda)
-              :lambda
-            elsif expression.is_a?(::SyntaxTree::CallNode)
-              return # TODO
-            else
-              raise "not implemented"
-            end
+          unless assign.child_nodes.first.is_a?(::SyntaxTree::Const)
+            visit(expression)
+
+            return # TODO
+          end
+
+          identifier = Current.namespace.fully_qualified_name + "::" + assign.child_nodes.first.value
 
           declaration =
             ::Question::Ruby::Declaration::Record.new(
-              name: assign.child_nodes.first.value,
-              kind: declaration_kind,
+              identifier:,
               namespace: Current.namespace,
               source_location: Node::BuildSourceLocation[node]
             )

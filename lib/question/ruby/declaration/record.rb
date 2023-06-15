@@ -2,19 +2,12 @@
 
 module Question::Ruby::Declaration
   class Record
-    attr_reader :name, :kind, :namespace, :source_location
+    attr_reader :identifier, :namespace, :source_location
 
-    def initialize(name:, kind:, namespace:, source_location:)
-      @name = name
-      @kind = kind
+    def initialize(identifier:, namespace:, source_location:)
+      @identifier = identifier
       @namespace = namespace # TODO: should the namespace have a list of declarations?
       @source_location = source_location
-    end
-
-    def identifier
-      return namespace.fully_qualified_name + "::" + name if kind == :lambda
-
-      raise "unknown kind: #{kind.inspect}"
     end
 
     def to_symbol
