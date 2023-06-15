@@ -152,4 +152,24 @@ describe ::Question::Ruby::TypeInference::Solve do
       )
     end
   end
+
+  context "when dependency is a lambda" do
+    let(:application) do
+      parse_snippet <<~RUBY
+      module MyApp
+        PlusOne = ->(num) { num + 1 }
+
+        PlusOne.call(2)
+      end
+      RUBY
+    end
+
+    it "solves the dependency" do
+      expect(application.symbols.find_reference_to("PlusOne")).to have_attributes(
+        conclusion: have_attributes(
+          dependency_identifier: "::MyApp::PlusOne"
+        )
+      )
+    end
+  end
 end
