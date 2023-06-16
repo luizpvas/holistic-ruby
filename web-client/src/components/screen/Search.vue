@@ -35,26 +35,27 @@ import {
   replaceCurrentScreen,
   updateCurrenTitle,
 } from "../../models/navigation";
-import { sourceCodeScreenTitle } from "../../models/screen_title";
 import { useSearch } from "../../models/useSearch";
 import Action from "../Action.vue";
 import SourceCode from "./SourceCode.vue";
+
+updateCurrenTitle("Search");
 
 const searchInput = ref<HTMLInputElement | null>(null);
 
 const { query, result } = useSearch();
 
 watch(query, () => {
-  updateCurrenTitle(`search: ${query.value}`);
+  updateCurrenTitle(`Search: ${query.value}`);
 });
 
 function navigateToSourceCode(event: MouseEvent, identifier: string) {
   const component = h(SourceCode, { identifier });
 
   if (event.ctrlKey) {
-    pushScreen(sourceCodeScreenTitle(identifier), component);
+    pushScreen(component);
   } else {
-    replaceCurrentScreen(sourceCodeScreenTitle(identifier), component);
+    replaceCurrentScreen(component);
   }
 }
 

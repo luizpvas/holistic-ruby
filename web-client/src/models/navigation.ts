@@ -31,8 +31,8 @@ export function navigateBackToScreen(index: number) {
   track.currentIndex = index;
 }
 
-export function pushTrack(title: string, component: Component) {
-  const screen: Screen = { title, component };
+export function pushTrack(component: Component) {
+  const screen: Screen = { title: "", component };
 
   navigation.tracks.push({
     currentIndex: 0,
@@ -40,15 +40,15 @@ export function pushTrack(title: string, component: Component) {
   });
 }
 
-export function pushScreen(title: string, component: Component) {
+export function pushScreen(component: Component) {
   const track = navigation.tracks[navigation.currentIndex];
 
-  track.screens.push({ title, component });
+  track.screens.push({ title: "", component });
   track.currentIndex = track.currentIndex + 1;
 }
 
-export function replaceCurrentScreen(title: string, component: Component) {
+export function replaceCurrentScreen(component: Component) {
   const track = navigation.tracks[navigation.currentIndex];
 
-  track.screens.splice(track.currentIndex, 1, { title, component });
+  track.screens.splice(track.currentIndex, 1, { title: "", component });
 }

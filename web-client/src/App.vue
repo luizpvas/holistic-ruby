@@ -14,16 +14,12 @@ import Debugbar from "./components/Debugbar.vue";
 import { registerShortcut } from "./models/shortcut";
 
 fetchApplications().then(() => {
-  const searchInstance = h(Search);
-
-  pushTrack("Search", searchInstance);
+  pushTrack(h(Search));
 });
 
 onUnmounted(
   registerShortcut("ctrl+p", () => {
-    const searchInstance = h(Search);
-
-    pushScreen("Search", searchInstance);
+    pushScreen(h(Search));
   })
 );
 </script>

@@ -27,13 +27,14 @@ import { useSourceCode } from "../../models/useSoureCode";
 import { registerShortcut } from "../../models/shortcut";
 import { Symbol } from "../../models/symbol";
 import CodeEditor from "../CodeEditor.vue";
-import { pushScreen } from "../../models/navigation";
+import { pushScreen, updateCurrenTitle } from "../../models/navigation";
 import SourceCode from "./SourceCode.vue";
-import { sourceCodeScreenTitle } from "../../models/screen_title";
 
 const props = defineProps<{
   identifier: string;
 }>();
+
+updateCurrenTitle(props.identifier);
 
 const { sourceCode, write } = useSourceCode(props.identifier);
 
@@ -53,14 +54,9 @@ const onClickSymbol = (ev: MouseEvent, symbol: Symbol) => {
         identifier: symbol.dependency_identifier,
       });
 
-      pushScreen(
-        sourceCodeScreenTitle(symbol.dependency_identifier),
-        component
-      );
+      pushScreen(component);
     }
   }
-
-  console.log(symbol);
 };
 
 watch(sourceCode, (newSourceCode) => {
