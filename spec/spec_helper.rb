@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "debug"
-require "question"
+require "holistic"
 
 require_relative "support/snippet_parser"
 

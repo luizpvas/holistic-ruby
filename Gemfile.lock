@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    question (0.1.0)
+    holistic (0.1.0)
       activesupport (~> 7.0)
       puma (~> 6.2)
       sinatra (~> 3.0)
@@ -58,14 +58,14 @@ GEM
     tilt (2.1.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
-    zeitwerk (2.6.7)
+    zeitwerk (2.6.8)
 
 PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
   debug (~> 1.7)
-  question!
+  holistic!
   rake (~> 13.0)
   rspec (~> 3.0)
 
