@@ -49,8 +49,8 @@ module Question::FuzzySearch
     end
 
     IsSeparator = ->(character) { character == ":" || character == "#" }
-    IsUpperCase = ->(character) { character.match?(/[A-Z]/) }
-    IsLowerCase = ->(character) { character.match?(/[a-z]/) }
+    IsUpperCase = ->(character) { character.present? && character.match?(/[A-Z]/) }
+    IsLowerCase = ->(character) { character.present? && character.match?(/[a-z]/) }
 
     CalculateScore = ->(document, matched_indices) do
       unmatched_characters = document.text.length - matched_indices.length
