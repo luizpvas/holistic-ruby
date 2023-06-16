@@ -41,6 +41,8 @@ const props = defineProps<{
   code: string;
   filePath: string;
   symbols: Symbol[];
+  highlightStartLine?: number;
+  highlightEndLine?: number;
 }>();
 
 const emit = defineEmits<{
@@ -180,6 +182,14 @@ onMounted(() => {
         emit("click-symbol", ev.domEvent, symbol);
       }
     });
+
+    editor.focus();
+
+    if (props.highlightStartLine && props.highlightEndLine) {
+      editor.gotoLine(props.highlightStartLine, 0, true);
+
+      // TODO: highlight line
+    }
   }
 });
 </script>

@@ -6,6 +6,8 @@
       :file-path="sourceCode.file_path"
       :code="sourceCode.code"
       :symbols="sourceCode.symbols"
+      :highlight-start-line="sourceCode.highlight_start_line"
+      :highlight-end-line="sourceCode.highlight_end_line"
       @change="onChange"
       @click-symbol="onClickSymbol"
     />
@@ -27,6 +29,7 @@ import { Symbol } from "../../models/symbol";
 import CodeEditor from "../CodeEditor.vue";
 import { pushScreen } from "../../models/navigation";
 import SourceCode from "./SourceCode.vue";
+import { sourceCodeScreenTitle } from "../../models/screen_title";
 
 const props = defineProps<{
   identifier: string;
@@ -50,7 +53,10 @@ const onClickSymbol = (ev: MouseEvent, symbol: Symbol) => {
         identifier: symbol.dependency_identifier,
       });
 
-      pushScreen(`source: ${symbol.dependency_identifier}`, component);
+      pushScreen(
+        sourceCodeScreenTitle(symbol.dependency_identifier),
+        component
+      );
     }
   }
 

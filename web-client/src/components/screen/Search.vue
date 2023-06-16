@@ -31,9 +31,11 @@ em {
 <script setup lang="ts">
 import { h, onMounted, ref, watch } from "vue";
 import {
+  pushScreen,
   replaceCurrentScreen,
   updateCurrenTitle,
 } from "../../models/navigation";
+import { sourceCodeScreenTitle } from "../../models/screen_title";
 import { useSearch } from "../../models/useSearch";
 import Action from "../Action.vue";
 import SourceCode from "./SourceCode.vue";
@@ -46,10 +48,14 @@ watch(query, () => {
   updateCurrenTitle(`search: ${query.value}`);
 });
 
-function navigateToSourceCode(_event: MouseEvent, identifier: string) {
+function navigateToSourceCode(event: MouseEvent, identifier: string) {
   const component = h(SourceCode, { identifier });
 
-  replaceCurrentScreen(`source: ${identifier}`, component);
+  if (event.ctrlKey) {
+    pushScreen(sourceCodeScreenTitle(identifier), component);
+  } else {
+    replaceCurrentScreen(sourceCodeScreenTitle(identifier), component);
+  }
 }
 
 onMounted(() => {
