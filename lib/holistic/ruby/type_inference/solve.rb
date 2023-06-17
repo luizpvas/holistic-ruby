@@ -10,21 +10,6 @@ module Holistic::Ruby::TypeInference
 
     private
 
-    RegisterTypeInferenceDependency = ->(application:, something:, dependency:) do
-      # TODO: try to guess the main source location. Perhaps based on the file name?
-      dependency_source_location = dependency.source_locations.first
-
-      dependency_and_dependant_are_declared_in_the_same_file =
-        dependency_source_location.file_path == something.source_location.file_path
-
-      return if dependency_and_dependant_are_declared_in_the_same_file
-
-      application.dependencies.register(
-        dependency_file_path: dependency_source_location.file_path,
-        dependant_identifier: something.identifier
-      )
-    end
-
     def solve_namespace_reference(application:, something:)
       has_namespace_reference_clue =
         something.clues.one? && something.clues.first.is_a?(Clue::NamespaceReference)
@@ -44,7 +29,7 @@ module Holistic::Ruby::TypeInference
         dependency = application.symbols.find(dependency_identifier)
 
         if dependency.present?
-          RegisterTypeInferenceDependency.call(application:, something:, dependency:)
+          application.dependencies.register(dependency:, dependant_identifier: something.identifier)
 
           something.conclusion = Conclusion.with_strong_confidence(dependency.identifier)
 

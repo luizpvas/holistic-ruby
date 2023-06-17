@@ -28,8 +28,11 @@ describe ::Holistic::Ruby::TypeInference::Solve do
       )
     end
 
-    it "does not register a dependency" do
-      expect(application.dependencies.list_dependants(dependency_file_path: "snippet.rb")).to be_empty
+    it "registers a dependency" do
+      symbols = application.dependencies.list_dependants(dependency_file_path: "snippet.rb")
+
+      expect(symbols.size).to eql(1)
+      expect(symbols.first.record).to eql(application.symbols.find_reference_to("Example"))
     end
   end
 
