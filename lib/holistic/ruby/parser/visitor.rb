@@ -75,9 +75,17 @@ module Holistic::Ruby::Parser
         end
 
         def visit_def(node)
-          _uknown1, _unkown2, method_name, _params, body_statement = node.child_nodes
+          instance, dot, method_name, _params, body_statement = node.child_nodes
 
-          identifier = Current.namespace.fully_qualified_name + "#" + method_name.value
+          identifier =
+            if instance.present? && separator.present?
+              # TODO: handle clases where instance is not kw self e.g. `def my_object.something; end`
+              instance_name = instance.child_nodes.first.value
+
+              Current.namespace.fully_qualified_name + "#" + instance_name + dot.value + method_name.value
+            else
+              Current.namespace.fully_qualified_name + "#" + method_name.value
+            end
 
           declaration =
             ::Holistic::Ruby::Declaration::Record.new(
