@@ -15,14 +15,14 @@ describe ::Holistic::Ruby::Symbol::Outline do
     RUBY
   end
 
-  # it "outlines a lambda with no dependencies and a single dependant" do
-  #   result = described_class.call(symbol: application.symbols.find("::MyApp::PlusOne"))
+  it "outlines a lambda with no dependencies and a single dependant" do
+    result = described_class.call(symbol: application.symbols.find("::MyApp::PlusOne"))
 
-  #   expect(result.declarations).to be_empty
-  #   expect(result.dependencies).to be_empty
+    expect(result.declarations).to be_empty
+    expect(result.dependencies).to be_empty
 
-  #   expect(result.dependants.map(&:identifier)).to match_array([
-  #     "::MyApp::Calc"
-  #   ])
-  # end
+    expect(result.dependants.map(&:identifier)).to match_array([
+      "::MyApp::Calc"
+    ])
+  end
 end
