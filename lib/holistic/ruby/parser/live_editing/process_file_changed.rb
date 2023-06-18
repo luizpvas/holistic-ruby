@@ -28,11 +28,11 @@ module Holistic::Ruby::Parser
 
     def recalculate_dependants(application:, dependants:)
       dependants.each do |symbol|
-        something = symbol.record
+        reference = symbol.record
 
-        something.conclusion = nil
+        reference.conclusion = nil
 
-        ::Holistic::Ruby::TypeInference::Solve.call(application:, something:)
+        ::Holistic::Ruby::TypeInference::Solve.call(application:, reference:)
       end
     end
   end

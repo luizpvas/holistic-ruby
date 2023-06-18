@@ -53,13 +53,13 @@ module Holistic::Ruby::Parser
             superclass_declaration = Node::GetNamespadeDeclaration[superclass]
 
             if superclass_declaration.root_scope_resolution?
-              register_namespace_reference(
+              register_reference(
                 name: superclass_declaration.to_s,
                 source_location: Node::BuildSourceLocation[superclass],
                 resolution_possibilities: ConstantResolutionPossibilities.root_scope
               )
             else
-              register_namespace_reference(
+              register_reference(
                 name: superclass_declaration.to_s,
                 source_location: Node::BuildSourceLocation[superclass]
               )
@@ -101,13 +101,13 @@ module Holistic::Ruby::Parser
           namespace_declaration = Node::GetNamespadeDeclaration.call(node)
 
           if namespace_declaration.root_scope_resolution?
-            register_namespace_reference(
+            register_reference(
               name: namespace_declaration.to_s,
               source_location: Node::BuildSourceLocation.call(node),
               resolution_possibilities: ConstantResolutionPossibilities.root_scope
             )
           else
-            register_namespace_reference(
+            register_reference(
               name: namespace_declaration.to_s,
               source_location: Node::BuildSourceLocation.call(node)
             )
@@ -115,7 +115,7 @@ module Holistic::Ruby::Parser
         end
 
         def visit_top_const_ref(node)
-          register_namespace_reference(
+          register_reference(
             name: node.child_nodes.first.value,
             source_location: Node::BuildSourceLocation[node],
             resolution_possibilities: ConstantResolutionPossibilities.root_scope
@@ -123,18 +123,18 @@ module Holistic::Ruby::Parser
         end
 
         def visit_const(node)
-          register_namespace_reference(name: node.value, source_location: Node::BuildSourceLocation[node])
+          register_reference(name: node.value, source_location: Node::BuildSourceLocation[node])
         end
       end
 
       private
 
-      def register_namespace_reference(name:, source_location:, resolution_possibilities: Current.constant_resolution_possibilities.dup)
+      def register_reference(name:, source_location:, resolution_possibilities: Current.constant_resolution_possibilities.dup)
         clue = ::Holistic::Ruby::TypeInference::Clue::NamespaceReference.new(name:, resolution_possibilities:)
 
-        something = ::Holistic::Ruby::TypeInference::Something.new(clues: [clue], source_location:)
+        reference = ::Holistic::Ruby::TypeInference::Reference.new(clues: [clue], source_location:)
 
-        Current.registration_queue.register(something.to_symbol)
+        Current.registration_queue.register(reference.to_symbol)
       end
     end
   end

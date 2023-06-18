@@ -20,7 +20,7 @@ module Holistic::Controllers::SourceCodeController
       case symbol.record
       when ::Holistic::Ruby::Namespace::Record
         { fully_qualified_name: symbol.record.fully_qualified_name }
-      when ::Holistic::Ruby::TypeInference::Something
+      when ::Holistic::Ruby::TypeInference::Reference
         { dependency_identifier: symbol.record.conclusion&.dependency_identifier }
       when ::Holistic::Ruby::Declaration::Record
         {} # TODO: what should be here?

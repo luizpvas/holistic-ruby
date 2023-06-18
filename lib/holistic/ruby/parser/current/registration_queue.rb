@@ -55,11 +55,11 @@ class Holistic::Ruby::Parser::Current
     end
   
     def solve_type_inference(symbol)
-      return unless symbol.record.is_a?(::Holistic::Ruby::TypeInference::Something)
+      return unless symbol.record.is_a?(::Holistic::Ruby::TypeInference::Reference)
 
       ::Holistic::Ruby::TypeInference::Solve.call(
         application:,
-        something: symbol.record
+        reference: symbol.record
       )
     end
   end

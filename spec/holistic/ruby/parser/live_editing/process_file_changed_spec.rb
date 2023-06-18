@@ -82,11 +82,11 @@ describe ::Holistic::Ruby::Parser::LiveEditing::ProcessFileChanged do
       expect(my_app_example_2_before).to be_nil
       expect(my_app_example_2_after).to be_a(::Holistic::Ruby::Symbol::Record)
 
-      expect(foo_1_reference_before).to be_a(::Holistic::Ruby::TypeInference::Something)
+      expect(foo_1_reference_before).to be_a(::Holistic::Ruby::TypeInference::Reference)
       expect(foo_2_reference_before).to be_nil
 
       expect(foo_1_reference_after).to be_nil
-      expect(foo_2_reference_after).to be_a(::Holistic::Ruby::TypeInference::Something)
+      expect(foo_2_reference_after).to be_a(::Holistic::Ruby::TypeInference::Reference)
     end
   end
 end

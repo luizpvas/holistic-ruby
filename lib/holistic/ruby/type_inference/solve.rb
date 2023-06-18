@@ -4,19 +4,19 @@ module Holistic::Ruby::TypeInference
   module Solve
     extend self
 
-    def call(application:, something:)
-      solve_namespace_reference(application:, something:)
+    def call(application:, reference:)
+      solve_namespace_reference(application:, reference:)
     end
 
     private
 
-    def solve_namespace_reference(application:, something:)
+    def solve_namespace_reference(application:, reference:)
       has_namespace_reference_clue =
-        something.clues.one? && something.clues.first.is_a?(Clue::NamespaceReference)
+        reference.clues.one? && reference.clues.first.is_a?(Clue::NamespaceReference)
 
       return unless has_namespace_reference_clue
 
-      namespace_reference = something.clues.first
+      namespace_reference = reference.clues.first
 
       namespace_reference.resolution_possibilities.each do |resolution_candidate|
         dependency_identifier =
@@ -29,9 +29,9 @@ module Holistic::Ruby::TypeInference
         dependency = application.symbols.find(dependency_identifier)
 
         if dependency.present?
-          application.dependencies.register(dependency:, dependant_identifier: something.identifier)
+          application.dependencies.register(dependency:, dependant_identifier: reference.identifier)
 
-          something.conclusion = Conclusion.with_strong_confidence(dependency.identifier)
+          reference.conclusion = Conclusion.with_strong_confidence(dependency.identifier)
 
           return true
         end

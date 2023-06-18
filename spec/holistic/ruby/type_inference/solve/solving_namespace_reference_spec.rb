@@ -19,7 +19,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
 
     it "solves the namespace reference" do
       expect(application.symbols.find_reference_to("Example")).to have_attributes(
-        itself: be_a(::Holistic::Ruby::TypeInference::Something),
+        itself: be_a(::Holistic::Ruby::TypeInference::Reference),
         conclusion: have_attributes(
           itself: be_a(::Holistic::Ruby::TypeInference::Conclusion),
           dependency_identifier: "::MyApp::Example",
@@ -57,7 +57,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
 
     it "solves the namespace reference" do
       expect(application.symbols.find_reference_to("Example")).to have_attributes(
-        itself: be_a(::Holistic::Ruby::TypeInference::Something),
+        itself: be_a(::Holistic::Ruby::TypeInference::Reference),
         conclusion: have_attributes(
           itself: be_a(::Holistic::Ruby::TypeInference::Conclusion),
           dependency_identifier: "::MyApp::Example",
@@ -122,7 +122,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
 
     it "leaves the conclusion empty" do
       expect(application.symbols.find_reference_to("Unknown")).to have_attributes(
-        itself: be_a(::Holistic::Ruby::TypeInference::Something),
+        itself: be_a(::Holistic::Ruby::TypeInference::Reference),
         conclusion: be_nil
       )
     end
