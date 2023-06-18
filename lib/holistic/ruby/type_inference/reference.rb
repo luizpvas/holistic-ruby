@@ -2,6 +2,7 @@
 
 module Holistic::Ruby::TypeInference
   Reference = ::Struct.new(
+    :namespace,
     :clues,
     :conclusion,
     :source_location,

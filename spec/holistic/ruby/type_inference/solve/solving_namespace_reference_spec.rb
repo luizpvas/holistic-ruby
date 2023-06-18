@@ -20,6 +20,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
     it "solves the namespace reference" do
       expect(application.symbols.find_reference_to("Example")).to have_attributes(
         itself: be_a(::Holistic::Ruby::TypeInference::Reference),
+        namespace: application.symbols.find("::MyApp::Other").record,
         conclusion: have_attributes(
           itself: be_a(::Holistic::Ruby::TypeInference::Conclusion),
           dependency_identifier: "::MyApp::Example",
@@ -58,6 +59,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
     it "solves the namespace reference" do
       expect(application.symbols.find_reference_to("Example")).to have_attributes(
         itself: be_a(::Holistic::Ruby::TypeInference::Reference),
+        namespace: application.symbols.find("::MyApp::Other").record,
         conclusion: have_attributes(
           itself: be_a(::Holistic::Ruby::TypeInference::Conclusion),
           dependency_identifier: "::MyApp::Example",
@@ -149,6 +151,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
 
     it "solves the dependency" do
       expect(application.symbols.find_reference_to("Example1")).to have_attributes(
+        namespace: application.symbols.find("::MyApp::Example2").record,
         conclusion: have_attributes(
           dependency_identifier: "::Example1"
         )
@@ -169,6 +172,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
 
     it "solves the dependency" do
       expect(application.symbols.find_reference_to("PlusOne")).to have_attributes(
+        namespace: application.symbols.find("::MyApp").record,
         conclusion: have_attributes(
           dependency_identifier: "::MyApp::PlusOne"
         )

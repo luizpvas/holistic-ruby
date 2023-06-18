@@ -132,7 +132,12 @@ module Holistic::Ruby::Parser
       def register_reference(name:, source_location:, resolution_possibilities: Current.constant_resolution_possibilities.dup)
         clue = ::Holistic::Ruby::TypeInference::Clue::NamespaceReference.new(name:, resolution_possibilities:)
 
-        reference = ::Holistic::Ruby::TypeInference::Reference.new(clues: [clue], source_location:)
+        reference =
+          ::Holistic::Ruby::TypeInference::Reference.new(
+            namespace: Current.namespace,
+            clues: [clue],
+            source_location:
+          )
 
         Current.registration_queue.register(reference.to_symbol)
       end
