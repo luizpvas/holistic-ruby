@@ -77,7 +77,7 @@ module Holistic::Ruby::Parser
         def visit_assign(node)
           assign, expression = node.child_nodes
 
-          unless assign.child_nodes.first.is_a?(::SyntaxTree::Const)
+          if !assign.child_nodes.first.is_a?(::SyntaxTree::Const)
             visit(expression)
 
             return # TODO
