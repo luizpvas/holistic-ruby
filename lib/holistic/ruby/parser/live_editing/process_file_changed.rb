@@ -5,9 +5,13 @@ module Holistic::Ruby::Parser
     extend self
 
     def call(application:, file:)
+      dependants = application.dependencies.delete_dependants(dependency_file_path: file.path)
+
       delete_symbols_in_file(application:, file:)
+
       parse_again(application:, file:)
-      recalculate_dependants_of_file(application:, file:)
+
+      recalculate_dependants(application:, dependants:)
     end
 
     private
@@ -22,12 +26,8 @@ module Holistic::Ruby::Parser
       end
     end
 
-    def recalculate_dependants_of_file(application:, file:)
-      symbols = application.dependencies.list_dependants(dependency_file_path: file.path)
-
-      application.dependencies.delete_dependants(dependency_file_path: file.path)
-
-      symbols.each do |symbol|
+    def recalculate_dependants(application:, dependants:)
+      dependants.each do |symbol|
         something = symbol.record
 
         something.conclusion = nil
