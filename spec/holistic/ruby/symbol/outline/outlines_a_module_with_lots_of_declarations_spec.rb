@@ -25,6 +25,7 @@ describe ::Holistic::Ruby::Symbol::Outline do
 		expect(result.dependencies).to be_empty
 
 		expect(result.declarations.map(&:identifier)).to match_array([
+			"::MyApp",
 			"::MyApp::PlusOne",
 			"::MyApp::Example1",
 			"::MyApp::Example2",
