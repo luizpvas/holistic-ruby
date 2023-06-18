@@ -53,22 +53,21 @@ module Holistic::Ruby::Symbol
     end
 
     concerning :TestingHelpers do
-      # TODO: return a symbol instead of `Reference`
+      # TODO: return a symbol instead of `Reference`?
       def find_reference_to(name)
-        candidates =
-          @from_identifier_to_symbol.values.select do |symbol|
-            symbol.kind == :type_inference && symbol.record.clues.find { _1.name == name }
-          end
+        references_symbols = find_references_to(name)
 
-        raise "could not find reference to #{name.inspect}" if candidates.empty?
-        raise "found multiple references to #{name.inspect}" if candidates.size > 1
+        raise "could not find reference to #{name.inspect}" if references_symbols.empty?
+        raise "found multiple references to #{name.inspect}" if references_symbols.size > 1
 
-        candidates.first.record
+        references_symbols.first.record
       end
 
       def find_references_to(name)
         @from_identifier_to_symbol.values.select do |symbol|
-          symbol.kind == :type_inference && symbol.record.conclusion.dependency_identifier == name
+          next if symbol.kind != :type_inference
+
+          symbol.record.conclusion&.dependency_identifier == name || symbol.record.clues.find { _1.name == name }
         end
       end
     end
