@@ -40,8 +40,16 @@ module Holistic::Ruby::TypeInference
       dependants.map { application.symbols.find(_1) }
     end
 
-    def list_dependants(dependency_file_path:)
-      @from_dependency_file_path_to_dependants[dependency_file_path].map { application.symbols.find(_1) }
+    def list_dependants(dependency_file_path: nil, dependency_identifier: nil)
+      if dependency_file_path.present?
+        return @from_dependency_file_path_to_dependants[dependency_file_path].map { application.symbols.find(_1) }
+      end
+
+      if dependency_identifier.present?
+        return @from_dependency_to_dependants[dependency_identifier].map { application.symbols.find(_1) }
+      end
+
+      raise ::ArgumentError, "either :dependency_file_path or :dependency_identifier must be specified"
     end
   end
 end

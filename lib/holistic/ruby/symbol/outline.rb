@@ -11,13 +11,13 @@ module Holistic::Ruby::Symbol
       keyword_init: true
     )
 
-    def call(symbol:)
-      raise ::ArgumentError, "#{symbol.inspect} must be a Symbol" unless symbol.is_a?(Record)
+    def call(application:, symbol:)
+      dependants = application.dependencies.list_dependants(dependency_identifier: symbol.identifier)
 
       Result.new(
         declarations: [],
         dependencies: [],
-        dependants: []
+        dependants:
       )
     end
   end
