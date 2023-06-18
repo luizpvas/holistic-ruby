@@ -19,5 +19,11 @@ module Holistic::Ruby::Declaration
         searchable?: true
       )
     end
+
+    # We don't have to do anything because there are no references to this instance other than
+    # the symbols collection.
+    def delete(_file_path)
+      nil
+    end
   end
 end

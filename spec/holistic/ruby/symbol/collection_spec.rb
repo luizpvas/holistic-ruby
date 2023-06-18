@@ -172,7 +172,11 @@ describe ::Holistic::Ruby::Symbol::Collection do
 
       identifiers = matches.map { _1.document.identifier }
 
-      expect(identifiers).to match_array(["::MyApplication", "::MyApplication::MyController"])
+      expect(identifiers).to match_array([
+        "::MyApplication",
+        "::MyApplication::MyController",
+        "::MyApplication::MyController#index"
+      ])
     end
 
     # TODO: find references? find method declarations? find lambda declarations?
