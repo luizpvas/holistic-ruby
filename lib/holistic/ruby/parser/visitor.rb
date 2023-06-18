@@ -78,7 +78,7 @@ module Holistic::Ruby::Parser
           instance, dot, method_name, _params, body_statement = node.child_nodes
 
           identifier =
-            if instance.present? && separator.present?
+            if instance.present? && dot.present?
               # TODO: handle clases where instance is not kw self e.g. `def my_object.something; end`
               instance_name = instance.child_nodes.first.value
 
