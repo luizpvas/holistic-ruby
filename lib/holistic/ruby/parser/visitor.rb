@@ -74,11 +74,28 @@ module Holistic::Ruby::Parser
           end
         end
 
+        def visit_def(node)
+          _uknown1, _unkown2, method_name, _params, body_statement = node.child_nodes
+
+          identifier = Current.namespace.fully_qualified_name + "#" + method_name.value
+
+          declaration =
+            ::Holistic::Ruby::Declaration::Record.new(
+              identifier:,
+              namespace: Current.namespace,
+              source_location: Node::BuildSourceLocation[node]
+            )
+
+          Current.registration_queue.register(declaration.to_symbol)
+
+          visit(body_statement)
+        end
+
         def visit_assign(node)
-          assign, expression = node.child_nodes
+          assign, statement = node.child_nodes
 
           if !assign.child_nodes.first.is_a?(::SyntaxTree::Const)
-            visit(expression)
+            visit(statement)
 
             return # TODO
           end
@@ -94,7 +111,7 @@ module Holistic::Ruby::Parser
 
           Current.registration_queue.register(declaration.to_symbol)
 
-          visit(expression)
+          visit(statement)
         end
 
         def visit_const_path_ref(node)

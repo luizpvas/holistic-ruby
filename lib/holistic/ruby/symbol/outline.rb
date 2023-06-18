@@ -12,25 +12,30 @@ module Holistic::Ruby::Symbol
       keyword_init: true
     )
 
-    def call(application:, symbol:)
-      declarations = []
+    TrackDeclarations = ->(application, namespace) do
+      declarations = [application.symbols.find(namespace.fully_qualified_name)]
 
-      if symbol.record.is_a?(::Holistic::Ruby::Namespace::Record)
-        namespace = symbol.record
+      namespace.source_locations.each do |source_location|
+        symbols = application.symbols.list_symbols_in_file(source_location.file_path)
 
-        namespace.children.each do |child_namespace|
-          declarations << application.symbols.find(child_namespace.fully_qualified_name)
-        end
+        declarations_of_namespace =
+          symbols.filter { _1.kind == :declaration && _1.record.namespace == namespace }
 
-        namespace.source_locations.each do |source_location|
-          symbols = application.symbols.list_symbols_in_file(source_location.file_path)
-
-          declarations_of_namespace =
-            symbols.filter { _1.kind == :declaration && _1.record.namespace == namespace }
-
-          declarations.concat(declarations_of_namespace)
-        end
+        declarations.concat(declarations_of_namespace)
       end
+
+      declarations.concat(
+        namespace.children.each(&TrackDeclarations.curry[application])
+      )
+    end
+
+    def call(application:, symbol:)
+      declarations =
+        if symbol.record.is_a?(::Holistic::Ruby::Namespace::Record)
+          TrackDeclarations.call(application, symbol.record)
+        else
+          []
+        end
 
       references = application.dependencies.list_references(dependency_identifier: symbol.identifier)
 
