@@ -37,6 +37,10 @@ module Holistic::Ruby::Namespace
       parent.nil?
     end
 
+    def descendant?(other)
+      self == other || (parent.present? && parent.descendant?(other))
+    end
+
     def namespace
       self
     end

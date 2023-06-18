@@ -39,6 +39,29 @@ describe ::Holistic::Ruby::Namespace::Record do
     end
   end
 
+  describe "#descendant?" do
+    let(:root)      { described_class.new(kind: :root, name: "::", parent: nil) }
+    let(:child_1)   { described_class.new(kind: :module, name: "Child1", parent: root) }
+    let(:child_2)   { described_class.new(kind: :module, name: "Child2", parent: root) }
+    let(:child_2_a) { described_class.new(kind: :module, name: "Child2A", parent: child_2) }
+
+    it "returns true for direct child" do
+      expect(child_1.descendant?(root)).to be(true)
+      expect(child_2.descendant?(root)).to be(true)
+    end
+
+    it "returns true for children of child (recursively)" do
+      expect(child_2_a.descendant?(root)).to be(true)
+    end
+
+    it "returns false namespace is not present in ancestry tree" do
+      expect(child_1.descendant?(child_2)).to be(false)
+      expect(child_2.descendant?(child_1)).to be(false)
+      expect(child_2_a.descendant?(child_1)).to be(false)
+      expect(root.descendant?(child_1)).to be(false)
+    end
+  end
+
   describe "#nest" do
     context "when a namespace with the same name DOES NOT EXIST in the parent namespace" do
       it "adds a new child for each new module" do
