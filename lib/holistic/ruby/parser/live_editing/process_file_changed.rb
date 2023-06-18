@@ -5,13 +5,13 @@ module Holistic::Ruby::Parser
     extend self
 
     def call(application:, file:)
-      dependants = application.dependencies.delete_dependants(dependency_file_path: file.path)
+      references = application.dependencies.delete_references(dependency_file_path: file.path)
 
       delete_symbols_in_file(application:, file:)
 
       parse_again(application:, file:)
 
-      recalculate_dependants(application:, dependants:)
+      recalculate_type_inference_for_references(application:, references:)
     end
 
     private
@@ -26,8 +26,8 @@ module Holistic::Ruby::Parser
       end
     end
 
-    def recalculate_dependants(application:, dependants:)
-      dependants.each do |symbol|
+    def recalculate_type_inference_for_references(application:, references:)
+      references.each do |symbol|
         reference = symbol.record
 
         reference.conclusion = nil

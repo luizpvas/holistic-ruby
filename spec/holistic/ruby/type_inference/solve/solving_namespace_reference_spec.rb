@@ -30,10 +30,10 @@ describe ::Holistic::Ruby::TypeInference::Solve do
     end
 
     it "registers a dependency" do
-      symbols = application.dependencies.list_dependants(dependency_file_path: "snippet.rb")
+      references = application.dependencies.list_references(dependency_file_path: "snippet.rb")
 
-      expect(symbols.size).to eql(1)
-      expect(symbols.first.record).to eql(application.symbols.find_reference_to("Example"))
+      expect(references.size).to eql(1)
+      expect(references.first.record).to eql(application.symbols.find_reference_to("Example"))
     end
   end
 
@@ -69,10 +69,10 @@ describe ::Holistic::Ruby::TypeInference::Solve do
     end
 
     it "registers a dependency" do
-      symbols = application.dependencies.list_dependants(dependency_file_path: "my_app/example.rb")
+      references = application.dependencies.list_references(dependency_file_path: "my_app/example.rb")
 
-      expect(symbols.size).to eql(1)
-      expect(symbols.first.record).to eql(application.symbols.find_reference_to("Example"))
+      expect(references.size).to eql(1)
+      expect(references.first.record).to eql(application.symbols.find_reference_to("Example"))
     end
   end
 
@@ -102,10 +102,10 @@ describe ::Holistic::Ruby::TypeInference::Solve do
     end
 
     it "tries its best to guess the source location" do
-      symbols = application.dependencies.list_dependants(dependency_file_path: "my_app/example_1.rb")
+      references = application.dependencies.list_references(dependency_file_path: "my_app/example_1.rb")
 
-      expect(symbols.size).to eql(1)
-      expect(symbols.first.record).to eql(application.symbols.find_reference_to("MyApp"))
+      expect(references.size).to eql(1)
+      expect(references.first.record).to eql(application.symbols.find_reference_to("MyApp"))
     end
   end
 

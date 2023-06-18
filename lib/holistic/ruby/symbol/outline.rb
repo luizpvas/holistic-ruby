@@ -7,17 +7,19 @@ module Holistic::Ruby::Symbol
     Result = ::Struct.new(
       :declarations,
       :dependencies,
+      :references,
       :dependants,
       keyword_init: true
     )
 
     def call(application:, symbol:)
-      dependants = application.dependencies.list_dependants(dependency_identifier: symbol.identifier)
+      references = application.dependencies.list_references(dependency_identifier: symbol.identifier)
 
       Result.new(
         declarations: [],
         dependencies: [],
-        dependants:
+        references:,
+        dependants: []
       )
     end
   end

@@ -29,7 +29,7 @@ module Holistic::Ruby::TypeInference
         dependency = application.symbols.find(dependency_identifier)
 
         if dependency.present?
-          application.dependencies.register(dependency:, dependant_identifier: reference.identifier)
+          application.dependencies.register(dependency:, reference_identifier: reference.identifier)
 
           reference.conclusion = Conclusion.with_strong_confidence(dependency.identifier)
 
