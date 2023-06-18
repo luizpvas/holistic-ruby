@@ -15,8 +15,7 @@ module Holistic::Ruby::Symbol
     def call(application:, symbol:)
       references = application.dependencies.list_references(dependency_identifier: symbol.identifier)
 
-      # TODO: dedup & add specs
-      dependants = references.map { |symbol| symbol.record.namespace }
+      dependants = references.map { |symbol| symbol.record.namespace }.uniq
 
       Result.new(
         declarations: [],
