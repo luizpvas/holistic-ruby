@@ -21,7 +21,11 @@ describe ::Holistic::Ruby::Symbol::Outline do
     expect(result.declarations).to be_empty
     expect(result.dependencies).to be_empty
 
-    expect(result.references.map(&:identifier)).to match_array([
+    expect(result.references.map(&:record)).to match_array([
+      application.symbols.find_reference_to("PlusOne")
+    ])
+
+    expect(result.dependants.map(&:fully_qualified_name)).to match_array([
       "::MyApp::Calc"
     ])
   end

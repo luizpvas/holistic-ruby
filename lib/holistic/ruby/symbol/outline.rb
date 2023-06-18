@@ -15,11 +15,13 @@ module Holistic::Ruby::Symbol
     def call(application:, symbol:)
       references = application.dependencies.list_references(dependency_identifier: symbol.identifier)
 
+      dependants = references.map { |symbol| symbol.record.namespace }
+
       Result.new(
         declarations: [],
         dependencies: [],
         references:,
-        dependants: []
+        dependants:
       )
     end
   end
