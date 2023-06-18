@@ -29,27 +29,25 @@ module Holistic::Ruby::Symbol
       namespace.children.map(&CrawlNamespaceDeclarationsRecursively.curry[application]).flatten.concat(declarations)
     end
 
-    CrawlDependenciesRecursively = ->(application, inspected_namespace, namespace) do
+    CrawlDependenciesRecursively = ->(application, outlined_namespace, namespace) do
       dependencies = []
 
-      namespace.source_locations.each do |source_location|
-        symbols = application.symbols.list_symbols_in_file(source_location.file_path)
+      is_local_dependency = ->(symbol) do
+        dependency = application.symbols.find(symbol.record.conclusion.dependency_identifier)
 
-        dependencies_of_namespace =
-          symbols
-            .filter { _1.kind == :type_inference && _1.record.namespace == namespace }
-            .filter do |symbol|
-              dependency = application.symbols.find(symbol.record.conclusion.dependency_identifier)
-
-              declared_in_namespace = dependency.namespace.eql?(inspected_namespace) || dependency.namespace.descendant?(inspected_namespace)
-
-              !declared_in_namespace
-            end
-
-        dependencies.concat(dependencies_of_namespace)
+        dependency.namespace.eql?(outlined_namespace) || dependency.namespace.descendant?(outlined_namespace)
       end
 
-      namespace.children.map(&CrawlDependenciesRecursively.curry[application, inspected_namespace]).flatten.concat(dependencies)
+      namespace.source_locations.each do |source_location|
+        application.symbols
+          .list_symbols_in_file(source_location.file_path)
+          .filter { _1.kind == :type_inference }
+          .filter { _1.record.namespace == namespace }
+          .reject(&is_local_dependency)
+          .tap { dependencies.concat(_1) }
+      end
+
+      namespace.children.map(&CrawlDependenciesRecursively.curry[application, outlined_namespace]).flatten.concat(dependencies)
     end
 
     def call(application:, symbol:)
