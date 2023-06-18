@@ -4,7 +4,7 @@ describe Holistic::Ruby::Namespace::Delete do
   context "when the namespace has a single source location" do
     let(:root_namespace) { ::Holistic::Ruby::Namespace::Record.new(kind: :root, name: "::", parent: nil) }
     let(:source_location) { ::Holistic::SourceCode::Location.new(file_path: "dummy.rb") }
-    let(:namespace) { root_namespace.nest(kind: :module, name: "Dummy", source_location:) }
+    let(:namespace) { ::Holistic::Ruby::Namespace::RegisterChildNamespace.call(parent: root_namespace, kind: :module, name: "Dummy", source_location:) }
 
     it "detaches the namespace from the parent" do
       expect(root_namespace.children).to eql([namespace])
@@ -22,8 +22,8 @@ describe Holistic::Ruby::Namespace::Delete do
     let(:source_location_2) { ::Holistic::SourceCode::Location.new(file_path: "dummy_2.rb") }
 
     let(:namespace) do
-      root_namespace.nest(kind: :module, name: "Dummy", source_location: source_location_1)
-      root_namespace.nest(kind: :module, name: "Dummy", source_location: source_location_2)
+      ::Holistic::Ruby::Namespace::RegisterChildNamespace.call(parent: root_namespace, kind: :module, name: "Dummy", source_location: source_location_1)
+      ::Holistic::Ruby::Namespace::RegisterChildNamespace.call(parent: root_namespace, kind: :module, name: "Dummy", source_location: source_location_2)
     end
 
     it "removes the source location" do
@@ -50,7 +50,7 @@ describe Holistic::Ruby::Namespace::Delete do
   context "when the namespace is not defined in the file path" do
     let(:root_namespace) { ::Holistic::Ruby::Namespace::Record.new(kind: :root, name: "::", parent: nil) }
     let(:source_location) { ::Holistic::SourceCode::Location.new(file_path: "dummy.rb") }
-    let(:namespace) { root_namespace.nest(kind: :module, name: "Dummy", source_location:) }
+    let(:namespace) { ::Holistic::Ruby::Namespace::RegisterChildNamespace.call(parent: root_namespace, kind: :module, name: "Dummy", source_location:) }
 
     it "raises an error" do
       expect {

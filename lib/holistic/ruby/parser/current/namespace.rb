@@ -11,7 +11,7 @@ module Holistic::Ruby::Parser
       starting_namespace = Current.namespace
 
       namespace_declaration.each do |name|
-        Current.namespace = Current.namespace.nest(kind: :module, name:, source_location:)
+        Current.namespace = ::Holistic::Ruby::Namespace::RegisterChildNamespace.call(parent: Current.namespace, kind: :module, name:, source_location:)
 
         Current.registration_queue.register(::Holistic::Ruby::Namespace::ToSymbol[Current.namespace])
       end
@@ -28,7 +28,7 @@ module Holistic::Ruby::Parser
       starting_namespace = Current.namespace
 
       namespace_declaration.each do |name|
-        Current.namespace = Current.namespace.nest(kind: :class, name:, source_location:)
+        Current.namespace = ::Holistic::Ruby::Namespace::RegisterChildNamespace.call(parent: Current.namespace, kind: :class, name:, source_location:)
 
         Current.registration_queue.register(::Holistic::Ruby::Namespace::ToSymbol[Current.namespace])
       end

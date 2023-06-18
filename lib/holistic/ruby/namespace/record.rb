@@ -29,10 +29,6 @@ module Holistic::Ruby::Namespace
       "#{parent.fully_qualified_name}::#{name}"
     end
 
-    def nest(kind:, name:, source_location:)
-      append_source_location_to_existing_namespace(name:, source_location:) || add_new_namespace(kind:, name:, source_location:)
-    end
-
     def root?
       parent.nil?
     end
@@ -48,20 +44,5 @@ module Holistic::Ruby::Namespace
     def delete(file_path)
       Delete.call(namespace: self, file_path: file_path)
     end
-
-    private
-      def append_source_location_to_existing_namespace(name:, source_location:)
-        namespace = children.find { _1.name == name }
-
-        return if namespace.nil?
-
-        namespace.tap { _1.source_locations << source_location }
-      end
-
-      def add_new_namespace(kind:, name:, source_location:)
-        namespace = self.class.new(kind:, name:, parent: self, source_location:)
-
-        namespace.tap { children << _1 }
-      end
   end
 end
