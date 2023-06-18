@@ -31,7 +31,9 @@ describe ::Holistic::Ruby::Symbol::Outline do
       "::MyApp::Example::PlusThree"
     ])
 
-    expect(result.dependencies.map(&:identifier)).to match_array([
+    dependencies = result.dependencies.map { _1.record.conclusion.dependency_identifier }
+
+    expect(dependencies).to match_array([
       "::MyApp::PlusOne",
       "::MyApp::PlusTwo"
     ])

@@ -37,6 +37,10 @@ module Holistic::Ruby::Namespace
       parent.nil?
     end
 
+    def namespace
+      self
+    end
+
     def delete(file_path)
       Delete.call(namespace: self, file_path: file_path)
     end

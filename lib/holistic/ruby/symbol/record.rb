@@ -19,6 +19,10 @@ module Holistic::Ruby::Symbol
       )
     end
 
+    def namespace
+      record.namespace
+    end
+
     def delete(file_path)
       record.delete(file_path)
     end

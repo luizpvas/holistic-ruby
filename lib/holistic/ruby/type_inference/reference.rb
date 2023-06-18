@@ -14,7 +14,7 @@ module Holistic::Ruby::TypeInference
     def to_symbol
       ::Holistic::Ruby::Symbol::Record.new(
         identifier:,
-        kind: :type_inference,
+        kind: :type_inference, # TODO: rename to `:reference`
         record: self,
         source_locations: [source_location],
         searchable?: false
