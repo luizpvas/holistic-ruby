@@ -45,6 +45,11 @@ describe ::Holistic::Ruby::Namespace::Record do
     let(:child_2)   { described_class.new(kind: :module, name: "Child2", parent: root) }
     let(:child_2_a) { described_class.new(kind: :module, name: "Child2A", parent: child_2) }
 
+    it "returns false for itself" do
+      expect(child_1.descendant?(child_1)).to be(false)
+      expect(root.descendant?(root)).to be(false)
+    end
+
     it "returns true for direct child" do
       expect(child_1.descendant?(root)).to be(true)
       expect(child_2.descendant?(root)).to be(true)

@@ -48,7 +48,9 @@ module Holistic::Ruby::Symbol
               .filter do |symbol|
                 dependency = @application.symbols.find(symbol.record.conclusion.dependency_identifier)
 
-                !descentand?(dependency.namespace)
+                declared_in_namespace = dependency.namespace.eql?(@namespace) || dependency.namespace.descendant?(@namespace)
+
+                !declared_in_namespace
               end
 
           @dependencies.concat(dependencies_of_namespace)
@@ -57,15 +59,6 @@ module Holistic::Ruby::Symbol
         namespace.children.map { crawl_dependencies(_1) }
 
         @dependencies
-      end
-
-      private
-
-      def descentand?(namespace)
-        return false if namespace.root?
-        return true if @namespace == namespace
-
-        descentand?(namespace.parent)
       end
     end
 
