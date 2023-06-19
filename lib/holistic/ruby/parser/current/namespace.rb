@@ -4,10 +4,7 @@ module Holistic::Ruby::Parser
   module Current::Namespace
     extend self
 
-    # TODO: I'm not liking the usage of the `nest` word here. We are registering the namespace under the
-    # current namespace.
-
-    def nest_module(namespace_declaration:, source_location:, &block)
+    def register_child_module(namespace_declaration:, source_location:, &block)
       starting_namespace = Current.namespace
 
       namespace_declaration.each do |name|
@@ -24,7 +21,7 @@ module Holistic::Ruby::Parser
       Current.constant_resolution_possibilities.shift
     end
 
-    def nest_class(namespace_declaration:, source_location:, &block)
+    def register_child_class(namespace_declaration:, source_location:, &block)
       starting_namespace = Current.namespace
 
       namespace_declaration.each do |name|

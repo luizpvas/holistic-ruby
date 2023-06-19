@@ -41,7 +41,7 @@ module Holistic::Ruby::Parser
           namespace_declaration = Node::GetNamespadeDeclaration[declaration]
           source_location = Node::BuildSourceLocation[node]
 
-          Current::Namespace.nest_module(namespace_declaration:, source_location:) do
+          Current::Namespace.register_child_module(namespace_declaration:, source_location:) do
             visit(statements)
           end
         end
@@ -69,7 +69,7 @@ module Holistic::Ruby::Parser
           namespace_declaration = Node::GetNamespadeDeclaration[declaration]
           source_location = Node::BuildSourceLocation[node]
 
-          Current::Namespace.nest_class(namespace_declaration:, source_location:) do
+          Current::Namespace.register_child_class(namespace_declaration:, source_location:) do
             visit(statements)
           end
         end
