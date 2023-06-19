@@ -13,7 +13,7 @@ module Holistic::Ruby::Parser
       namespace_declaration.each do |name|
         Current.namespace = ::Holistic::Ruby::Namespace::RegisterChildNamespace.call(parent: Current.namespace, kind: :module, name:, source_location:)
 
-        Current.registration_queue.register(::Holistic::Ruby::Namespace::ToSymbol[Current.namespace])
+        Current.registration_queue.register(Current.namespace.to_symbol)
       end
 
       Current.constant_resolution_possibilities.unshift(namespace_declaration.to_s)
@@ -30,7 +30,7 @@ module Holistic::Ruby::Parser
       namespace_declaration.each do |name|
         Current.namespace = ::Holistic::Ruby::Namespace::RegisterChildNamespace.call(parent: Current.namespace, kind: :class, name:, source_location:)
 
-        Current.registration_queue.register(::Holistic::Ruby::Namespace::ToSymbol[Current.namespace])
+        Current.registration_queue.register(Current.namespace.to_symbol)
       end
 
       Current.constant_resolution_possibilities.unshift(namespace_declaration.to_s)

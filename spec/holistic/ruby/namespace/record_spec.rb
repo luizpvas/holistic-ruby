@@ -66,4 +66,25 @@ describe ::Holistic::Ruby::Namespace::Record do
       expect(root.descendant?(child_1)).to be(false)
     end
   end
+
+  describe "#to_symbol" do
+    it "builds a symbol from a namespace" do
+      source_location = ::Holistic::SourceCode::Location.new
+
+      namespace = ::Holistic::Ruby::Namespace::Record.new(
+        kind: :module,
+        name: "MyApp",
+        parent: ::Holistic::Ruby::Namespace::Record.new(kind: :root, name: "::", parent: nil),
+        source_location: source_location
+      )
+
+      expect(namespace.to_symbol).to have_attributes(
+        itself: be_a(::Holistic::Ruby::Symbol::Record),
+        identifier: namespace.fully_qualified_name,
+        kind: :namespace,
+        record: namespace,
+        source_locations: [source_location]
+      )
+    end
+  end
 end

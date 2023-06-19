@@ -44,5 +44,15 @@ module Holistic::Ruby::Namespace
     def delete(file_path)
       Delete.call(namespace: self, file_path: file_path)
     end
+
+    def to_symbol
+      ::Holistic::Ruby::Symbol::Record.new(
+        identifier: fully_qualified_name,
+        kind: :namespace,
+        record: self,
+        source_locations:,
+        searchable?: true
+      )
+    end
   end
 end
