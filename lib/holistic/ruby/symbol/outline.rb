@@ -69,12 +69,7 @@ module Holistic::Ruby::Symbol
 
       dependants = references.map { |symbol| symbol.record.namespace }.uniq
 
-      Result.new(
-        declarations:,
-        dependencies:,
-        references:,
-        dependants:
-      )
+      Result.new(declarations:, dependencies:, references:, dependants:)
     end
   end
 end

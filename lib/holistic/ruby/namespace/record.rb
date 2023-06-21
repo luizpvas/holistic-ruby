@@ -6,12 +6,13 @@ module Holistic::Ruby::Namespace
 
     def initialize(kind:, name:, parent:, source_location: nil)
       @kind = kind
-      @parent = parent
       @name = name
+      @parent = parent
       @source_locations = source_location.nil? ? [] : [source_location]
       @children = []
     end
 
+    # NOTE: I don't like having this serialize here. It feels weird.
     def serialize
       nested = {}
       root = {name => nested}
