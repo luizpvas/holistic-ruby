@@ -77,24 +77,22 @@ module Holistic::Ruby::Parser
         def visit_def(node)
           instance, dot, method_name, _params, body_statement = node.child_nodes
 
-          identifier =
+          method_name =
             if instance.present? && dot.present?
-              # TODO: handle clases where instance is not kw self e.g. `def my_object.something; end`
-              instance_name = instance.child_nodes.first.value
-
-              Current.namespace.fully_qualified_name + "#" + instance_name + dot.value + method_name.value
+              instance.child_nodes.first.value + dot.value + method_name.value
             else
-              Current.namespace.fully_qualified_name + "#" + method_name.value
+              method_name.value
             end
 
-          declaration =
-            ::Holistic::Ruby::Declaration::Record.new(
-              identifier:,
-              namespace: Current.namespace,
-              source_location: Node::BuildSourceLocation[node]
+          method_declaration =
+            ::Holistic::Ruby::Namespace::RegisterChildNamespace.call(
+              parent: Current.namespace,
+              kind: :method,
+              name: method_name,
+              source_location: Node::BuildSourceLocation.call(node)
             )
 
-          Current.registration_queue.register(declaration.to_symbol)
+          Current.registration_queue.register(method_declaration.to_symbol)
 
           visit(body_statement)
         end
@@ -108,16 +106,15 @@ module Holistic::Ruby::Parser
             return # TODO
           end
 
-          identifier = Current.namespace.fully_qualified_name + "::" + assign.child_nodes.first.value
-
-          declaration =
-            ::Holistic::Ruby::Declaration::Record.new(
-              identifier:,
-              namespace: Current.namespace,
-              source_location: Node::BuildSourceLocation[node]
+          lambda_declaration =
+            ::Holistic::Ruby::Namespace::RegisterChildNamespace.call(
+              parent: Current.namespace,
+              kind: :lambda,
+              name: assign.child_nodes.first.value,
+              source_location: Node::BuildSourceLocation.call(node)
             )
 
-          Current.registration_queue.register(declaration.to_symbol)
+          Current.registration_queue.register(lambda_declaration.to_symbol)
 
           visit(statement)
         end

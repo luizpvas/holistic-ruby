@@ -12,21 +12,12 @@ module Holistic::Ruby::Symbol
       keyword_init: true
     )
 
-    CrawlNamespaceDeclarationsRecursively = ->(application, namespace) do
-      declarations = [application.symbols.find(namespace.fully_qualified_name)]
+    CrawlDeclarationsRecursively = ->(application, namespace) do
+      namespace.children.flat_map do |subnamespace|
+        symbols = [application.symbols.find(subnamespace.fully_qualified_name)]
 
-      # NOTE: Perhaps this inner loop looking for all symbols in file is an expensive operations?
-      # Will there be any perceived different in performance making it O(1)?
-      namespace.source_locations.each do |source_location|
-        symbols = application.symbols.list_symbols_in_file(source_location.file_path)
-
-        declarations_of_namespace =
-          symbols.filter { _1.kind == :declaration && _1.record.namespace == namespace }
-
-        declarations.concat(declarations_of_namespace)
+        symbols.concat(CrawlDeclarationsRecursively.call(application, subnamespace))
       end
-
-      namespace.children.map(&CrawlNamespaceDeclarationsRecursively.curry[application]).flatten.concat(declarations)
     end
 
     CrawlDependenciesRecursively = ->(application, outlined_namespace, namespace) do
@@ -53,7 +44,7 @@ module Holistic::Ruby::Symbol
     def call(application:, symbol:)
       declarations =
         if symbol.record.is_a?(::Holistic::Ruby::Namespace::Record)
-          CrawlNamespaceDeclarationsRecursively.call(application, symbol.record).sort_by { _1.identifier }
+          CrawlDeclarationsRecursively.call(application, symbol.record).sort_by { _1.identifier }
         else
           []
         end

@@ -27,7 +27,9 @@ describe Holistic::Ruby::Parser do
     expect(application.root_namespace.serialize).to eql({
       "::" => {
         "MyApp" => {
-          "Example1" => {},
+          "Example1" => {
+            "self.call" => {}
+          },
           "Example2" => {}
         }
       }

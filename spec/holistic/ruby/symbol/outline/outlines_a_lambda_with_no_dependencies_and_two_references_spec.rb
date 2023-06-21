@@ -19,8 +19,8 @@ describe ::Holistic::Ruby::Symbol::Outline do
   it "outlines a lambda with no dependencies and two references" do
     result = described_class.call(application:, symbol: application.symbols.find("::MyApp::PlusOne"))
 
-    expect(result.declarations).to be_empty
     expect(result.dependencies).to be_empty
+    expect(result.declarations).to be_empty
 
     expect(result.references.size).to eql(2)
     expect(result.references).to match_array(

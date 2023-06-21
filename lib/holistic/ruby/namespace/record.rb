@@ -27,7 +27,14 @@ module Holistic::Ruby::Namespace
     def fully_qualified_name
       return "" if root?
 
-      "#{parent.fully_qualified_name}::#{name}"
+      separator =
+        if kind == :method
+          "#"
+        else
+          "::"
+        end
+
+      "#{parent.fully_qualified_name}#{separator}#{name}"
     end
 
     def root?
