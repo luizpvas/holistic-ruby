@@ -62,7 +62,7 @@ module Holistic::LanguageServer
           @content_length = Integer(value)
           @buffer.clear
 
-          return true
+          return
         end
       end
 

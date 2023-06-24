@@ -12,11 +12,7 @@ module Holistic::LanguageServer::Stdio
         message_parser.ingest(payload)
 
         while message_parser.completed?
-          ::Holistic.logger.info("completed message!")
-
-          ::Holistic.logger.info(message_parser.message)
-
-          # TODO: handle the message
+          ::Holistic::LanguageServer::Router.call(message_parser.message)
 
           message_parser.clear
         end
