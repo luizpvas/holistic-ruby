@@ -2,6 +2,6 @@
 # frozen_string_literal: true
 
 require "bundler/setup"
-require "holistic"
+require_relative "../lib/holistic"
 
-::Holistic::Cli::Start.call(root_directory: ::Dir.getwd)
+::Holistic::LanguageServer::StartStdioServer.call
