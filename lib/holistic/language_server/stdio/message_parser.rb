@@ -27,7 +27,7 @@ module Holistic::LanguageServer
     end
 
     def completed?
-      @content_length == @buffer.length
+      !@in_header && @content_length == @buffer.length
     end
 
     def has_left_over?
@@ -39,13 +39,19 @@ module Holistic::LanguageServer
     end
 
     def clear
+      left_over = @left_over_from_previous_ingestion.dup
       @left_over_from_previous_ingestion.clear
+
       @buffer.clear
       @in_header = true
       @content_length = 0
+
+      ingest(left_over) if !left_over.empty?
     end
 
     private
+
+    MissingContentLengthHeaderError = ::Class.new(::StandardError)
 
     def prepare_to_parse_message!
       @buffer.each_line do |line|
@@ -60,7 +66,7 @@ module Holistic::LanguageServer
         end
       end
 
-      raise "missing Content-Length header"
+      raise MissingContentLengthHeaderError, @buffer
     end
   end
 end
