@@ -5,7 +5,7 @@ module Holistic::LanguageServer
     extend self
 
     FROM_METHOD_TO_HANDLER = {
-      Requests::Initialize::METHOD => Requests::Initialize
+      "initialize" => Requests::Initialize
     }.freeze
 
     def call(message)
@@ -15,9 +15,11 @@ module Holistic::LanguageServer
 
       if !handler
         ::Holistic.logger.info("handler not defined for: #{method}")
+
+        return
       end
 
-      # TODO: do something about it
+      handler.call(message["params"])
     end
   end
 end
