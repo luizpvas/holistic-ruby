@@ -5,6 +5,8 @@ module Holistic::LanguageServer
     CONTENT_LENGTH_HEADER = "Content-Length"
     END_OF_HEADER = "\r\n\r\n"
 
+    MissingContentLengthHeaderError = ::Class.new(::StandardError)
+
     def initialize
       @buffer = ::String.new
       @left_over_from_previous_ingestion = ::String.new
@@ -50,8 +52,6 @@ module Holistic::LanguageServer
     end
 
     private
-
-    MissingContentLengthHeaderError = ::Class.new(::StandardError)
 
     def prepare_to_parse_message!
       @buffer.each_line do |line|
