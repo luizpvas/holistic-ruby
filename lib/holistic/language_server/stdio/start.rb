@@ -11,7 +11,7 @@ module Holistic::LanguageServer::Stdio
       server.on_data_received do |payload|
         message_parser.ingest(payload)
 
-        if message_parser.completed?
+        while message_parser.completed?
           ::Holistic.logger.info("completed message!")
 
           ::Holistic.logger.info(message_parser.message)
