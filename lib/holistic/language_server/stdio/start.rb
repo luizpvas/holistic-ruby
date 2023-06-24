@@ -9,7 +9,7 @@ module Holistic::LanguageServer::Stdio
       message_parser = MessageParser.new
       
       server.on_data_received do |payload|
-        message_parser.feed(payload)
+        message_parser.ingest(payload)
 
         if message_parser.completed?
           ::Holistic.logger.info("completed message!")
