@@ -7,7 +7,7 @@ module Holistic::Ruby
     def initialize(name:, root_directory:)
       @name = name
       @root_directory = root_directory
-      @root_namespace = Namespace::Record.new(kind: :root, name: "::", parent: nil)
+      @root_namespace = Namespace::Record.new(kind: Namespace::Kind::ROOT, name: "::", parent: nil)
     end
 
     def symbols

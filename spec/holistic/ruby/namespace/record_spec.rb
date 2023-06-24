@@ -3,10 +3,10 @@
 describe ::Holistic::Ruby::Namespace::Record do
   describe ".new" do
     it "initializes the namespace with the arguments + defaults" do
-      namespace = described_class.new(kind: :module, name: "MyModule", parent: nil)
+      namespace = described_class.new(kind: ::Holistic::Ruby::Namespace::Kind::MODULE, name: "MyModule", parent: nil)
 
       expect(namespace).to have_attributes(
-        kind: :module,
+        kind: ::Holistic::Ruby::Namespace::Kind::MODULE,
         name: "MyModule",
         parent: nil,
         children: [],
@@ -17,7 +17,7 @@ describe ::Holistic::Ruby::Namespace::Record do
 
   describe "#fully_qualified_name" do
     context "when is root namespace" do
-      let(:root_namespace) { described_class.new(kind: :module, name: "::", parent: nil) }
+      let(:root_namespace) { described_class.new(kind: ::Holistic::Ruby::Namespace::Kind::MODULE, name: "::", parent: nil) }
 
       it "returns an empty string" do
         expect(root_namespace.fully_qualified_name).to eql("")
@@ -26,11 +26,11 @@ describe ::Holistic::Ruby::Namespace::Record do
 
     context "when is nested namespace" do
       let(:nested_namespace) do
-        root_namespace = described_class.new(kind: :module, name: "::", parent: nil)
+        root_namespace = described_class.new(kind: ::Holistic::Ruby::Namespace::Kind::MODULE, name: "::", parent: nil)
 
-        parent_namespace = described_class.new(kind: :module, name: "ParentModule", parent: root_namespace)
+        parent_namespace = described_class.new(kind: ::Holistic::Ruby::Namespace::Kind::MODULE, name: "ParentModule", parent: root_namespace)
 
-        described_class.new(kind: :module, name: "MyModule", parent: parent_namespace)
+        described_class.new(kind: ::Holistic::Ruby::Namespace::Kind::MODULE, name: "MyModule", parent: parent_namespace)
       end
 
       it "returns the fully qualified name" do
@@ -40,10 +40,10 @@ describe ::Holistic::Ruby::Namespace::Record do
   end
 
   describe "#descendant?" do
-    let(:root)      { described_class.new(kind: :root, name: "::", parent: nil) }
-    let(:child_1)   { described_class.new(kind: :module, name: "Child1", parent: root) }
-    let(:child_2)   { described_class.new(kind: :module, name: "Child2", parent: root) }
-    let(:child_2_a) { described_class.new(kind: :module, name: "Child2A", parent: child_2) }
+    let(:root)      { described_class.new(kind: ::Holistic::Ruby::Namespace::Kind::ROOT, name: "::", parent: nil) }
+    let(:child_1)   { described_class.new(kind: ::Holistic::Ruby::Namespace::Kind::MODULE, name: "Child1", parent: root) }
+    let(:child_2)   { described_class.new(kind: ::Holistic::Ruby::Namespace::Kind::MODULE, name: "Child2", parent: root) }
+    let(:child_2_a) { described_class.new(kind: ::Holistic::Ruby::Namespace::Kind::MODULE, name: "Child2A", parent: child_2) }
 
     it "returns false for itself" do
       expect(child_1.descendant?(child_1)).to be(false)
@@ -72,9 +72,9 @@ describe ::Holistic::Ruby::Namespace::Record do
       source_location = ::Holistic::SourceCode::Location.new
 
       namespace = ::Holistic::Ruby::Namespace::Record.new(
-        kind: :module,
+        kind: ::Holistic::Ruby::Namespace::Kind::MODULE,
         name: "MyApp",
-        parent: ::Holistic::Ruby::Namespace::Record.new(kind: :root, name: "::", parent: nil),
+        parent: ::Holistic::Ruby::Namespace::Record.new(kind: ::Holistic::Ruby::Namespace::Kind::ROOT, name: "::", parent: nil),
         source_location: source_location
       )
 

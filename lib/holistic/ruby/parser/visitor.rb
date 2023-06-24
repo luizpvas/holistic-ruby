@@ -87,7 +87,7 @@ module Holistic::Ruby::Parser
           method_declaration =
             ::Holistic::Ruby::Namespace::RegisterChildNamespace.call(
               parent: Current.namespace,
-              kind: :method,
+              kind: ::Holistic::Ruby::Namespace::Kind::METHOD,
               name: method_name,
               source_location: Node::BuildSourceLocation.call(node)
             )
@@ -109,7 +109,7 @@ module Holistic::Ruby::Parser
           lambda_declaration =
             ::Holistic::Ruby::Namespace::RegisterChildNamespace.call(
               parent: Current.namespace,
-              kind: :lambda,
+              kind: ::Holistic::Ruby::Namespace::Kind::LAMBDA,
               name: assign.child_nodes.first.value,
               source_location: Node::BuildSourceLocation.call(node)
             )

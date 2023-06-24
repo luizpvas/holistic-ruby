@@ -28,7 +28,7 @@ module Holistic::Ruby::Namespace
       return "" if root?
 
       separator =
-        if kind == :method
+        if kind == Kind::METHOD
           "#"
         else
           "::"
