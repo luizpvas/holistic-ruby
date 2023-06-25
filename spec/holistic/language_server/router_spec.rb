@@ -14,7 +14,7 @@ describe ::Holistic::LanguageServer::Router do
     it "calls the handler" do
       expect(::Holistic::LanguageServer::Requests::Initialize).to receive(:call).with(message)
 
-      described_class.call(message)
+      described_class.dispatch(message)
     end
   end
 end

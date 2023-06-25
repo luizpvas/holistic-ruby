@@ -14,7 +14,7 @@ module Holistic::LanguageServer::Stdio
         while parser.completed?
           message = ::Holistic::LanguageServer::Message.new(parser.message)
 
-          ::Holistic::LanguageServer::Router.call(message)
+          ::Holistic::LanguageServer::Router.dispatch(message)
 
           parser.clear
         end

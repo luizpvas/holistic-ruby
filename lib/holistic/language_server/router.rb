@@ -8,7 +8,7 @@ module Holistic::LanguageServer
       "initialize" => Requests::Initialize
     }.freeze
 
-    def call(message)
+    def dispatch(message)
       handler = FROM_METHOD_TO_HANDLER[message.method]
 
       if !handler
