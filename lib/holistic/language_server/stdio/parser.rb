@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Holistic::LanguageServer
-  class Stdio::MessageParser
+  class Stdio::Parser
     CONTENT_LENGTH_HEADER = "Content-Length"
     END_OF_HEADER = "\r\n\r\n"
 

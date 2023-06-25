@@ -6,17 +6,17 @@ module Holistic::LanguageServer::Stdio
 
     def call
       server = Server.new
-      message_parser = MessageParser.new
+      parser = Parser.new
       
       server.on_data_received do |payload|
-        message_parser.ingest(payload)
+        parser.ingest(payload)
 
-        while message_parser.completed?
-          message = ::Holistic::LanguageServer::Message.new(message_parser.message)
+        while parser.completed?
+          message = ::Holistic::LanguageServer::Message.new(parser.message)
 
           ::Holistic::LanguageServer::Router.call(message)
 
-          message_parser.clear
+          parser.clear
         end
       end
 
