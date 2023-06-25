@@ -12,7 +12,9 @@ module Holistic::LanguageServer::Stdio
         message_parser.ingest(payload)
 
         while message_parser.completed?
-          ::Holistic::LanguageServer::Router.call(message_parser.message)
+          message = ::Holistic::LanguageServer::Message.new(message_parser.message)
+
+          ::Holistic::LanguageServer::Router.call(message)
 
           message_parser.clear
         end

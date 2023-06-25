@@ -9,17 +9,15 @@ module Holistic::LanguageServer
     }.freeze
 
     def call(message)
-      method = message["method"]
-
-      handler = FROM_METHOD_TO_HANDLER[method]
+      handler = FROM_METHOD_TO_HANDLER[message.method]
 
       if !handler
-        ::Holistic.logger.info("handler not defined for: #{method}")
+        ::Holistic.logger.info("handler not defined for: #{message.method}")
 
         return
       end
 
-      handler.call(message["params"])
+      handler.call(message)
     end
   end
 end

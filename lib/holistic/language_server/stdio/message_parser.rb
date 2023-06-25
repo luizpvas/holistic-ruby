@@ -7,6 +7,8 @@ module Holistic::LanguageServer
 
     MissingContentLengthHeaderError = ::Class.new(::StandardError)
 
+    # TODO: remove `left_over_from_previous_ingestion`. The same behaviour can be achieved with only the buffer.
+
     def initialize
       @buffer = ::String.new
       @left_over_from_previous_ingestion = ::String.new
@@ -35,6 +37,8 @@ module Holistic::LanguageServer
     def has_left_over?
       !@left_over_from_previous_ingestion.empty?
     end
+
+    # TODO: rename `message` to `decode` or `decode_message`
 
     def message
       ::JSON.parse(@buffer)
