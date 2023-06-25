@@ -21,6 +21,11 @@ module Holistic::LanguageServer::Stdio
       end
 
       server.start_input_thread!
+    rescue ::StandardError => err
+      ::Holistic.logger.info("crash from Stdio::Start")
+      ::Holistic.logger.info(err.inspect)
+
+      raise err
     end
   end
 end

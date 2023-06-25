@@ -23,6 +23,10 @@ module Holistic::LanguageServer::Stdio
       sleep 0.1 until @stopped
     end
 
+    def stop!
+      @stopped = true
+    end
+
     private
 
     def set_output_to_binary_mode!

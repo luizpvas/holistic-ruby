@@ -5,6 +5,8 @@ module Holistic::LanguageServer
   module Requests::Initialize
     extend self
 
+    # TODO: support multiple workspace directories.
+
     def call(message)
       ::Holistic.logger.info("--- got initialize ---")
       ::Holistic.logger.info(message)

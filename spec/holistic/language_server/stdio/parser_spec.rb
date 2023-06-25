@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe ::Holistic::LanguageServer::Stdio::MessageParser do
+describe ::Holistic::LanguageServer::Stdio::Parser do
   context "when input contains valid JSON in a single payload" do
     let(:parser) { described_class.new }
 
