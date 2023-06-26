@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 module Holistic::Ruby::Parser
+
+  # TODO: Rename `NamespaceDeclaration` to something else. Probably should be the same name when we
+  # figure out the new name for `Namespace::Record`
+
   class NamespaceDeclaration
     attr_reader :value, :is_root_scope
 

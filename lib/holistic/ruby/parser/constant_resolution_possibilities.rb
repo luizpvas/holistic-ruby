@@ -11,6 +11,8 @@ module Holistic::Ruby::Parser
       one? ? super("::" + name) : super(first + "::" + name)
     end
 
+    # TODO: I think we can remove `root_scope?`.
+
     def root_scope?
       empty?
     end
