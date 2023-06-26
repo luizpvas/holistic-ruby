@@ -34,4 +34,21 @@ describe ::Holistic::LanguageServer::Router do
       described_class.dispatch(message)
     end
   end
+
+  context "when routing 'exit' notifications" do
+    let(:message) do
+      ::Holistic::LanguageServer::Message.new({
+        "id" => 2,
+        "jsonrpc" => "2.0",
+        "method" => "exit",
+        "params" => {}
+      })
+    end
+
+    it "calls the handler" do
+      expect(::Holistic::LanguageServer::Requests::Exit).to receive(:call).with(message)
+
+      described_class.dispatch(message)
+    end
+  end
 end
