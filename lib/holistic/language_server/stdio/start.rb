@@ -16,13 +16,19 @@ module Holistic::LanguageServer::Stdio
 
           response = ::Holistic::LanguageServer::Router.dispatch(message)
 
-          server.send_response!(response.to_json)
+          if response.exit?
+            server.stop!
+          else
+            server.send_response!(response.to_json)
+          end
 
           parser.clear
         end
       end
 
       server.start_read_input_loop!
+
+      ::Holistic.logger.info("all good, bye!")
     rescue ::StandardError => err
       ::Holistic.logger.info("crash from Stdio::Start")
       ::Holistic.logger.info(err.inspect)

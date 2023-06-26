@@ -5,9 +5,14 @@ module Holistic::LanguageServer
     attr_reader :message_id, :result
 
     JSONRPC_VERSION = "2.0"
+    EXIT_MESSAGE_ID = -1
 
     def self.in_reply_to(message)
       new(message_id: message.id)
+    end
+
+    def self.exit
+      new(message_id: EXIT_MESSAGE_ID)
     end
 
     def initialize(message_id:)
@@ -16,6 +21,10 @@ module Holistic::LanguageServer
 
     def with_result(result)
       self.tap { @result = result }
+    end
+
+    def exit?
+      message_id == EXIT_MESSAGE_ID
     end
 
     def to_json

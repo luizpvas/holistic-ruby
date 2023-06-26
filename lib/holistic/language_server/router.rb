@@ -5,7 +5,8 @@ module Holistic::LanguageServer
     extend self
 
     FROM_METHOD_TO_HANDLER = {
-      "initialize" => Requests::Initialize
+      "initialize" => Requests::Initialize,
+      "shutdown"   => Requests::Shutdown
     }.freeze
 
     def dispatch(message)
