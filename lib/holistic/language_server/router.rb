@@ -9,6 +9,8 @@ module Holistic::LanguageServer
     }.freeze
 
     def dispatch(message)
+      ::Holistic.logger.info(message)
+
       handler = FROM_METHOD_TO_HANDLER[message.method]
 
       if !handler

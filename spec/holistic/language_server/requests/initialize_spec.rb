@@ -10,12 +10,30 @@ describe ::Holistic::LanguageServer::Requests::Initialize do
   end
 
   it "registers an application on the root directory" do
-    expect(::Holistic::Ruby::Application::Repository.list_all.size).to be(0)
+    expect { described_class.call(message) }
+      .to change { ::Holistic::Ruby::Application::Repository.list_all.size }.by(1)
 
-    described_class.call(message)
-
-    expect(::Holistic::Ruby::Application::Repository.list_all.size).to be(1)
+    expect(::Holistic::Ruby::Application::Repository.find("holistic")).to have_attributes(
+      name: "holistic",
+      root_directory: "/home/luiz.vasconcellos/Projects/holistic"
+    )
   end
 
-  it "returns a response with the Holistic capabilities"
+  it "returns a response with the Holistic capabilities" do
+    response = described_class.call(message)
+
+    expect(response).to have_attributes(
+      itself: ::Holistic::LanguageServer::Response,
+      result: {
+        capabilities: {
+          textDocumentSync: 2,
+          definitionProvider: true
+        },
+        serverInfo: {
+          name: "Holistic Ruby",
+          version: ::Holistic::VERSION
+        }
+      }
+    )
+  end
 end
