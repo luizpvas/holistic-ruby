@@ -23,6 +23,11 @@ module Holistic::LanguageServer::Stdio
       sleep 0.1 until @stopped
     end
 
+    def send_response!(payload)
+      @output.write(payload)
+      @output.flush
+    end
+
     def stop!
       @stopped = true
     end

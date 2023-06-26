@@ -14,7 +14,9 @@ module Holistic::LanguageServer::Stdio
         while parser.completed?
           message = ::Holistic::LanguageServer::Message.new(parser.message)
 
-          ::Holistic::LanguageServer::Router.dispatch(message)
+          response = ::Holistic::LanguageServer::Router.dispatch(message)
+
+          server.send_response!(response.to_json)
 
           parser.clear
         end

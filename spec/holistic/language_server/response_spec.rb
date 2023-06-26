@@ -7,7 +7,7 @@ describe ::Holistic::LanguageServer::Response do
 
       response = described_class.in_reply_to(message).with_result({ "example" => "ok" })
 
-      expect(response.to_json).to eql({
+      expect(response.to_json).to include({
         "jsonrpc" => "2.0",
         "id" => 15,
         "result" => { "example" => "ok" }

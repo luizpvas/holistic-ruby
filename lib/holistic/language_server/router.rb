@@ -19,7 +19,11 @@ module Holistic::LanguageServer
         return
       end
 
-      handler.call(message)
+      response = handler.call(message)
+
+      ::Holistic.logger.info(response)
+
+      response
     end
   end
 end
