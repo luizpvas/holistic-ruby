@@ -27,6 +27,9 @@ module Holistic::LanguageServer
       message_id == EXIT_MESSAGE_ID
     end
 
+    # TODO: rename `to_json` to something else. It's not JSON, it's encoded in the language server protocol format
+    # with headers and all.
+
     def to_json
       encoded_payload = {
         "jsonrpc" => JSONRPC_VERSION,
