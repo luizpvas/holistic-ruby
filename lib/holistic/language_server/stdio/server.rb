@@ -11,15 +11,13 @@ module Holistic::LanguageServer::Stdio
       set_output_to_binary_mode!
     end
 
-    def on_data_received(&block)
+    def start_input_loop(&block)
       @on_data_received = block
-    end
 
-    def start_read_input_loop!
       read_input until @stopped
     end
 
-    def send_response!(payload)
+    def write_to_output!(payload)
       @output.write(payload)
       @output.flush
     end

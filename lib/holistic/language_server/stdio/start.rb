@@ -8,7 +8,7 @@ module Holistic::LanguageServer::Stdio
       server = Server.new
       parser = Parser.new
       
-      server.on_data_received do |payload|
+      server.start_input_loop do |payload|
         parser.ingest(payload)
 
         while parser.completed?
@@ -19,14 +19,12 @@ module Holistic::LanguageServer::Stdio
           if response.exit?
             server.stop!
           else
-            server.send_response!(response.to_json)
+            server.write_to_output!(response.to_json)
           end
 
           parser.clear
         end
       end
-
-      server.start_read_input_loop!
 
       ::Holistic.logger.info("all good, bye!")
     rescue ::StandardError => err
