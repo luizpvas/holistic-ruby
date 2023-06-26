@@ -22,7 +22,7 @@ module Holistic::LanguageServer::Stdio
         end
       end
 
-      server.start_input_thread!
+      server.start_read_input_loop!
     rescue ::StandardError => err
       ::Holistic.logger.info("crash from Stdio::Start")
       ::Holistic.logger.info(err.inspect)

@@ -15,12 +15,8 @@ module Holistic::LanguageServer::Stdio
       @on_data_received = block
     end
 
-    def start_input_thread!
-      Thread.new do
-        read_input until @stopped
-      end
-
-      sleep 0.1 until @stopped
+    def start_read_input_loop!
+      read_input until @stopped
     end
 
     def send_response!(payload)
