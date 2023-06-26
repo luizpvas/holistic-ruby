@@ -17,7 +17,7 @@ module Holistic::LanguageServer::Stdio
       read_input until @stopped
     end
 
-    def write_to_output!(payload)
+    def write_to_output(payload)
       @output.write(payload)
       @output.flush
     end
