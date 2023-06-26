@@ -4,7 +4,6 @@ module Holistic::LanguageServer
   class Response
     attr_reader :message_id, :result
 
-    JSONRPC_VERSION = "2.0"
     EXIT_MESSAGE_ID = -1
 
     def self.in_reply_to(message)
@@ -32,12 +31,12 @@ module Holistic::LanguageServer
 
     def to_json
       encoded_payload = {
-        "jsonrpc" => JSONRPC_VERSION,
+        "jsonrpc" => Protocol::JSONRPC_VERSION,
         "id"      => message_id,
         "result"  => result
       }.to_json
 
-      "Content-Length: #{encoded_payload.bytesize}\r\n\r\n#{encoded_payload}"
+      "#{Protocol::CONTENT_LENGTH_HEADER}:#{encoded_payload.bytesize}#{Protocol::END_OF_HEADER}#{encoded_payload}"
     end
   end
 end

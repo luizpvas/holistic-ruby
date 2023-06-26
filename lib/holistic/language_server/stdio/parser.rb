@@ -2,9 +2,6 @@
 
 module Holistic::LanguageServer
   class Stdio::Parser
-    CONTENT_LENGTH_HEADER = "Content-Length"
-    END_OF_HEADER = "\r\n\r\n"
-
     MissingContentLengthHeaderError = ::Class.new(::StandardError)
 
     # TODO: remove `left_over_from_previous_ingestion`. The same behaviour can be achieved with only the buffer.
@@ -25,7 +22,7 @@ module Holistic::LanguageServer
         end
 
         if @in_header
-          prepare_to_parse_message! if @buffer.end_with?(END_OF_HEADER)
+          prepare_to_parse_message! if @buffer.end_with?(Protocol::END_OF_HEADER)
         end
       end
     end
@@ -61,7 +58,7 @@ module Holistic::LanguageServer
       @buffer.each_line do |line|
         key, value = line.split(":").map(&:strip)
 
-        if key == CONTENT_LENGTH_HEADER
+        if key == Protocol::CONTENT_LENGTH_HEADER
           @in_header = false
           @content_length = Integer(value)
           @buffer.clear
