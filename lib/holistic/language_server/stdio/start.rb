@@ -14,12 +14,12 @@ module Holistic::LanguageServer::Stdio
         while parser.completed?
           message = ::Holistic::LanguageServer::Message.new(parser.message)
 
-          response = ::Holistic::LanguageServer::Router.dispatch(message)
-
-          if response.exit?
-            server.stop!
-          else
-            server.write_to_output(response.to_json)
+          ::Holistic::LanguageServer::Router.dispatch(message)&.then do |response|
+            if response.exit?
+              server.stop!
+            else
+              server.write_to_output(response.to_json)
+            end
           end
 
           parser.clear
