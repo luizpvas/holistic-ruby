@@ -32,6 +32,10 @@ module Holistic::Ruby::Symbol
       @from_identifier_to_symbol[identifier]
     end
 
+    def find_by_source_location(source_location)
+      
+    end
+
     def delete_symbols_in_file(file_path)
       @from_file_path_to_identifier[file_path].each do |identifier|
         find(identifier).delete(file_path)

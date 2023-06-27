@@ -35,10 +35,8 @@ module Holistic::LanguageServer
       !@left_over_from_previous_ingestion.empty?
     end
 
-    # TODO: rename `message` to `decode` or `decode_message`
-
     def message
-      ::JSON.parse(@buffer)
+      Message.new(::JSON.parse(@buffer))
     end
 
     def clear

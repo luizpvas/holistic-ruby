@@ -12,7 +12,7 @@ describe ::Holistic::LanguageServer::Stdio::Parser do
       parser.ingest(payload)
 
       expect(parser.completed?).to be(true)
-      expect(parser.message).to eql({ "message" => "ok" })
+      expect(parser.message.data).to eql({ "message" => "ok" })
       expect(parser.has_left_over?).to be(false)
     end
   end
@@ -33,7 +33,7 @@ describe ::Holistic::LanguageServer::Stdio::Parser do
       payloads.each { parser.ingest(_1) }
 
       expect(parser.completed?).to be(true)
-      expect(parser.message).to eql({ "message" => "ok" })
+      expect(parser.message.data).to eql({ "message" => "ok" })
       expect(parser.has_left_over?).to be(false)
     end
   end
@@ -54,7 +54,7 @@ describe ::Holistic::LanguageServer::Stdio::Parser do
         parser.ingest("Content-Length: #{encoded_message.length}\r\n\r\n#{encoded_message}")
 
         expect(parser.completed?).to be(true)
-        expect(parser.message).to eql(::JSON.parse(encoded_message))
+        expect(parser.message.data).to eql(::JSON.parse(encoded_message))
         expect(parser.has_left_over?).to be(false)
 
         parser.clear
@@ -76,7 +76,7 @@ describe ::Holistic::LanguageServer::Stdio::Parser do
       parser.ingest(payloads[0])
 
       expect(parser.completed?).to be(true)
-      expect(parser.message).to eql({})
+      expect(parser.message.data).to eql({})
       expect(parser.has_left_over?).to be(true)
 
       parser.clear
@@ -86,7 +86,7 @@ describe ::Holistic::LanguageServer::Stdio::Parser do
       parser.ingest(payloads[1])
 
       expect(parser.completed?).to be(true)
-      expect(parser.message).to eql({})
+      expect(parser.message.data).to eql({})
       expect(parser.has_left_over?).to be(false)
     end
   end
@@ -100,13 +100,13 @@ describe ::Holistic::LanguageServer::Stdio::Parser do
       parser.ingest(payload)
 
       expect(parser.completed?).to be(true)
-      expect(parser.message).to eql({})
+      expect(parser.message.data).to eql({})
       expect(parser.has_left_over?).to be(true)
 
       parser.clear
 
       expect(parser.completed?).to be(true)
-      expect(parser.message).to eql({})
+      expect(parser.message.data).to eql({})
       expect(parser.has_left_over?).to be(false)
     end
   end
