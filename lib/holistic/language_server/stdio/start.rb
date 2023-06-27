@@ -18,7 +18,7 @@ module Holistic::LanguageServer::Stdio
             if response.exit?
               server.stop!
             else
-              server.write_to_output(response.to_json)
+              server.write_to_output(response.encode)
             end
           end
 
