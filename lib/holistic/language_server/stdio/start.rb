@@ -12,14 +12,15 @@ module Holistic::LanguageServer::Stdio
         parser.ingest(payload)
 
         while parser.completed?
-          ::Holistic::LanguageServer::Router.dispatch(parser.message)&.then do |response|
-            if response.exit?
-              server.stop!
-            else
-              server.write_to_output(response.encode)
-            end
-          end
+          response = ::Holistic::LanguageServer::Router.dispatch(parser.message)
 
+          case response.status
+          when Response::Status::OK        then server.write_to_output(response.encode)
+          when Response::Status::NOT_FOUND then nil
+          when Response::Status::EXIT      then server.stop!
+          else raise "unexpected response status: #{response.status}"
+          end
+          
           parser.clear
         end
       end

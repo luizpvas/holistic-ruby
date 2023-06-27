@@ -11,7 +11,7 @@ describe ::Holistic::LanguageServer::Requests::Exit do
     expect(response).to have_attributes(
       itself: ::Holistic::LanguageServer::Response,
       result: nil,
-      exit?: true
+      status: ::Holistic::LanguageServer::Response::Status::EXIT
     )
   end
 end

@@ -18,14 +18,10 @@ module Holistic::LanguageServer
       if !handler
         ::Holistic.logger.info("handler not defined for: #{message.method}")
 
-        return
+        return Response.not_found
       end
 
-      response = handler.call(message)
-
-      ::Holistic.logger.info(response)
-
-      response
+      handler.call(message).tap { ::Holistic.logger.info(_1) }
     end
   end
 end

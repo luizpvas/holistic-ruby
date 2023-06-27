@@ -2,28 +2,33 @@
 
 module Holistic::LanguageServer
   class Response
-    attr_reader :message_id, :result
-
-    EXIT_MESSAGE_ID = -1
+    module Status
+      OK = "ok"
+      EXIT = "exit"
+      NOT_FOUND = "not_fond"
+    end
 
     def self.in_reply_to(message)
-      new(message_id: message.id)
+      new(message_id: message.id, status: Status::OK)
+    end
+
+    def self.not_found
+      new(message_id: nil, status: Status::NOT_FOUND)
     end
 
     def self.exit
-      new(message_id: EXIT_MESSAGE_ID)
+      new(message_id: nil, status: Status::EXIT)
     end
 
-    def initialize(message_id:)
+    attr_reader :message_id, :result, :status
+
+    def initialize(message_id:, status:)
       @message_id = message_id
+      @status = status
     end
 
     def with_result(result)
       self.tap { @result = result }
-    end
-
-    def exit?
-      message_id == EXIT_MESSAGE_ID
     end
 
     def encode
