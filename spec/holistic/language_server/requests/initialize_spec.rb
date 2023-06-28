@@ -23,7 +23,7 @@ describe ::Holistic::LanguageServer::Requests::Initialize do
     response = described_class.call(message)
 
     expect(response).to have_attributes(
-      itself: ::Holistic::LanguageServer::Response,
+      itself: ::Holistic::LanguageServer::Response::Success,
       result: {
         capabilities: {
           textDocumentSync: 2,

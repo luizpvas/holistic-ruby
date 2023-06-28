@@ -6,7 +6,7 @@ module Holistic::LanguageServer
     extend self
 
     def call(message)
-      Response.in_reply_to(message).with_result(nil)
+      Response.in_reply_to(message).with(result: nil)
     end
   end
 end

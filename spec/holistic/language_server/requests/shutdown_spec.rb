@@ -13,7 +13,7 @@ describe ::Holistic::LanguageServer::Requests::Shutdown do
     response = described_class.call(message)
 
     expect(response).to have_attributes(
-      itself: ::Holistic::LanguageServer::Response,
+      itself: ::Holistic::LanguageServer::Response::Success,
       result: nil
     )
   end

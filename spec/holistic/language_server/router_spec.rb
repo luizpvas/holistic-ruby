@@ -64,11 +64,7 @@ describe ::Holistic::LanguageServer::Router do
     it "returns a response with :not_found" do
       response = described_class.dispatch(unknown_message)
 
-      expect(response).to have_attributes(
-        itself: ::Holistic::LanguageServer::Response,
-        result: nil,
-        status: ::Holistic::LanguageServer::Response::Status::NOT_FOUND
-      )
+      expect(response).to be(::Holistic::LanguageServer::Response::NotFound)
     end
   end
 end

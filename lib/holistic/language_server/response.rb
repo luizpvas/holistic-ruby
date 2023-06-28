@@ -1,44 +1,26 @@
 # frozen_string_literal: true
 
 module Holistic::LanguageServer
-  class Response
-    module Status
-      OK = "ok"
-      EXIT = "exit"
-      NOT_FOUND = "not_fond"
+  module Response
+    extend self
+    
+    Success = ::Data.define(:message_id, :result) do
+      def encode
+        encoded_payload = {
+          "jsonrpc" => Protocol::JSONRPC_VERSION,
+          "id"      => message_id,
+          "result"  => result
+        }.to_json
+
+        "#{Protocol::CONTENT_LENGTH_HEADER}:#{encoded_payload.bytesize}#{Protocol::END_OF_HEADER}#{encoded_payload}"
+      end
     end
 
-    def self.in_reply_to(message)
-      new(message_id: message.id, status: Status::OK)
-    end
+    Exit = ::Data.define
+    NotFound = ::Data.define
 
-    def self.not_found
-      new(message_id: nil, status: Status::NOT_FOUND)
-    end
-
-    def self.exit
-      new(message_id: nil, status: Status::EXIT)
-    end
-
-    attr_reader :message_id, :result, :status
-
-    def initialize(message_id:, status:)
-      @message_id = message_id
-      @status = status
-    end
-
-    def with_result(result)
-      self.tap { @result = result }
-    end
-
-    def encode
-      encoded_payload = {
-        "jsonrpc" => Protocol::JSONRPC_VERSION,
-        "id"      => message_id,
-        "result"  => result
-      }.to_json
-
-      "#{Protocol::CONTENT_LENGTH_HEADER}:#{encoded_payload.bytesize}#{Protocol::END_OF_HEADER}#{encoded_payload}"
+    def in_reply_to(message)
+      Success.new(message_id: message.id, result: nil)
     end
   end
 end

@@ -15,7 +15,7 @@ module Holistic::LanguageServer
 
       # TODO: parse stuff in background?
 
-      Response.in_reply_to(message).with_result({
+      Response.in_reply_to(message).with(result: {
         capabilities: {
           # Defines how the host (editor) should sync document changes to the language server.
           # The value 2 means it is incremental. Documents are synced by sending the full content on open.

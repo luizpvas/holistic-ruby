@@ -8,10 +8,6 @@ describe ::Holistic::LanguageServer::Requests::Exit do
   it "returns an exit response" do
     response = described_class.call(message)
 
-    expect(response).to have_attributes(
-      itself: ::Holistic::LanguageServer::Response,
-      result: nil,
-      status: ::Holistic::LanguageServer::Response::Status::EXIT
-    )
+    expect(response).to be(::Holistic::LanguageServer::Response::Exit)
   end
 end
