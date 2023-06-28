@@ -5,7 +5,7 @@ module Holistic::LanguageServer
   module Requests::TextDocument::GoToDefinition
     extend self
 
-    def call!(message)
+    def call(message)
       raise "todo"
     end
   end

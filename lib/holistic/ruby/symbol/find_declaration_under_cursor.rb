@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Holistic::Ruby::Symbol
+  # TODO: rename to `FindDefinitionUnderCursor` or just `FindDefinition`
   module FindDeclarationUnderCursor
     extend self
 
