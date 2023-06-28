@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-module Holistic::LanguageServer::Stdio
-  module Start
+module Holistic::LanguageServer
+  module Stdio::Start
     extend self
 
     def call
-      server = Server.new
-      parser = Parser.new
+      server = Stdio::Server.new
+      parser = Stdio::Parser.new
       
       server.start_input_loop do |payload|
         parser.ingest(payload)
@@ -18,7 +18,7 @@ module Holistic::LanguageServer::Stdio
           in Response::Success  then server.write_to_output(response.encode)
           in Response::NotFound then nil
           in Response::Exit     then server.stop!
-          else raise "unexpected response status: #{response.status}"
+          else raise "unexpected response: #{response}"
           end
           
           parser.clear
