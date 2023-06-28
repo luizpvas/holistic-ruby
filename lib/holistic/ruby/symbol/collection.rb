@@ -32,8 +32,14 @@ module Holistic::Ruby::Symbol
       @from_identifier_to_symbol[identifier]
     end
 
-    def find_by_source_location(source_location)
-      
+    def find_by_cursor(cursor)
+      @from_file_path_to_identifier[cursor.file_path].each do |identifier|
+        symbol = find(identifier)
+
+        return symbol if symbol.source_locations.any? { _1.contains?(cursor) }
+      end
+
+      nil
     end
 
     def delete_symbols_in_file(file_path)

@@ -93,6 +93,47 @@ describe ::Holistic::Ruby::Symbol::Collection do
     end
   end
 
+  describe "#find_by_cursor" do
+    let(:symbols) { described_class.new(application: nil) }
+
+    let(:symbol) do
+      ::Holistic::Ruby::Symbol::Record.new(
+        identifier: "::MySymbol",
+        source_locations: [
+          ::Holistic::SourceCode::Location.new(
+            file_path: "app.rb",
+            start_line: 5,
+            start_column: 5,
+            end_line: 5,
+            end_column: 20
+          )
+        ]
+      )
+    end
+
+    before { symbols.index(symbol) }
+
+    context "when cursor is within symbol boundaries" do
+      it "returns the symbol" do
+        cursor = ::Holistic::Document::Cursor.new("app.rb", 5, 6)
+
+        symbol_found = symbols.find_by_cursor(cursor)
+
+        expect(symbol_found).to eql(symbol)
+      end
+    end
+
+    context "when the cursor is not contained by any symbol" do
+      it "returns nil" do
+        cursor = ::Holistic::Document::Cursor.new("app.rb", 5, 21)
+
+        symbol_found = symbols.find_by_cursor(cursor)
+
+        expect(symbol_found).to be_nil
+      end
+    end
+  end
+
   describe "#delete_symbols_in_file" do
     context "when file is not indexed" do
       let(:application) { ::Holistic::Ruby::Application::Record.new(name: "dummy", root_directory: ".") }
