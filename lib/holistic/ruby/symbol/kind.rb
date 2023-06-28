@@ -3,6 +3,6 @@
 module Holistic::Ruby::Symbol
   module Kind
     NAMESPACE = :namespace
-    REFERENCE = :type_inference # TODO: rename to `:reference`
+    REFERENCE = :reference
   end
 end

@@ -75,7 +75,7 @@ module Holistic::Ruby::Symbol
 
       def find_references_to(name)
         @from_identifier_to_symbol.values.select do |symbol|
-          next if symbol.kind != :type_inference
+          next if symbol.kind != Kind::REFERENCE
 
           symbol.record.conclusion&.dependency_identifier == name || symbol.record.clues.find { _1.name == name }
         end

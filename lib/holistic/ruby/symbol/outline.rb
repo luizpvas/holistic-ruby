@@ -32,7 +32,7 @@ module Holistic::Ruby::Symbol
       namespace.locations.each do |location|
         application.symbols
           .list_symbols_in_file(location.file_path)
-          .filter { _1.kind == :type_inference }
+          .filter { _1.kind == Kind::REFERENCE }
           .filter { _1.record.namespace == namespace }
           .reject(&is_local_dependency)
           .tap { dependencies.concat(_1) }

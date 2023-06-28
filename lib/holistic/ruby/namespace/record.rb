@@ -56,7 +56,7 @@ module Holistic::Ruby::Namespace
     def to_symbol
       ::Holistic::Ruby::Symbol::Record.new(
         identifier: fully_qualified_name,
-        kind: :namespace,
+        kind: ::Holistic::Ruby::Symbol::Kind::NAMESPACE,
         record: self,
         locations:,
         searchable?: true
