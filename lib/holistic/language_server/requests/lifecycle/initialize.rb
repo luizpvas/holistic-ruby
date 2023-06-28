@@ -11,7 +11,7 @@ module Holistic::LanguageServer
       root_directory = message.param("rootPath")
       name = ::File.basename(root_directory)
 
-      application = ::Holistic::Ruby::Application::Repository.create(name:, root_directory:)
+      Current.application = ::Holistic::Ruby::Application::Record.new(name:, root_directory:)
 
       # TODO: parse stuff in background?
 

@@ -5,15 +5,16 @@ describe ::Holistic::LanguageServer::Requests::Lifecycle::Initialize do
     ::Holistic::LanguageServer::Message.new(::JSON.parse(::File.read("spec/fixtures/language_server_initialize_message.json")))
   end
 
-  after do
-    ::Holistic::Ruby::Application::Repository.delete_all
+  after(:each) do
+    ::Holistic::LanguageServer::Current.application = nil
   end
 
   it "registers an application on the root directory" do
-    expect { described_class.call(message) }
-      .to change { ::Holistic::Ruby::Application::Repository.list_all.size }.by(1)
+    expect(::Holistic::LanguageServer::Current.application).to be_nil
 
-    expect(::Holistic::Ruby::Application::Repository.find("holistic")).to have_attributes(
+    described_class.call(message)
+
+    expect(::Holistic::LanguageServer::Current.application).to have_attributes(
       name: "holistic",
       root_directory: "/home/luiz.vasconcellos/Projects/holistic"
     )
