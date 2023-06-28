@@ -5,9 +5,13 @@ module Holistic::LanguageServer
     extend self
 
     FROM_METHOD_TO_HANDLER = {
+      # lifecycle messages
       "initialize" => Requests::Initialize,
       "shutdown"   => Requests::Shutdown,
-      "exit"       => Requests::Exit
+      "exit"       => Requests::Exit,
+
+      # language features
+      "textDocument/declaration" => Requests::GoToDeclaration
     }.freeze
 
     def dispatch(message)

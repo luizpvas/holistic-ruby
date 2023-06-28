@@ -51,6 +51,22 @@ describe ::Holistic::LanguageServer::Router do
     end
   end
 
+  context "when routing 'textDocument/declaration' messages" do
+    let(:go_to_declaration_request) do
+      ::Holistic::LanguageServer::Message.new({
+        "jsonrpc" => "2.0",
+        "method" => "textDocument/declaration",
+        "params" => {}
+      })
+    end
+
+    it "calls the handler" do
+      expect(::Holistic::LanguageServer::Requests::GoToDeclaration).to receive(:call).with(go_to_declaration_request)
+
+      described_class.dispatch(go_to_declaration_request)
+    end
+  end
+
   context "when routing unknown messages" do
     let(:unknown_message) do
       ::Holistic::LanguageServer::Message.new({
