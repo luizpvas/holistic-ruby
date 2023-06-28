@@ -2,7 +2,7 @@
 
 module Holistic::LanguageServer
   # https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#exit
-  module Requests::Exit
+  module Requests::Lifecycle::Exit
     extend self
 
     # TODO: The server should exit with success code 0 if the shutdown request has been received before; otherwise with error code 1

@@ -12,7 +12,7 @@ describe ::Holistic::LanguageServer::Router do
     end
 
     it "calls the handler" do
-      expect(::Holistic::LanguageServer::Requests::Initialize).to receive(:call).with(initialize_request)
+      expect(::Holistic::LanguageServer::Requests::Lifecycle::Initialize).to receive(:call).with(initialize_request)
 
       described_class.dispatch(initialize_request)
     end
@@ -29,7 +29,7 @@ describe ::Holistic::LanguageServer::Router do
     end
 
     it "calls the handler" do
-      expect(::Holistic::LanguageServer::Requests::Shutdown).to receive(:call).with(shutdown_request)
+      expect(::Holistic::LanguageServer::Requests::Lifecycle::Shutdown).to receive(:call).with(shutdown_request)
 
       described_class.dispatch(shutdown_request)
     end
@@ -45,25 +45,25 @@ describe ::Holistic::LanguageServer::Router do
     end
 
     it "calls the handler" do
-      expect(::Holistic::LanguageServer::Requests::Exit).to receive(:call).with(exit_notification)
+      expect(::Holistic::LanguageServer::Requests::Lifecycle::Exit).to receive(:call).with(exit_notification)
 
       described_class.dispatch(exit_notification)
     end
   end
 
-  context "when routing 'textDocument/declaration' messages" do
-    let(:go_to_declaration_request) do
+  context "when routing 'textDocument/definition' messages" do
+    let(:go_to_definition_request) do
       ::Holistic::LanguageServer::Message.new({
         "jsonrpc" => "2.0",
-        "method" => "textDocument/declaration",
+        "method" => "textDocument/definition",
         "params" => {}
       })
     end
 
     it "calls the handler" do
-      expect(::Holistic::LanguageServer::Requests::GoToDeclaration).to receive(:call).with(go_to_declaration_request)
+      expect(::Holistic::LanguageServer::Requests::TextDocument::GoToDefinition).to receive(:call).with(go_to_definition_request)
 
-      described_class.dispatch(go_to_declaration_request)
+      described_class.dispatch(go_to_definition_request)
     end
   end
 

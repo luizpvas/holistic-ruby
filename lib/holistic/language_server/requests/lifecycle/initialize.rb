@@ -2,7 +2,7 @@
 
 module Holistic::LanguageServer
   # https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#initialize
-  module Requests::Initialize
+  module Requests::Lifecycle::Initialize
     extend self
 
     # TODO: support multiple workspace directories.

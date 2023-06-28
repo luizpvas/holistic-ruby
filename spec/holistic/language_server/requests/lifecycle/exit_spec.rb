@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe ::Holistic::LanguageServer::Requests::Exit do
+describe ::Holistic::LanguageServer::Requests::Lifecycle::Exit do
   let(:message) do
     ::Holistic::LanguageServer::Message.new({ "jsonrpc" => "2.0", "method" => "exit" })
   end

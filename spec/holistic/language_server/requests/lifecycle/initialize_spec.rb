@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe ::Holistic::LanguageServer::Requests::Initialize do
+describe ::Holistic::LanguageServer::Requests::Lifecycle::Initialize do
   let(:message) do
     ::Holistic::LanguageServer::Message.new(::JSON.parse(::File.read("spec/fixtures/language_server_initialize_message.json")))
   end

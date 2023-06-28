@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe ::Holistic::LanguageServer::Requests::Shutdown do
+describe ::Holistic::LanguageServer::Requests::Lifecycle::Shutdown do
   let(:message) do
     ::Holistic::LanguageServer::Message.new({
       "method" => "shutdown",
