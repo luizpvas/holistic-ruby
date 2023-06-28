@@ -1,10 +1,7 @@
 # frozen_string_literal: true
 
-require_relative "support/message_builder"
-
 describe ::Holistic::LanguageServer::Requests::TextDocument::GoToDefinition do
   include ::SnippetParser
-  include ::MessageBuilder
 
   let(:application) do
     parse_snippet <<~RUBY
@@ -23,9 +20,7 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::GoToDefinition do
 
   context "when symbol under cursor does not exist" do
     it "responds with null" do
-      cursor = ::Holistic::Document::Cursor.new("snippet.rb", 0, 0)
-
-      message = build_definition_message_for(cursor:)
+      message = ::LanguageServer::Factory.build_definition_message(file_path: "snippet.rb", line: 0, column: 0)
 
       response = described_class.call(message)
 
@@ -39,9 +34,7 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::GoToDefinition do
 
   context "when symbol under cursor is not a reference" do
     it "responds with null" do
-      cursor = ::Holistic::Document::Cursor.new("snippet.rb", 1, 12)
-
-      message = build_definition_message_for(cursor:)
+      message = ::LanguageServer::Factory.build_definition_message(file_path: "snippet.rb", line: 1, column: 12)
 
       response = described_class.call(message)
 
@@ -55,9 +48,7 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::GoToDefinition do
 
   context "when symbol under cursor is a reference to something we could not find" do
     it "responds with null" do
-      cursor = ::Holistic::Document::Cursor.new("snippet.rb", 5, 9)
-
-      message = build_definition_message_for(cursor:)
+      message = ::LanguageServer::Factory.build_definition_message(file_path: "snippet.rb", line: 5, column: 9)
 
       response = described_class.call(message)
 
@@ -71,9 +62,7 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::GoToDefinition do
 
   context "when symbol under cursor is a reference to something we could find" do
     it "responds with the dependency location" do
-      cursor = ::Holistic::Document::Cursor.new("snippet.rb", 4, 9)
-
-      message = build_definition_message_for(cursor:)
+      message = ::LanguageServer::Factory.build_definition_message(file_path: "snippet.rb", line: 4, column: 9)
 
       response = described_class.call(message)
 

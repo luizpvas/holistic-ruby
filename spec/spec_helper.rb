@@ -4,6 +4,7 @@ require "debug"
 require "holistic"
 
 require_relative "support/snippet_parser"
+require_relative "support/language_server/factory"
 
 ::RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
