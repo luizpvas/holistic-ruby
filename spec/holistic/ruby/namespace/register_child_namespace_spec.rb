@@ -5,11 +5,11 @@ describe ::Holistic::Ruby::Namespace::RegisterChildNamespace do
     it "adds a new child for each new module" do
       parent = ::Holistic::Ruby::Namespace::Record.new(kind: ::Holistic::Ruby::Namespace::Kind::MODULE, name: "MyModule", parent: nil)
 
-      source_location_1 = ::Holistic::SourceCode::Location.new
-      child_1 = described_class.call(parent: parent, kind: ::Holistic::Ruby::Namespace::Kind::MODULE, name: "MyChild1", source_location: source_location_1)
+      location_1 = ::Holistic::Document::Location.beginning_of_file("app.rb")
+      child_1 = described_class.call(parent: parent, kind: ::Holistic::Ruby::Namespace::Kind::MODULE, name: "MyChild1", location: location_1)
 
-      source_location_2 = ::Holistic::SourceCode::Location.new
-      child_2 = described_class.call(parent: parent, kind: ::Holistic::Ruby::Namespace::Kind::MODULE, name: "MyChild2", source_location: source_location_2)
+      location_2 = ::Holistic::Document::Location.beginning_of_file("app.rb")
+      child_2 = described_class.call(parent: parent, kind: ::Holistic::Ruby::Namespace::Kind::MODULE, name: "MyChild2", location: location_2)
 
       expect(parent.children.size).to be(2)
 
@@ -17,14 +17,14 @@ describe ::Holistic::Ruby::Namespace::RegisterChildNamespace do
         kind: ::Holistic::Ruby::Namespace::Kind::MODULE,
         name: "MyChild1",
         parent: parent,
-        source_locations: [source_location_1]
+        locations: [location_1]
       )
 
       expect(child_2).to have_attributes(
         kind: ::Holistic::Ruby::Namespace::Kind::MODULE,
         name: "MyChild2",
         parent: parent,
-        source_locations: [source_location_2]
+        locations: [location_2]
       )
     end
   end
@@ -33,8 +33,8 @@ describe ::Holistic::Ruby::Namespace::RegisterChildNamespace do
     it "returns the existing namespace" do
       parent = ::Holistic::Ruby::Namespace::Record.new(kind: ::Holistic::Ruby::Namespace::Kind::MODULE, name: "MyModule", parent: nil)
 
-      child_1 = described_class.call(parent:, kind: ::Holistic::Ruby::Namespace::Kind::MODULE, name: "MyChild", source_location: nil)
-      child_2 = described_class.call(parent:, kind: ::Holistic::Ruby::Namespace::Kind::MODULE, name: "MyChild", source_location: nil)
+      child_1 = described_class.call(parent:, kind: ::Holistic::Ruby::Namespace::Kind::MODULE, name: "MyChild", location: nil)
+      child_2 = described_class.call(parent:, kind: ::Holistic::Ruby::Namespace::Kind::MODULE, name: "MyChild", location: nil)
 
       expect(parent.children.size).to be(1)
 
@@ -44,15 +44,15 @@ describe ::Holistic::Ruby::Namespace::RegisterChildNamespace do
     it "appends the source location to the existing namespace" do
       parent = ::Holistic::Ruby::Namespace::Record.new(kind: ::Holistic::Ruby::Namespace::Kind::MODULE, name: "MyModule", parent: nil)
 
-      source_location_1 = ::Holistic::SourceCode::Location.new
-      source_location_2 = ::Holistic::SourceCode::Location.new
+      location_1 = ::Holistic::Document::Location.beginning_of_file("app.rb")
+      location_2 = ::Holistic::Document::Location.beginning_of_file("app.rb")
 
-      child_from_call_1 = described_class.call(parent:, kind: ::Holistic::Ruby::Namespace::Kind::MODULE, name: "MyChild", source_location: source_location_1)
-      child_from_call_2 = described_class.call(parent:, kind: ::Holistic::Ruby::Namespace::Kind::MODULE, name: "MyChild", source_location: source_location_2)
+      child_from_call_1 = described_class.call(parent:, kind: ::Holistic::Ruby::Namespace::Kind::MODULE, name: "MyChild", location: location_1)
+      child_from_call_2 = described_class.call(parent:, kind: ::Holistic::Ruby::Namespace::Kind::MODULE, name: "MyChild", location: location_2)
 
       expect(child_from_call_1).to be(child_from_call_2)
 
-      expect(child_from_call_2.source_locations).to contain_exactly(source_location_1, source_location_2)
+      expect(child_from_call_2.locations).to contain_exactly(location_1, location_2)
     end
   end
 end

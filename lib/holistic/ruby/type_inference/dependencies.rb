@@ -23,8 +23,8 @@ module Holistic::Ruby::TypeInference
 
       @from_dependency_to_references[dependency.identifier].add(reference_identifier)
 
-      dependency.source_locations.each do |source_location|
-        @from_dependency_file_path_to_references[source_location.file_path].add(reference_identifier)
+      dependency.locations.each do |location|
+        @from_dependency_file_path_to_references[location.file_path].add(reference_identifier)
       end
     end
 

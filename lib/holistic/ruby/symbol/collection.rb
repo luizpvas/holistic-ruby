@@ -23,8 +23,8 @@ module Holistic::Ruby::Symbol
         @from_identifier_to_symbol[symbol.identifier] = symbol
       end
 
-      symbol.source_locations.each do |source_location|
-        @from_file_path_to_identifier[source_location.file_path].add(symbol.identifier)
+      symbol.locations.each do |location|
+        @from_file_path_to_identifier[location.file_path].add(symbol.identifier)
       end
     end
 
@@ -36,7 +36,7 @@ module Holistic::Ruby::Symbol
       @from_file_path_to_identifier[cursor.file_path].each do |identifier|
         symbol = find(identifier)
 
-        return symbol if symbol.source_locations.any? { _1.contains?(cursor) }
+        return symbol if symbol.locations.any? { _1.contains?(cursor) }
       end
 
       nil

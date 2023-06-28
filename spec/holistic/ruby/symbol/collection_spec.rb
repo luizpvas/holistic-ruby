@@ -6,7 +6,7 @@ describe ::Holistic::Ruby::Symbol::Collection do
   describe "#index" do
     context "when symbol does not have source locations" do
       let(:application) { ::Holistic::Ruby::Application::Record.new(name: "dummy", root_directory: ".") }
-      let(:symbol) { ::Holistic::Ruby::Symbol::Record.new(identifier: "::MySymbol", source_locations: []) }
+      let(:symbol) { ::Holistic::Ruby::Symbol::Record.new(identifier: "::MySymbol", locations: []) }
 
       it "stores the symbol in the identifier index" do
         application.symbols.index(symbol)
@@ -17,8 +17,8 @@ describe ::Holistic::Ruby::Symbol::Collection do
 
     context "when symbol has one source location" do
       let(:application) { ::Holistic::Ruby::Application::Record.new(name: "dummy", root_directory: ".") }
-      let(:source_locations) { [::Holistic::SourceCode::Location.new(file_path: "my_symbol.rb")] }
-      let(:symbol) { ::Holistic::Ruby::Symbol::Record.new(identifier: "::MySymbol", source_locations:) }
+      let(:locations) { [::Holistic::Document::Location.beginning_of_file("my_symbol.rb")] }
+      let(:symbol) { ::Holistic::Ruby::Symbol::Record.new(identifier: "::MySymbol", locations:) }
 
       it "stores the symbol in the identifier index" do
         application.symbols.index(symbol)
@@ -36,14 +36,14 @@ describe ::Holistic::Ruby::Symbol::Collection do
     context "when symbol has multiple source locations" do
       let(:application) { ::Holistic::Ruby::Application::Record.new(name: "dummy", root_directory: ".") }
 
-      let(:source_locations) do
+      let(:locations) do
         [
-          ::Holistic::SourceCode::Location.new(file_path: "my_symbol_1.rb"),
-          ::Holistic::SourceCode::Location.new(file_path: "my_symbol_2.rb"),
+          ::Holistic::Document::Location.beginning_of_file("my_symbol_1.rb"),
+          ::Holistic::Document::Location.beginning_of_file("my_symbol_2.rb"),
         ]
       end
 
-      let(:symbol) { ::Holistic::Ruby::Symbol::Record.new(identifier: "::MySymbol", source_locations:) }
+      let(:symbol) { ::Holistic::Ruby::Symbol::Record.new(identifier: "::MySymbol", locations:) }
 
       it "stores the symbol in the identifier index" do
         application.symbols.index(symbol)
@@ -61,8 +61,8 @@ describe ::Holistic::Ruby::Symbol::Collection do
 
     context "when indexing the same symbol with the same source locations multiple times" do
       let(:application) { ::Holistic::Ruby::Application::Record.new(name: "dummy", root_directory: ".") }
-      let(:source_location) { ::Holistic::SourceCode::Location.new(file_path: "my_symbol_1.rb") }
-      let(:symbol) { ::Holistic::Ruby::Symbol::Record.new(identifier: "::MySymbol", source_locations: [source_location]) }
+      let(:location) { ::Holistic::Document::Location.beginning_of_file("my_symbol_1.rb") }
+      let(:symbol) { ::Holistic::Ruby::Symbol::Record.new(identifier: "::MySymbol", locations: [location]) }
 
       it "does nothing" do
         application.symbols.index(symbol)
@@ -75,14 +75,14 @@ describe ::Holistic::Ruby::Symbol::Collection do
 
     context "when indexing the same symbol multiple times with extra source locations" do
       let(:application) { ::Holistic::Ruby::Application::Record.new(name: "dummy", root_directory: ".") }
-      let(:source_location_1) { ::Holistic::SourceCode::Location.new(file_path: "my_symbol_1.rb") }
-      let(:source_location_2) { ::Holistic::SourceCode::Location.new(file_path: "my_symbol_2.rb") }
-      let(:symbol) { ::Holistic::Ruby::Symbol::Record.new(identifier: "::MySymbol", source_locations: [source_location_1]) }
+      let(:location_1) { ::Holistic::Document::Location.beginning_of_file("my_symbol_1.rb") }
+      let(:location_2) { ::Holistic::Document::Location.beginning_of_file("my_symbol_2.rb") }
+      let(:symbol) { ::Holistic::Ruby::Symbol::Record.new(identifier: "::MySymbol", locations: [location_1]) }
 
       it "does nothing" do
         application.symbols.index(symbol)
 
-        symbol.source_locations << source_location_2
+        symbol.locations << location_2
 
         application.symbols.index(symbol)
 
@@ -99,8 +99,8 @@ describe ::Holistic::Ruby::Symbol::Collection do
     let(:symbol) do
       ::Holistic::Ruby::Symbol::Record.new(
         identifier: "::MySymbol",
-        source_locations: [
-          ::Holistic::SourceCode::Location.new(
+        locations: [
+          ::Holistic::Document::Location.new(
             file_path: "app.rb",
             start_line: 5,
             start_column: 5,
@@ -146,13 +146,13 @@ describe ::Holistic::Ruby::Symbol::Collection do
     context "when file has symbols" do
       let(:application) { ::Holistic::Ruby::Application::Record.new(name: "dummy", root_directory: ".") }
 
-      let(:source_location) { ::Holistic::SourceCode::Location.new(file_path: "my_app.rb") }
+      let(:location) { ::Holistic::Document::Location.beginning_of_file("my_app.rb") }
 
       let(:record_1) { spy }
       let(:record_2) { spy }
 
-      let(:symbol_1) { ::Holistic::Ruby::Symbol::Record.new(identifier: "::MySymbol1", source_locations: [source_location], record: record_1) }
-      let(:symbol_2) { ::Holistic::Ruby::Symbol::Record.new(identifier: "::MySymbol2", source_locations: [source_location], record: record_2) }
+      let(:symbol_1) { ::Holistic::Ruby::Symbol::Record.new(identifier: "::MySymbol1", locations: [location], record: record_1) }
+      let(:symbol_2) { ::Holistic::Ruby::Symbol::Record.new(identifier: "::MySymbol2", locations: [location], record: record_2) }
 
       before do
         application.symbols.index(symbol_1)

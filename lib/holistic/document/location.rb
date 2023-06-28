@@ -1,16 +1,17 @@
 # frozen_string_literal: true
 
-module Holistic::SourceCode
-  # TODO: convert to Data
-
-  Location = ::Struct.new(
+module Holistic::Document
+  Location = ::Data.define(
     :file_path,
     :start_line,
     :start_column,
     :end_line,
-    :end_column,
-    keyword_init: true
+    :end_column
   ) do
+    def self.beginning_of_file(file_path)
+      new(file_path, 0, 0, 0, 0)
+    end
+
     def identifier = "#{file_path}[#{start_line},#{start_column},#{end_line},#{end_column}]"
 
     def contains?(cursor)

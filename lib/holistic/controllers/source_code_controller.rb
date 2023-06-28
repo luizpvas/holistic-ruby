@@ -4,13 +4,13 @@ module Holistic::Controllers::SourceCodeController
   extend ::ActiveSupport::Concern
 
   # TODO: Move to shared place?
-  SerializeSourceLocation = ->(source_location) do
+  SerializeLocation = ->(location) do
     {
-      file_path: source_location.file_path,
-      start_line: source_location.start_line,
-      start_column: source_location.start_column,
-      end_line: source_location.end_line,
-      end_column: source_location.end_column
+      file_path: location.file_path,
+      start_line: location.start_line,
+      start_column: location.start_column,
+      end_line: location.end_line,
+      end_column: location.end_column
     }
   end
 
@@ -30,7 +30,7 @@ module Holistic::Controllers::SourceCodeController
 
     {
       identifier: symbol.identifier,
-      source_locations: symbol.source_locations.map(&SerializeSourceLocation),
+      locations: symbol.locations.map(&SerializeLocation),
       kind: symbol.kind.to_s
     }.merge(serialized_subtype)
   end

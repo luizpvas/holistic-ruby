@@ -10,7 +10,7 @@ describe ::Holistic::Ruby::Namespace::Record do
         name: "MyModule",
         parent: nil,
         children: [],
-        source_locations: []
+        locations: []
       )
     end
   end
@@ -69,13 +69,13 @@ describe ::Holistic::Ruby::Namespace::Record do
 
   describe "#to_symbol" do
     it "builds a symbol from a namespace" do
-      source_location = ::Holistic::SourceCode::Location.new
+      location = ::Holistic::Document::Location.beginning_of_file("app.rb")
 
       namespace = ::Holistic::Ruby::Namespace::Record.new(
         kind: ::Holistic::Ruby::Namespace::Kind::MODULE,
         name: "MyApp",
         parent: ::Holistic::Ruby::Namespace::Record.new(kind: ::Holistic::Ruby::Namespace::Kind::ROOT, name: "::", parent: nil),
-        source_location: source_location
+        location: location
       )
 
       expect(namespace.to_symbol).to have_attributes(
@@ -83,7 +83,7 @@ describe ::Holistic::Ruby::Namespace::Record do
         identifier: namespace.fully_qualified_name,
         kind: :namespace,
         record: namespace,
-        source_locations: [source_location]
+        locations: [location]
       )
     end
   end

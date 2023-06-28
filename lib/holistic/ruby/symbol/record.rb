@@ -5,7 +5,7 @@ module Holistic::Ruby::Symbol
     :identifier,
     :kind,
     :record,
-    :source_locations,
+    :locations,
     :searchable?,
     keyword_init: true
   ) do

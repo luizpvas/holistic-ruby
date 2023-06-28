@@ -29,9 +29,9 @@ module Holistic::Ruby::Symbol
         dependency.namespace.eql?(outlined_namespace) || dependency.namespace.descendant?(outlined_namespace)
       end
 
-      namespace.source_locations.each do |source_location|
+      namespace.locations.each do |location|
         application.symbols
-          .list_symbols_in_file(source_location.file_path)
+          .list_symbols_in_file(location.file_path)
           .filter { _1.kind == :type_inference }
           .filter { _1.record.namespace == namespace }
           .reject(&is_local_dependency)

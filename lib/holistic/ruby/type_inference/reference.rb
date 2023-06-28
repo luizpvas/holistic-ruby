@@ -5,10 +5,10 @@ module Holistic::Ruby::TypeInference
     :namespace,
     :clues,
     :conclusion,
-    :source_location,
+    :location,
     keyword_init: true
   ) do
-    def identifier = source_location.identifier
+    def identifier = location.identifier
 
     # TODO: is this right?
     def to_symbol
@@ -16,7 +16,7 @@ module Holistic::Ruby::TypeInference
         identifier:,
         kind: :type_inference, # TODO: rename to `:reference`
         record: self,
-        source_locations: [source_location],
+        locations: [location],
         searchable?: false
       )
     end

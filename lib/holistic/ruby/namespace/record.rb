@@ -2,13 +2,13 @@
 
 module Holistic::Ruby::Namespace
   class Record
-    attr_reader :kind, :name, :parent, :children, :source_locations
+    attr_reader :kind, :name, :parent, :children, :locations
 
-    def initialize(kind:, name:, parent:, source_location: nil)
+    def initialize(kind:, name:, parent:, location: nil)
       @kind = kind
       @name = name
       @parent = parent
-      @source_locations = source_location.nil? ? [] : [source_location]
+      @locations = location.nil? ? [] : [location]
       @children = []
     end
 
@@ -58,7 +58,7 @@ module Holistic::Ruby::Namespace
         identifier: fully_qualified_name,
         kind: :namespace,
         record: self,
-        source_locations:,
+        locations:,
         searchable?: true
       )
     end

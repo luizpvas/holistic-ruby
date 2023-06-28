@@ -18,36 +18,36 @@ module Holistic::Ruby::Symbol
     # TODO: the current implementation is a little weird. we instantiate a source location for `file_path`
     # and then find the file again.
     def self.call(application:, symbol_identifier: nil, file_path: nil)
-      source_location =
-        find_symbol_source_location(application:, symbol_identifier:) || find_file_source_location(application:, file_path:)
+      location =
+        find_symbol_location(application:, symbol_identifier:) || build_empty_location_for_file(application:, file_path:)
 
       Result.new(
-        file: application.files.find(source_location.file_path),
-        symbols: application.symbols.list_symbols_in_file(source_location.file_path),
-        start_line: source_location.start_line,
-        start_column: source_location.start_column,
-        end_line: source_location.end_line,
-        end_column: source_location.end_column
+        file: application.files.find(location.file_path),
+        symbols: application.symbols.list_symbols_in_file(location.file_path),
+        start_line: location.start_line,
+        start_column: location.start_column,
+        end_line: location.end_line,
+        end_column: location.end_column
       )
     end
 
     private
 
-    def find_symbol_source_location(application:, symbol_identifier:)
+    def find_symbol_location(application:, symbol_identifier:)
       return if symbol_identifier.nil?
 
       symbol = application.symbols.find(symbol_identifier)
 
       raise ::ArgumentError, "symbol not found" if symbol.nil?
-      raise ::NotImplementedError if symbol.source_locations.size != 1
+      raise ::NotImplementedError if symbol.locations.size != 1
 
-      symbol.source_locations.first
+      symbol.locations.first
     end
 
-    def find_file_source_location(application:, file_path:)
+    def build_empty_location_for_file(application:, file_path:)
       file = application.files.find(file_path)
 
-      ::Holistic::SourceCode::Location.new(file_path: file.path)
+      ::Holistic::Document::Location.beginning_of_file(file.path)
     end
   end
 end

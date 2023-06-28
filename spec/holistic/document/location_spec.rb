@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe ::Holistic::SourceCode::Location do
+describe ::Holistic::Document::Location do
   describe "#identifier" do
     it "formats the identifier based on the file path, lines and columns" do
       location = described_class.new(
