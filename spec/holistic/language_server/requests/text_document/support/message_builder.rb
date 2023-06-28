@@ -4,7 +4,7 @@ module MessageBuilder
   def build_definition_message_for(cursor:)
     data = {
       "jsonrpc" => ::Holistic::LanguageServer::Protocol::JSONRPC_VERSION,
-      "id" => 1,
+      "id" => rand(1..10000),
       "method" => "textDocument/definition",
       "params" => {
         "position" => {

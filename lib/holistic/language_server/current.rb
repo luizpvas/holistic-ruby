@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
-module Holistic::LanguageServer
-  module Current
-    extend self
+require "active_support/isolated_execution_state"
+require "active_support/code_generator"
+require "active_support/current_attributes"
 
-    attr_accessor :application
+module Holistic::LanguageServer
+  class Current < ::ActiveSupport::CurrentAttributes
+    attribute :application
   end
 end
