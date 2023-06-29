@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe ::Holistic::Ruby::Symbol::FindDeclarationUnderCursor do
+describe ::Holistic::Ruby::Symbol::FindDefinition do
   include ::SnippetParser
 
   let(:application) do
@@ -36,22 +36,22 @@ describe ::Holistic::Ruby::Symbol::FindDeclarationUnderCursor do
   end
 
   context "when symbol references a constant from an external lib" do
-    it "returns :could_not_find_declaration" do
+    it "returns :could_not_find_definition" do
       cursor = ::Holistic::Document::Cursor.new("snippet.rb", 5, 9)
 
       result, _data = described_class.call(application:, cursor:)
 
-      expect(result).to eql(:could_not_find_declaration)
+      expect(result).to eql(:could_not_find_definition)
     end
   end
 
   context "when symbol references a constant declared within the application" do
-    it "returns :declaration_found" do
+    it "returns :definition_found" do
       cursor = ::Holistic::Document::Cursor.new("snippet.rb", 4, 9)
 
       result, data = described_class.call(application:, cursor:)
 
-      expect(result).to eql(:declaration_found)
+      expect(result).to eql(:definition_found)
       expect(data[:origin].record.conclusion.dependency_identifier).to eql("::MyApp::Example")
       expect(data[:target].identifier).to eql("::MyApp::Example")
     end

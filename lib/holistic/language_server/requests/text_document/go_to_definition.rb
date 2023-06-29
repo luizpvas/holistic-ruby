@@ -9,11 +9,11 @@ module Holistic::LanguageServer
       application = Current.application
       cursor = build_cursor_from_message_params(message)
 
-      case ::Holistic::Ruby::Symbol::FindDeclarationUnderCursor.call(application:, cursor:)
-      in :not_found                               then respond_with_nil(message)
-      in [:symbol_is_not_reference, {origin:}]    then respond_with_nil(message)
-      in [:could_not_find_declaration, {origin:}] then respond_with_nil(message)
-      in [:declaration_found, {origin:, target:}] then respond_with_location_link(message, origin, target)
+      case ::Holistic::Ruby::Symbol::FindDefinition.call(application:, cursor:)
+      in :not_found                              then respond_with_nil(message)
+      in [:symbol_is_not_reference, {origin:}]   then respond_with_nil(message)
+      in [:could_not_find_definition, {origin:}] then respond_with_nil(message)
+      in [:definition_found, {origin:, target:}] then respond_with_location_link(message, origin, target)
       end
     end
 
