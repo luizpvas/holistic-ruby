@@ -13,6 +13,8 @@ module Holistic::Ruby::Parser
   end
 
   ParseFile = ->(application:, file:) do
+    ::Holistic.logger.info("parsing file: #{file.path}")
+
     application.files.register_parsed_file(file)
 
     Current.set(file:) do

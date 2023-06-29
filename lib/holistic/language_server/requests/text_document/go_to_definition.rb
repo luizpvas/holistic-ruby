@@ -21,8 +21,8 @@ module Holistic::LanguageServer
 
     def build_cursor_from_message_params(message)
       file_path = message.param("textDocument", "uri").gsub("file://", "")
-      line = message.param("position", "line")
-      column = message.param("position", "column")
+      line = message.param("position", "line") + 1
+      column = message.param("position", "character")
 
       ::Holistic::Document::Cursor.new(file_path:, line:, column:)
     end
@@ -37,18 +37,18 @@ module Holistic::LanguageServer
 
       location_link = {
         "originSelectionRange" => {
-          "start" => { "line" => origin_location.start_line, "character" => origin_location.start_column },
-          "end" => { "line" => origin_location.end_line, "character" => origin_location.end_column }
+          "start" => { "line" => origin_location.start_line - 1, "character" => origin_location.start_column },
+          "end" => { "line" => origin_location.end_line - 1, "character" => origin_location.end_column }
         },
         "targetUri" => "file://#{target_location.file_path}",
         "targetRange" => {
-          "start" => { "line" => target_location.start_line, "character" => target_location.start_column },
-          "end" => { "line" => target_location.end_line, "character" => target_location.end_column }
+          "start" => { "line" => target_location.start_line - 1, "character" => target_location.start_column },
+          "end" => { "line" => target_location.end_line - 1, "character" => target_location.end_column }
         },
         # TODO: store the location of the declaration name
         "targetSelectionRange" => {
-          "start" => { "line" => target_location.start_line, "character" => target_location.start_column },
-          "end" => { "line" => target_location.end_line, "character" => target_location.end_column }
+          "start" => { "line" => target_location.start_line - 1, "character" => target_location.start_column },
+          "end" => { "line" => target_location.end_line - 1, "character" => target_location.end_column }
         }
       }
 

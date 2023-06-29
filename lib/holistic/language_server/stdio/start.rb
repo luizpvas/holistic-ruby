@@ -29,6 +29,7 @@ module Holistic::LanguageServer
     rescue ::StandardError => err
       ::Holistic.logger.info("crash from Stdio::Start")
       ::Holistic.logger.info(err.inspect)
+      ::Holistic.logger.info(err.backtrace)
 
       raise err
     end

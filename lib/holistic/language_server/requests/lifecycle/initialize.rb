@@ -7,13 +7,21 @@ module Holistic::LanguageServer
 
     # TODO: support multiple workspace directories.
 
+    ParseApplicationInBackground = ->(application) do
+      ::Thread.new do
+        ::Holistic::Ruby::Parser::WrapParsingUnitWithProcessAtTheEnd.call(application:) do
+          ::Holistic::Ruby::Parser::ParseDirectory.call(application:, directory_path: application.root_directory)
+        end
+      end
+    end
+
     def call(message)
       root_directory = message.param("rootPath")
       name = ::File.basename(root_directory)
 
       Current.application = ::Holistic::Ruby::Application::Record.new(name:, root_directory:)
 
-      # TODO: parse stuff in background?
+      ParseApplicationInBackground.call(Current.application)
 
       Response.in_reply_to(message).with(result: {
         capabilities: {
