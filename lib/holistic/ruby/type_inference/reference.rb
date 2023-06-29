@@ -16,8 +16,7 @@ module Holistic::Ruby::TypeInference
         identifier:,
         kind: ::Holistic::Ruby::Symbol::Kind::REFERENCE,
         record: self,
-        locations: [location],
-        searchable?: false
+        locations: [location]
       )
     end
 

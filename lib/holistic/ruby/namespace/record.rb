@@ -58,8 +58,7 @@ module Holistic::Ruby::Namespace
         identifier: fully_qualified_name,
         kind: ::Holistic::Ruby::Symbol::Kind::NAMESPACE,
         record: self,
-        locations:,
-        searchable?: true
+        locations:
       )
     end
   end

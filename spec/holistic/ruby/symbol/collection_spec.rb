@@ -185,42 +185,4 @@ describe ::Holistic::Ruby::Symbol::Collection do
       end
     end
   end
-
-  describe "#search" do
-    let(:application) do
-      parse_snippet <<~RUBY
-      module MyApplication
-        class MyController
-          def index
-            result = MyService.call(user: current_user)
-          end
-        end
-      end
-      RUBY
-    end
-
-    it "finds namespace declarations" do
-      matches = application.symbols.search("Application").matches
-
-      expect(matches[0].document).to have_attributes(
-        identifier: "::MyApplication",
-        text: "::MyApplication"
-      )
-    end
-
-    it "does not find type inference results" do
-      matches = application.symbols.search("").matches
-
-      identifiers = matches.map { _1.document.identifier }
-
-      expect(identifiers).to match_array([
-        "::MyApplication",
-        "::MyApplication::MyController",
-        "::MyApplication::MyController#index"
-      ])
-    end
-
-    # TODO: find references? find method declarations? find lambda declarations?
-    # This should be optimized for the "I know what I'm looking for" mode, and not the exploration mode.
-  end
 end

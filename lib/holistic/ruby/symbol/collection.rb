@@ -56,12 +56,6 @@ module Holistic::Ruby::Symbol
       @from_file_path_to_identifier[file_path].map { find(_1) }
     end
 
-    def search(query)
-      documents = @from_identifier_to_symbol.values.filter(&:searchable?).map(&:to_search_document)
-
-      ::Holistic::FuzzySearch::Search.call(query:, documents:)
-    end
-
     concerning :TestingHelpers do
       # TODO: return a symbol instead of `Reference`?
       def find_reference_to(name)

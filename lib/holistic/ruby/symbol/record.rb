@@ -6,19 +6,8 @@ module Holistic::Ruby::Symbol
     :kind,
     :record,
     :locations,
-    :searchable?,
     keyword_init: true
   ) do
-    def to_search_document
-      return unless searchable?
-
-      ::Holistic::FuzzySearch::Document.new(
-        identifier:,
-        text: identifier,
-        record: self
-      )
-    end
-
     def namespace
       record.namespace
     end
