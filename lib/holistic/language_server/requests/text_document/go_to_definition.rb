@@ -19,6 +19,14 @@ module Holistic::LanguageServer
 
     private
 
+    def build_cursor_from_message_params(message)
+      file_path = message.param("textDocument", "uri").gsub("file://", "")
+      line = message.param("position", "line")
+      column = message.param("position", "column")
+
+      ::Holistic::Document::Cursor.new(file_path:, line:, column:)
+    end
+
     def respond_with_nil(message)
       Response.in_reply_to(message).with(result: nil)
     end
@@ -45,14 +53,6 @@ module Holistic::LanguageServer
       }
 
       Response.in_reply_to(message).with(result: [location_link])
-    end
-
-    def build_cursor_from_message_params(message)
-      file_path = message.param("textDocument", "uri").gsub("file://", "")
-      line = message.param("position", "line")
-      column = message.param("position", "column")
-
-      ::Holistic::Document::Cursor.new(file_path:, line:, column:)
     end
   end
 end
