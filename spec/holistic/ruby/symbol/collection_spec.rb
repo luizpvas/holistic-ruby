@@ -5,7 +5,7 @@ describe ::Holistic::Ruby::Symbol::Collection do
 
   describe "#index" do
     context "when symbol does not have source locations" do
-      let(:application) { ::Holistic::Ruby::Application::Record.new(name: "dummy", root_directory: ".") }
+      let(:application) { ::Holistic::Ruby::Application.new(name: "dummy", root_directory: ".") }
       let(:symbol) { ::Holistic::Ruby::Symbol::Record.new(identifier: "::MySymbol", locations: []) }
 
       it "stores the symbol in the identifier index" do
@@ -16,7 +16,7 @@ describe ::Holistic::Ruby::Symbol::Collection do
     end
 
     context "when symbol has one source location" do
-      let(:application) { ::Holistic::Ruby::Application::Record.new(name: "dummy", root_directory: ".") }
+      let(:application) { ::Holistic::Ruby::Application.new(name: "dummy", root_directory: ".") }
       let(:locations) { [::Holistic::Document::Location.beginning_of_file("my_symbol.rb")] }
       let(:symbol) { ::Holistic::Ruby::Symbol::Record.new(identifier: "::MySymbol", locations:) }
 
@@ -34,7 +34,7 @@ describe ::Holistic::Ruby::Symbol::Collection do
     end
 
     context "when symbol has multiple source locations" do
-      let(:application) { ::Holistic::Ruby::Application::Record.new(name: "dummy", root_directory: ".") }
+      let(:application) { ::Holistic::Ruby::Application.new(name: "dummy", root_directory: ".") }
 
       let(:locations) do
         [
@@ -60,7 +60,7 @@ describe ::Holistic::Ruby::Symbol::Collection do
     end
 
     context "when indexing the same symbol with the same source locations multiple times" do
-      let(:application) { ::Holistic::Ruby::Application::Record.new(name: "dummy", root_directory: ".") }
+      let(:application) { ::Holistic::Ruby::Application.new(name: "dummy", root_directory: ".") }
       let(:location) { ::Holistic::Document::Location.beginning_of_file("my_symbol_1.rb") }
       let(:symbol) { ::Holistic::Ruby::Symbol::Record.new(identifier: "::MySymbol", locations: [location]) }
 
@@ -74,7 +74,7 @@ describe ::Holistic::Ruby::Symbol::Collection do
     end
 
     context "when indexing the same symbol multiple times with extra source locations" do
-      let(:application) { ::Holistic::Ruby::Application::Record.new(name: "dummy", root_directory: ".") }
+      let(:application) { ::Holistic::Ruby::Application.new(name: "dummy", root_directory: ".") }
       let(:location_1) { ::Holistic::Document::Location.beginning_of_file("my_symbol_1.rb") }
       let(:location_2) { ::Holistic::Document::Location.beginning_of_file("my_symbol_2.rb") }
       let(:symbol) { ::Holistic::Ruby::Symbol::Record.new(identifier: "::MySymbol", locations: [location_1]) }
@@ -136,7 +136,7 @@ describe ::Holistic::Ruby::Symbol::Collection do
 
   describe "#delete_symbols_in_file" do
     context "when file is not indexed" do
-      let(:application) { ::Holistic::Ruby::Application::Record.new(name: "dummy", root_directory: ".") }
+      let(:application) { ::Holistic::Ruby::Application.new(name: "dummy", root_directory: ".") }
 
       it "does nothing" do
         expect(application.symbols.delete_symbols_in_file("non_existing.rb").to_a).to eql([])
@@ -144,7 +144,7 @@ describe ::Holistic::Ruby::Symbol::Collection do
     end
 
     context "when file has symbols" do
-      let(:application) { ::Holistic::Ruby::Application::Record.new(name: "dummy", root_directory: ".") }
+      let(:application) { ::Holistic::Ruby::Application.new(name: "dummy", root_directory: ".") }
 
       let(:location) { ::Holistic::Document::Location.beginning_of_file("my_app.rb") }
 

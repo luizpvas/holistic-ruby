@@ -2,7 +2,7 @@
 
 module SnippetParser
   def parse_snippet(code)
-    application = ::Holistic::Ruby::Application::Record.new(name: "Snippet", root_directory: "snippet_parser")
+    application = ::Holistic::Ruby::Application.new(name: "Snippet", root_directory: "snippet_parser")
 
     file = ::Holistic::File::Fake.new("snippet.rb", code)
 
@@ -15,7 +15,7 @@ module SnippetParser
 
   # TODO: find a better name for this helper
   def parse_snippet_collection(&block)
-    application = ::Holistic::Ruby::Application::Record.new(name: "Snippet", root_directory: "snippet_parser")
+    application = ::Holistic::Ruby::Application.new(name: "Snippet", root_directory: "snippet_parser")
 
     files = ::Object.new
     files.define_singleton_method(:add) do |file_path, code|

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Holistic::Ruby
-  class Application::Record
+  class Application
     attr_reader :name, :root_directory, :root_namespace
 
     def initialize(name:, root_directory:)
