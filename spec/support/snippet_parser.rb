@@ -4,7 +4,7 @@ module SnippetParser
   def parse_snippet(code)
     application = ::Holistic::Ruby::Application.new(name: "Snippet", root_directory: "snippet_parser")
 
-    file = ::Holistic::File::Fake.new("snippet.rb", code)
+    file = ::Holistic::Document::File::Fake.new(path: "snippet.rb", content: code)
 
     ::Holistic::Ruby::Parser::WrapParsingUnitWithProcessAtTheEnd.call(application:) do
       ::Holistic::Ruby::Parser::ParseFile.call(application:, file:)
@@ -19,7 +19,7 @@ module SnippetParser
 
     files = ::Object.new
     files.define_singleton_method(:add) do |file_path, code|
-      file = ::Holistic::File::Fake.new(file_path, code)
+      file = ::Holistic::Document::File::Fake.new(path: file_path, content: code)
 
       ::Holistic::Ruby::Parser::ParseFile[application:, file:]
     end

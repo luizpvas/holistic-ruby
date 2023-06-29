@@ -4,22 +4,25 @@ describe ::Holistic::Ruby::Parser::LiveEditing::ProcessFileChanged do
   include ::SnippetParser
 
   context "when file content did not change" do
-    let(:application) do
-      parse_snippet <<~RUBY
-        module MyApp
-          module Example
-            Foo.call
-          end
+    let(:source_code) do
+      <<~RUBY
+      module MyApp
+        module Example
+          Foo.call
         end
+      end
       RUBY
     end
+
+    let(:application) { parse_snippet(source_code) }
 
     it "ends up in the same state as before the change" do
       my_app_before = application.symbols.find("::MyApp")
       my_app_example_before = application.symbols.find("::MyApp::Example")
       foo_reference_before = application.symbols.find_reference_to("Foo")
 
-      described_class.call(application:, file: application.files.find("snippet.rb"))
+      file = ::Holistic::Document::File::Fake.new(path: "snippet.rb", content: source_code)
+      described_class.call(application:, file:)
 
       my_app_after = application.symbols.find("::MyApp")
       my_app_example_after = application.symbols.find("::MyApp::Example")
@@ -37,17 +40,17 @@ describe ::Holistic::Ruby::Parser::LiveEditing::ProcessFileChanged do
   end
 
   context "when file content is different" do
-    let(:application) do
-      parse_snippet <<~RUBY
-        module MyApp
-          module Example1
-            Foo1.call
-          end
+    let(:source_code_before) do
+      <<~RUBY
+      module MyApp
+        module Example1
+          Foo1.call
         end
+      end
       RUBY
     end
 
-    let(:new_source_code) do
+    let(:source_code_after) do
       <<~RUBY
       module MyApp
         module Example2
@@ -57,6 +60,8 @@ describe ::Holistic::Ruby::Parser::LiveEditing::ProcessFileChanged do
       RUBY
     end
 
+    let(:application) { parse_snippet(source_code_before) }
+
     it "deletes symbols from previous content and parses new ones" do
       my_app_before = application.symbols.find("::MyApp")
       my_app_example_1_before = application.symbols.find("::MyApp::Example1")
@@ -64,8 +69,8 @@ describe ::Holistic::Ruby::Parser::LiveEditing::ProcessFileChanged do
       foo_1_reference_before = application.symbols.find_reference_to("Foo1")
       foo_2_reference_before = application.symbols.find_reference_to("Foo2") rescue nil
 
-      application.files.find("snippet.rb").write(new_source_code)
-      described_class.call(application:, file: application.files.find("snippet.rb"))
+      file = ::Holistic::Document::File::Fake.new(path: "snippet.rb", content: source_code_after)
+      described_class.call(application:, file:)
 
       my_app_after = application.symbols.find("::MyApp")
       my_app_example_1_after = application.symbols.find("::MyApp::Example1")
