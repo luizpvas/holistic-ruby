@@ -11,7 +11,7 @@ module Holistic::LanguageServer
 
       case ::Holistic::Ruby::Symbol::FindDefinition.call(application:, cursor:)
       in :not_found                              then respond_with_nil(message)
-      in [:symbol_is_not_reference, {origin:}]   then respond_with_nil(message)
+      in [:origin_is_not_a_reference, {origin:}] then respond_with_nil(message)
       in [:could_not_find_definition, {origin:}] then respond_with_nil(message)
       in [:definition_found, {origin:, target:}] then respond_with_location_link(message, origin, target)
       end

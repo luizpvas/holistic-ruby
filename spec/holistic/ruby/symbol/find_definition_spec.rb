@@ -14,7 +14,7 @@ describe ::Holistic::Ruby::Symbol::FindDefinition do
     RUBY
   end
 
-  context "when symbol does not exist" do
+  context "when symbol under cursor does not exist" do
     it "returns :not_found" do
       cursor = ::Holistic::Document::Cursor.new("snippet.rb", 0, 0)
 
@@ -24,18 +24,18 @@ describe ::Holistic::Ruby::Symbol::FindDefinition do
     end
   end
 
-  context "when symbol is not a reference" do
-    it "returns :symbol_is_not_reference" do
+  context "when symbol under cursor is not a reference" do
+    it "returns :origin_is_not_a_reference" do
       cursor = ::Holistic::Document::Cursor.new("snippet.rb", 2, 15)
 
       result, data = described_class.call(application:, cursor:)
 
-      expect(result).to eql(:symbol_is_not_reference)
+      expect(result).to eql(:origin_is_not_a_reference)
       expect(data[:origin].identifier).to eql("::MyApp::Example")
     end
   end
 
-  context "when symbol references a constant from an external lib" do
+  context "when symbol under cursor references a constant from an external lib" do
     it "returns :could_not_find_definition" do
       cursor = ::Holistic::Document::Cursor.new("snippet.rb", 5, 9)
 
@@ -45,7 +45,7 @@ describe ::Holistic::Ruby::Symbol::FindDefinition do
     end
   end
 
-  context "when symbol references a constant declared within the application" do
+  context "when symbol under cursor references a constant declared within the application" do
     it "returns :definition_found" do
       cursor = ::Holistic::Document::Cursor.new("snippet.rb", 4, 9)
 
