@@ -12,7 +12,7 @@ module LanguageServer
         "params" => {
           "position" => {
             "line" => line,
-            "column" => column
+            "character" => column
           },
           "textDocument" => {
             "uri" => "file://#{file_path}"

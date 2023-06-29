@@ -26,7 +26,7 @@ describe ::Holistic::Ruby::Symbol::FindDefinition do
 
   context "when symbol under cursor is not a reference" do
     it "returns :origin_is_not_a_reference" do
-      cursor = ::Holistic::Document::Cursor.new("snippet.rb", 2, 15)
+      cursor = ::Holistic::Document::Cursor.new("snippet.rb", 1, 15)
 
       result, data = described_class.call(application:, cursor:)
 
@@ -37,7 +37,7 @@ describe ::Holistic::Ruby::Symbol::FindDefinition do
 
   context "when symbol under cursor references a constant from an external lib" do
     it "returns :could_not_find_definition" do
-      cursor = ::Holistic::Document::Cursor.new("snippet.rb", 5, 9)
+      cursor = ::Holistic::Document::Cursor.new("snippet.rb", 4, 9)
 
       result, _data = described_class.call(application:, cursor:)
 
@@ -47,7 +47,7 @@ describe ::Holistic::Ruby::Symbol::FindDefinition do
 
   context "when symbol under cursor references a constant declared within the application" do
     it "returns :definition_found" do
-      cursor = ::Holistic::Document::Cursor.new("snippet.rb", 4, 9)
+      cursor = ::Holistic::Document::Cursor.new("snippet.rb", 3, 9)
 
       result, data = described_class.call(application:, cursor:)
 

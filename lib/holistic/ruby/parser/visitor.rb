@@ -23,11 +23,14 @@ module Holistic::Ruby::Parser
       end
 
       BuildLocation = ->(node) do
+        # https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#position
+        offset_to_match_language_server_zero_based_position = 1
+
         ::Holistic::Document::Location.new(
           file_path: Current.file.path,
-          start_line: node.location.start_line,
+          start_line: node.location.start_line - offset_to_match_language_server_zero_based_position,
           start_column: node.location.start_column,
-          end_line: node.location.end_line,
+          end_line: node.location.end_line - offset_to_match_language_server_zero_based_position,
           end_column: node.location.end_column
         )
       end

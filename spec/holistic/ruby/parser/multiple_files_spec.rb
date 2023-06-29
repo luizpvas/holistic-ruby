@@ -37,7 +37,7 @@ describe Holistic::Ruby::Parser do
 
     expect(application.symbols.from_file_path_to_identifier).to eql({
       "my_app/example_1.rb" => ::Set.new(["::MyApp", "::MyApp::Example1", "::MyApp::Example1#self.call"]),
-      "my_app/example_2.rb" => ::Set.new(["::MyApp", "::MyApp::Example2", "my_app/example_2.rb[3,4,3,12]"]),
+      "my_app/example_2.rb" => ::Set.new(["::MyApp", "::MyApp::Example2", "my_app/example_2.rb[2,4,2,12]"]),
     })
   end
 end

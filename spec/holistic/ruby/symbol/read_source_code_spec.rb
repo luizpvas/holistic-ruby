@@ -20,8 +20,8 @@ describe ::Holistic::Ruby::Symbol::ReadSourceCode do
           itself: be_a(::Holistic::File::Fake),
           path: "snippet.rb",
         ),
-        start_line: 2,
-        end_line: 2
+        start_line: 1,
+        end_line: 1
       )
     end
   end
