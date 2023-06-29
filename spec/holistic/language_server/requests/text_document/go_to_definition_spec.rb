@@ -14,15 +14,13 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::GoToDefinition do
     RUBY
   end
 
-  around(:each) do |each|
-    ::Holistic::LanguageServer::Current.set(application:, &each)
-  end
-
   context "when symbol under cursor does not exist" do
     it "responds with null" do
       message = ::LanguageServer::Factory.build_definition_message(file_path: "snippet.rb", line: 0, column: 0)
 
-      response = described_class.call(message)
+      request = ::Holistic::LanguageServer::Request.new(message:, application:)
+
+      response = described_class.call(request)
 
       expect(response).to have_attributes(
         itself: ::Holistic::LanguageServer::Response::Success,
@@ -36,7 +34,9 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::GoToDefinition do
     it "responds with null" do
       message = ::LanguageServer::Factory.build_definition_message(file_path: "snippet.rb", line: 0, column: 12)
 
-      response = described_class.call(message)
+      request = ::Holistic::LanguageServer::Request.new(message:, application:)
+
+      response = described_class.call(request)
 
       expect(response).to have_attributes(
         itself: ::Holistic::LanguageServer::Response::Success,
@@ -50,7 +50,9 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::GoToDefinition do
     it "responds with null" do
       message = ::LanguageServer::Factory.build_definition_message(file_path: "snippet.rb", line: 4, column: 9)
 
-      response = described_class.call(message)
+      request = ::Holistic::LanguageServer::Request.new(message:, application:)
+
+      response = described_class.call(request)
 
       expect(response).to have_attributes(
         itself: ::Holistic::LanguageServer::Response::Success,
@@ -64,7 +66,9 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::GoToDefinition do
     it "responds with the dependency location" do
       message = ::LanguageServer::Factory.build_definition_message(file_path: "snippet.rb", line: 3, column: 9)
 
-      response = described_class.call(message)
+      request = ::Holistic::LanguageServer::Request.new(message:, application:)
+
+      response = described_class.call(request)
 
       expect(response).to have_attributes(
         itself: ::Holistic::LanguageServer::Response::Success,

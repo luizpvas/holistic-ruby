@@ -7,4 +7,7 @@ module Holistic::LanguageServer::Protocol
   # https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#headerPart
   END_OF_HEADER = "\r\n\r\n"
   CONTENT_LENGTH_HEADER = "Content-Length"
+
+  # https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocument_synchronization
+  INCREMENTAL_TEXT_DOCUMENT_SYNCHRONIZATION = 2
 end

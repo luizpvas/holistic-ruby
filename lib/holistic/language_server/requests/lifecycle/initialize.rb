@@ -15,22 +15,20 @@ module Holistic::LanguageServer
       end
     end
 
-    def call(message)
-      root_directory = message.param("rootPath")
+    def call(request)
+      root_directory = request.param("rootPath")
       name = ::File.basename(root_directory)
 
       Current.application = ::Holistic::Ruby::Application.new(name:, root_directory:)
 
       ParseApplicationInBackground.call(Current.application)
 
-      Response.in_reply_to(message).with(result: {
+      request.respond_with({
         capabilities: {
           # Defines how the host (editor) should sync document changes to the language server.
-          # The value 2 means it is incremental. Documents are synced by sending the full content on open.
+          # Incremental means documents are synced by sending the full content on open.
           # After that only incremental updates to the document are sent.
-          #
-          # https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocumentSyncKind
-          textDocumentSync: 2,
+          textDocumentSync: Protocol::INCREMENTAL_TEXT_DOCUMENT_SYNCHRONIZATION,
 
           # The server provides goto definition support.
           definitionProvider: true

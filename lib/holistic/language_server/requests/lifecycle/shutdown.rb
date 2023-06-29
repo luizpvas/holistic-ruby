@@ -5,8 +5,8 @@ module Holistic::LanguageServer
   module Requests::Lifecycle::Shutdown
     extend self
 
-    def call(message)
-      Response.in_reply_to(message).with(result: nil)
+    def call(request)
+      request.respond_with(nil)
     end
   end
 end

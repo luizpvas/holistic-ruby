@@ -1,8 +1,13 @@
 # frozen_string_literal: true
 
 describe ::Holistic::LanguageServer::Requests::Lifecycle::Initialize do
-  let(:message) do
-    ::Holistic::LanguageServer::Message.new(::JSON.parse(::File.read("spec/fixtures/language_server_initialize_message.json")))
+  let(:request) do
+    message =
+      ::Holistic::LanguageServer::Message.new(
+        ::JSON.parse(::File.read("spec/fixtures/language_server_initialize_message.json"))
+      )
+
+    ::Holistic::LanguageServer::Request.new(message:, application: nil)
   end
 
   after(:each) do
@@ -12,7 +17,7 @@ describe ::Holistic::LanguageServer::Requests::Lifecycle::Initialize do
   it "registers an application on the root directory" do
     expect(::Holistic::LanguageServer::Current.application).to be_nil
 
-    described_class.call(message)
+    described_class.call(request)
 
     expect(::Holistic::LanguageServer::Current.application).to have_attributes(
       name: "holistic",
@@ -21,7 +26,7 @@ describe ::Holistic::LanguageServer::Requests::Lifecycle::Initialize do
   end
 
   it "returns a response with the Holistic capabilities" do
-    response = described_class.call(message)
+    response = described_class.call(request)
 
     expect(response).to have_attributes(
       itself: ::Holistic::LanguageServer::Response::Success,

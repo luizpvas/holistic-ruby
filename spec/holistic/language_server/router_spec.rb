@@ -2,7 +2,7 @@
 
 describe ::Holistic::LanguageServer::Router do
   context "when routing 'initialize' messages" do
-    let(:initialize_request) do
+    let(:initialize_message) do
       ::Holistic::LanguageServer::Message.new({
         "id" => 1,
         "jsonrpc" => "2.0",
@@ -12,14 +12,21 @@ describe ::Holistic::LanguageServer::Router do
     end
 
     it "calls the handler" do
-      expect(::Holistic::LanguageServer::Requests::Lifecycle::Initialize).to receive(:call).with(initialize_request)
+      expect(::Holistic::LanguageServer::Requests::Lifecycle::Initialize)
+        .to receive(:call)
+        .with(
+          have_attributes(
+            itself: ::Holistic::LanguageServer::Request,
+            message: initialize_message
+          )
+        )
 
-      described_class.dispatch(initialize_request)
+      described_class.dispatch(initialize_message)
     end
   end
   
   context "when routing 'shutdown' requests" do
-    let(:shutdown_request) do
+    let(:shutdown_message) do
       ::Holistic::LanguageServer::Message.new({
         "id" => 2,
         "jsonrpc" => "2.0",
@@ -29,14 +36,21 @@ describe ::Holistic::LanguageServer::Router do
     end
 
     it "calls the handler" do
-      expect(::Holistic::LanguageServer::Requests::Lifecycle::Shutdown).to receive(:call).with(shutdown_request)
+      expect(::Holistic::LanguageServer::Requests::Lifecycle::Shutdown)
+        .to receive(:call)
+        .with(
+          have_attributes(
+            itself: ::Holistic::LanguageServer::Request,
+            message: shutdown_message
+          )
+        )
 
-      described_class.dispatch(shutdown_request)
+      described_class.dispatch(shutdown_message)
     end
   end
 
   context "when routing 'exit' notifications" do
-    let(:exit_notification) do
+    let(:exit_message) do
       ::Holistic::LanguageServer::Message.new({
         "jsonrpc" => "2.0",
         "method" => "exit",
@@ -45,14 +59,21 @@ describe ::Holistic::LanguageServer::Router do
     end
 
     it "calls the handler" do
-      expect(::Holistic::LanguageServer::Requests::Lifecycle::Exit).to receive(:call).with(exit_notification)
+      expect(::Holistic::LanguageServer::Requests::Lifecycle::Exit)
+        .to receive(:call)
+        .with(
+          have_attributes(
+            itself: ::Holistic::LanguageServer::Request,
+            message: exit_message
+          )
+        )
 
-      described_class.dispatch(exit_notification)
+      described_class.dispatch(exit_message)
     end
   end
 
   context "when routing 'textDocument/definition' messages" do
-    let(:go_to_definition_request) do
+    let(:go_to_definition_message) do
       ::Holistic::LanguageServer::Message.new({
         "jsonrpc" => "2.0",
         "method" => "textDocument/definition",
@@ -61,9 +82,16 @@ describe ::Holistic::LanguageServer::Router do
     end
 
     it "calls the handler" do
-      expect(::Holistic::LanguageServer::Requests::TextDocument::GoToDefinition).to receive(:call).with(go_to_definition_request)
+      expect(::Holistic::LanguageServer::Requests::TextDocument::GoToDefinition)
+        .to receive(:call)
+        .with(
+          have_attributes(
+            itself: ::Holistic::LanguageServer::Request,
+            message: go_to_definition_message
+          )
+        )
 
-      described_class.dispatch(go_to_definition_request)
+      described_class.dispatch(go_to_definition_message)
     end
   end
 

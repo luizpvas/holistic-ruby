@@ -22,7 +22,9 @@ module Holistic::LanguageServer
         return Response::NotFound.new
       end
 
-      handler.call(message).tap { ::Holistic.logger.info(_1) }
+      request = Request.new(message:, application: Current.application)
+
+      handler.call(request).tap { ::Holistic.logger.info(_1) }
     end
   end
 end

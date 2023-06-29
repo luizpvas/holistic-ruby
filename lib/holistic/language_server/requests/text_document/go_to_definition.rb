@@ -5,33 +5,29 @@ module Holistic::LanguageServer
   module Requests::TextDocument::GoToDefinition
     extend self
 
-    def call(message)
-      application = Current.application
-      cursor = build_cursor_from_message_params(message)
+    def call(request)
+      application = request.application
+      cursor = build_cursor_from_params(request)
 
       case ::Holistic::Ruby::Symbol::FindDefinition.call(application:, cursor:)
-      in :not_found                              then respond_with_nil(message)
-      in [:origin_is_not_a_reference, {origin:}] then respond_with_nil(message)
-      in [:could_not_find_definition, {origin:}] then respond_with_nil(message)
-      in [:definition_found, {origin:, target:}] then respond_with_location_link(message, origin, target)
+      in :not_found                              then request.respond_with(nil)
+      in [:origin_is_not_a_reference, {origin:}] then request.respond_with(nil)
+      in [:could_not_find_definition, {origin:}] then request.respond_with(nil)
+      in [:definition_found, {origin:, target:}] then respond_with_location_link(request, origin, target)
       end
     end
 
     private
 
-    def build_cursor_from_message_params(message)
-      file_path = message.param("textDocument", "uri").gsub("file://", "")
-      line = message.param("position", "line")
-      column = message.param("position", "character")
+    def build_cursor_from_params(request)
+      file_path = request.param("textDocument", "uri").gsub("file://", "")
+      line = request.param("position", "line")
+      column = request.param("position", "character")
 
       ::Holistic::Document::Cursor.new(file_path:, line:, column:)
     end
 
-    def respond_with_nil(message)
-      Response.in_reply_to(message).with(result: nil)
-    end
-
-    def respond_with_location_link(message, origin, target)
+    def respond_with_location_link(request, origin, target)
       origin_location = origin.locations.first
       target_location = target.locations.first
 
@@ -52,7 +48,7 @@ module Holistic::LanguageServer
         }
       }
 
-      Response.in_reply_to(message).with(result: [location_link])
+      request.respond_with([location_link])
     end
   end
 end
