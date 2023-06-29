@@ -17,9 +17,5 @@ module Holistic::Ruby
     def dependencies
       @dependencies ||= TypeInference::Dependencies.new(application: self)
     end
-
-    def files
-      @files ||= ::Holistic::File::Collection.new(application: self)
-    end
   end
 end
