@@ -5,12 +5,12 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::GoToDefinition do
 
   let(:application) do
     parse_snippet <<~RUBY
-    module MyApp
-      module Example; end
+module MyApp
+  module Example; end
 
-      Example.call
-      ::String.new
-    end
+  Example.call
+  ::String.new
+end
     RUBY
   end
 
@@ -69,7 +69,21 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::GoToDefinition do
       expect(response).to have_attributes(
         itself: ::Holistic::LanguageServer::Response::Success,
         message_id: message.id,
-        result: nil
+        result: [{
+          "originSelectionRange" => {
+            "start" => { "line" => 4, "character" => 2 },
+            "end" => { "line" => 4, "character" => 9 }
+          },
+          "targetUri" => "file://snippet.rb",
+          "targetRange" => {
+            "start" => { "line" => 2, "character" => 2 },
+            "end" => { "line" => 2, "character" => 21 }
+          },
+          "targetSelectionRange" => {
+            "start" => { "line" => 2, "character" => 2 },
+            "end" => { "line" => 2, "character" => 21 }
+          }
+        }]
       )
     end
   end

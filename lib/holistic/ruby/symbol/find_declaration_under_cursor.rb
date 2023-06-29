@@ -6,15 +6,15 @@ module Holistic::Ruby::Symbol
     extend self
 
     def call(application:, cursor:)
-      symbol = application.symbols.find_by_cursor(cursor)
+      origin = application.symbols.find_by_cursor(cursor)
 
-      return :not_found                            if symbol.nil?
-      return [:symbol_is_not_reference, symbol]    if symbol.kind != Kind::REFERENCE
-      return [:could_not_find_declaration, symbol] if symbol.record.conclusion.nil?
+      return :not_found                               if origin.nil?
+      return [:symbol_is_not_reference, {origin:}]    if origin.kind != Kind::REFERENCE
+      return [:could_not_find_declaration, {origin:}] if origin.record.conclusion.nil?
 
-      declaration = application.symbols.find(symbol.record.conclusion.dependency_identifier)
+      target = application.symbols.find(origin.record.conclusion.dependency_identifier)
 
-      [:declaration_found, declaration]
+      [:declaration_found, {origin:, target:}]
     end
   end
 end

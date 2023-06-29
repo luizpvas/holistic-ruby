@@ -28,10 +28,10 @@ describe ::Holistic::Ruby::Symbol::FindDeclarationUnderCursor do
     it "returns :symbol_is_not_reference" do
       cursor = ::Holistic::Document::Cursor.new("snippet.rb", 2, 15)
 
-      result, symbol = described_class.call(application:, cursor:)
+      result, data = described_class.call(application:, cursor:)
 
       expect(result).to eql(:symbol_is_not_reference)
-      expect(symbol.identifier).to eql("::MyApp::Example")
+      expect(data[:origin].identifier).to eql("::MyApp::Example")
     end
   end
 
@@ -39,7 +39,7 @@ describe ::Holistic::Ruby::Symbol::FindDeclarationUnderCursor do
     it "returns :could_not_find_declaration" do
       cursor = ::Holistic::Document::Cursor.new("snippet.rb", 5, 9)
 
-      result, _symbol = described_class.call(application:, cursor:)
+      result, _data = described_class.call(application:, cursor:)
 
       expect(result).to eql(:could_not_find_declaration)
     end
@@ -49,10 +49,11 @@ describe ::Holistic::Ruby::Symbol::FindDeclarationUnderCursor do
     it "returns :declaration_found" do
       cursor = ::Holistic::Document::Cursor.new("snippet.rb", 4, 9)
 
-      result, declaration = described_class.call(application:, cursor:)
+      result, data = described_class.call(application:, cursor:)
 
       expect(result).to eql(:declaration_found)
-      expect(declaration.identifier).to eql("::MyApp::Example")
+      expect(data[:origin].record.conclusion.dependency_identifier).to eql("::MyApp::Example")
+      expect(data[:target].identifier).to eql("::MyApp::Example")
     end
   end
 end
