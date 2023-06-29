@@ -4,6 +4,10 @@ require "logger"
 require "zeitwerk"
 require "syntax_tree"
 
+require "active_support/concern"
+require "active_support/core_ext/module/concerning"
+require "json"
+
 loader = ::Zeitwerk::Loader.for_gem
 loader.setup
 
