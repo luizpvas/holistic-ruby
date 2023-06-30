@@ -10,7 +10,7 @@ module Holistic::Document::Unsaved
     :end_column
   ) do
     def insertion?
-      text.bytesize.positive? && start_line == end_line && start_column == end_column
+      text.size.positive? && start_line == end_line && start_column == end_column
     end
 
     def deletion?
