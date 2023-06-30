@@ -6,6 +6,6 @@ require "active_support/current_attributes"
 
 module Holistic::LanguageServer
   class Current < ::ActiveSupport::CurrentAttributes
-    attribute :application
+    attribute :application, :lifecycle
   end
 end

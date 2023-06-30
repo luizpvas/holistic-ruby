@@ -5,6 +5,8 @@ module Holistic::LanguageServer
     extend self
 
     def call
+      start_language_server_lifecycle!
+
       server = Stdio::Server.new
       parser = Stdio::Parser.new
       
@@ -32,6 +34,12 @@ module Holistic::LanguageServer
       ::Holistic.logger.info(err.backtrace)
 
       raise err
+    end
+
+    private
+
+    def start_language_server_lifecycle!
+      ::Holistic::LanguageServer::Current.lifecycle = ::Holistic::LanguageServer::Lifecycle.new
     end
   end
 end
