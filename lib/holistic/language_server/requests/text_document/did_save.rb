@@ -14,8 +14,12 @@ module Holistic::LanguageServer
       file_path = request.param("textDocument", "uri").gsub("file://", "")
       unsaved_document = request.application.unsaved_documents.find(file_path)
 
-      # TODO: perhaps we should have something like `request.respond_with_error`
-      return request.respond_with(nil) if unsaved_document.nil?
+      if unsaved_document.nil?
+        return request.respond_with_error(
+          code: Protocol::REQUEST_FAILED_ERROR_CODE,
+          description: "could not find document #{file_path} in the unsaved documents list"
+        )
+      end
 
       ProcessInBackground.call(application: request.application, file: unsaved_document.to_file)
 

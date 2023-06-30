@@ -17,27 +17,44 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::DidSave do
     })
   end
 
-  before(:each) do
-    application.unsaved_documents.add(path: file_path, content: "content")
+  context "when document exists in the :unsaved_documents collection" do
+    before(:each) do
+      application.unsaved_documents.add(path: file_path, content: "content")
+    end
+
+    it "returns an empty response" do
+      request = ::Holistic::LanguageServer::Request.new(application:, message:)
+
+      response = described_class.call(request)
+
+      expect(response).to have_attributes(
+        itself: be_a(::Holistic::LanguageServer::Response::Success),
+        result: nil
+      )
+    end
+
+    it "parses unsaved changes in background" do
+      expect(described_class::ProcessInBackground)
+        .to receive(:call)
+        .with(application:, file: be_a(::Holistic::Document::File::Fake))
+
+      request = ::Holistic::LanguageServer::Request.new(application:, message:)
+      described_class.call(request)
+    end
   end
 
-  it "returns an empty response" do
-    request = ::Holistic::LanguageServer::Request.new(application:, message:)
+  context "when document does not exist in the :unsaved_documents collection" do
+    it "returns an error response" do
+      request = ::Holistic::LanguageServer::Request.new(application:, message:)
 
-    response = described_class.call(request)
+      response = described_class.call(request)
 
-    expect(response).to have_attributes(
-      itself: be_a(::Holistic::LanguageServer::Response::Success),
-      result: nil
-    )
-  end
-
-  it "parses unsaved changes in background" do
-    expect(described_class::ProcessInBackground)
-      .to receive(:call)
-      .with(application:, file: be_a(::Holistic::Document::File::Fake))
-
-    request = ::Holistic::LanguageServer::Request.new(application:, message:)
-    described_class.call(request)
+      expect(response).to have_attributes(
+        itself: be_a(::Holistic::LanguageServer::Response::Error),
+        code: ::Holistic::LanguageServer::Protocol::REQUEST_FAILED_ERROR_CODE,
+        message: "could not find document #{file_path} in the unsaved documents list",
+        data: nil
+      )
+    end
   end
 end
