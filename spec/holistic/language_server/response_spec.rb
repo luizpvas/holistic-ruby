@@ -6,7 +6,10 @@ describe ::Holistic::LanguageServer::Response do
       it "serializes the response as json" do
         message = ::Holistic::LanguageServer::Message.new({ "jsonrpc" => "2.0", "id" => 15 })
 
-        response = described_class.in_reply_to(message).with(result: { "example" => "ok" })
+        response = ::Holistic::LanguageServer::Response::Success.new(
+          message_id: message.id,
+          result: { "example" => "ok" }
+        )
 
         encoded_payload = { "jsonrpc" => "2.0", "id" => 15, "result" => { "example" => "ok" } }.to_json
 

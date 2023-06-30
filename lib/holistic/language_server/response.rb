@@ -34,9 +34,5 @@ module Holistic::LanguageServer
 
     Exit = ::Data.define
     NotFound = ::Data.define
-
-    def in_reply_to(message)
-      Success.new(message_id: message.id, result: nil)
-    end
   end
 end
