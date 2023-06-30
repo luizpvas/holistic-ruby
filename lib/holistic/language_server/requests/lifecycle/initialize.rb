@@ -19,7 +19,7 @@ module Holistic::LanguageServer
       root_directory = request.param("rootPath")
       name = ::File.basename(root_directory)
 
-      Current.application = ::Holistic::Ruby::Application.new(name:, root_directory:)
+      Current.application = ::Holistic::Application.new(name:, root_directory:)
 
       ParseApplicationInBackground.call(Current.application)
 
