@@ -27,7 +27,11 @@ module Holistic::LanguageServer
 
       request = Request.new(message:, application: Current.application)
 
-      handler.call(request).tap { ::Holistic.logger.info(_1) }
+      response = handler.call(request)
+
+      ::Holistic.logger.info(response)
+
+      response
     end
   end
 end
