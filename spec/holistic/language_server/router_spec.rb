@@ -141,6 +141,29 @@ describe ::Holistic::LanguageServer::Router do
     end
   end
 
+  context "when routing 'textDocument/didSave' messages" do
+    let(:did_save_message) do
+      ::Holistic::LanguageServer::Message.new({
+        "jsonrpc" => "2.0",
+        "method" => "textDocument/didSave",
+        "params" => {}
+      })
+    end
+
+    it "calls the handler" do
+      expect(::Holistic::LanguageServer::Requests::TextDocument::DidSave)
+        .to receive(:call)
+        .with(
+          have_attributes(
+            itself: ::Holistic::LanguageServer::Request,
+            message: did_save_message
+          )
+        )
+
+      described_class.dispatch(did_save_message)
+    end
+  end
+
   context "when routing 'textDocument/didClose' messages" do
     let(:did_close_message) do
       ::Holistic::LanguageServer::Message.new({
