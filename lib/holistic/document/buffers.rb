@@ -18,6 +18,10 @@ module Holistic::Document
       @items[path] = Buffer.new(content)
     end
 
+    def delete(path)
+      @items.delete(path)
+    end
+
     def find(path)
       @items[path]
     end
