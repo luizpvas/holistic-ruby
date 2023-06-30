@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-module Holistic::Document::Unsaved
-  class Collection
+module Holistic::Document
+  class Unsaved::Collection
     def initialize
       @items = {}
     end
 
     def add(path:, content:)
-      @items[path] = Record.new(content)
+      @items[path] = Unsaved::Record.new(path:, content:)
     end
 
     def delete(path)

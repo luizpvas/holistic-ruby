@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
-describe ::Holistic::LanguageServer::Requests::TextDocument::DidClose do
-  let(:file_path) { "/my_app/example.rb" }
+describe ::Holistic::LanguageServer::Requests::TextDocument::DidSave do
+  let(:application) { ::Holistic::Application.new(name: "dummy", root_directory: ".") }
+
+  let(:file_path) { "my_app/example.rb" }
 
   let(:message) do
     ::Holistic::LanguageServer::Message.new({
-      "method" => "textDocument/didClose",
+      "method" => "textDocument/didSave",
       "jsonrpc" => "2.0",
       "params" => {
         "textDocument" => {
@@ -15,7 +17,9 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::DidClose do
     })
   end
 
-  let(:application) { ::Holistic::Application.new(name: "dummy", root_directory: ".") }
+  before(:each) do
+    application.unsaved_documents.add(path: file_path, content: "content")
+  end
 
   it "returns an empty response" do
     request = ::Holistic::LanguageServer::Request.new(application:, message:)
@@ -27,13 +31,13 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::DidClose do
       result: nil
     )
   end
-  
-  it "deletes the document buffer from the application" do
-    application.unsaved_documents.add(path: file_path, content: "CONTENT")
+
+  it "parses unsaved changes in background" do
+    expect(described_class::ProcessInBackground)
+      .to receive(:call)
+      .with(application:, file: be_a(::Holistic::Document::File::Fake))
 
     request = ::Holistic::LanguageServer::Request.new(application:, message:)
     described_class.call(request)
-
-    expect(application.unsaved_documents.find(file_path)).to be_nil
   end
 end

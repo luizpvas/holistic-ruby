@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
-module Holistic::Document::Unsaved
-  class Record
-    attr_reader :content
+module Holistic::Document
+  class Unsaved::Record
+    attr_reader :path, :content
 
-    def initialize(content)
+    def initialize(path:, content:)
+      @path = path
       @content = content
     end
 
@@ -38,6 +39,10 @@ module Holistic::Document::Unsaved
           column += 1
         end
       end
+    end
+
+    def to_file
+      File::Fake.new(path:, content:)
     end
   end
 end
