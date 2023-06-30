@@ -8,6 +8,9 @@ module Holistic::LanguageServer
       "initialize"              => Requests::Lifecycle::Initialize,
       "shutdown"                => Requests::Lifecycle::Shutdown,
       "exit"                    => Requests::Lifecycle::Exit,
+      "textDocument/didOpen"    => Requests::TextDocument::DidOpen,
+      "textDocument/didChange"  => Requests::TextDocument::DidChange,
+      "textDocument/didClose"   => Requests::TextDocument::DidClose,
       "textDocument/definition" => Requests::TextDocument::GoToDefinition
     }.freeze
 
