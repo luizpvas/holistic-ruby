@@ -5,7 +5,12 @@ module Holistic::LanguageServer
     extend self
 
     def call(request)
-      raise "todo"
+      path = request.message.param("textDocument", "uri").gsub("file://", "")
+      content = request.message.param("textDocument", "text")
+
+      request.application.documents.add(path:, content:)
+
+      request.respond_with(nil)
     end
   end
 end

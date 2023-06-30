@@ -17,5 +17,9 @@ module Holistic
     def dependencies
       @dependencies ||= Ruby::TypeInference::Dependencies.new(application: self)
     end
+
+    def documents
+      @documents ||= Document::Buffers.new
+    end
   end
 end
