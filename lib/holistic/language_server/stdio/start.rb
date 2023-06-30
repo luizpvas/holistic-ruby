@@ -18,6 +18,7 @@ module Holistic::LanguageServer
 
           case response
           in Response::Success  then server.write_to_output(response.encode)
+          in Response::Error    then server.write_to_output(response.encode)
           in Response::NotFound then nil
           in Response::Exit     then server.stop!
           else raise "unexpected response: #{response}"
