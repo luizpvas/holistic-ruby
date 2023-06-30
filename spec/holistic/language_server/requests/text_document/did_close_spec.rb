@@ -29,11 +29,11 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::DidClose do
   end
   
   it "deletes the document buffer from the application" do
-    application.documents.add(path: file_path, content: "CONTENT")
+    application.unsaved_documents.add(path: file_path, content: "CONTENT")
 
     request = ::Holistic::LanguageServer::Request.new(application:, message:)
     described_class.call(request)
 
-    expect(application.documents.find(file_path)).to be_nil
+    expect(application.unsaved_documents.find(file_path)).to be_nil
   end
 end

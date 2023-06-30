@@ -38,7 +38,7 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::DidOpen do
 
     described_class.call(request)
 
-    document = application.documents.find("/home/luiz.vasconcellos/Projects/holistic/lib/holistic/version.rb")
+    document = application.unsaved_documents.find("/home/luiz.vasconcellos/Projects/holistic/lib/holistic/version.rb")
 
     expect(document.content).to eql(content)
   end

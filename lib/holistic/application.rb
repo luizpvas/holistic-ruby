@@ -18,13 +18,8 @@ module Holistic
       @dependencies ||= Ruby::TypeInference::Dependencies.new(application: self)
     end
 
-    # TODO: I think Buffers is a good name. It has a nice contrast with File.
-    # But calling this collection `documents` might be a bit misleading. They are the currently open documents,
-    # usually visible as tabs in editors.
-    #
-    # There has to be a better name.
-    def documents
-      @documents ||= Document::Buffers.new
+    def unsaved_documents
+      @unsaved_documents ||= Document::Unsaved::Collection.new
     end
   end
 end

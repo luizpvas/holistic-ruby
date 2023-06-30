@@ -7,7 +7,7 @@ module Holistic::LanguageServer
     def call(request)
       path = request.message.param("textDocument", "uri").gsub("file://", "")
 
-      request.application.documents.delete(path)
+      request.application.unsaved_documents.delete(path)
 
       request.respond_with(nil)
     end

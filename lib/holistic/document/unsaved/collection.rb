@@ -1,21 +1,13 @@
 # frozen_string_literal: true
 
-module Holistic::Document
-  class Buffers
-    class Buffer
-      attr_reader :content
-
-      def initialize(content)
-        @content = content
-      end
-    end
-
+module Holistic::Document::Unsaved
+  class Collection
     def initialize
       @items = {}
     end
 
     def add(path:, content:)
-      @items[path] = Buffer.new(content)
+      @items[path] = Record.new(content)
     end
 
     def delete(path)

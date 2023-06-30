@@ -8,7 +8,7 @@ module Holistic::LanguageServer
       path = request.message.param("textDocument", "uri").gsub("file://", "")
       content = request.message.param("textDocument", "text")
 
-      request.application.documents.add(path:, content:)
+      request.application.unsaved_documents.add(path:, content:)
 
       request.respond_with(nil)
     end
