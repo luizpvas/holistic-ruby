@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe ::Holistic::Ruby::Parser do
-  include SnippetParser
+  include ::Support::SnippetParser
 
   describe "class inheritance without scope resolution operator" do
     let(:application) do

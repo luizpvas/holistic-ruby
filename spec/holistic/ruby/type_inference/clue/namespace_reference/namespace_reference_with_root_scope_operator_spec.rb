@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe ::Holistic::Ruby::TypeInference::Clue::NamespaceReference do
-  include ::SnippetParser
+  include ::Support::SnippetParser
 
   context "nested reference with root scope operator" do
     let(:application) do

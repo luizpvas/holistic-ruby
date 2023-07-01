@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe ::Holistic::Ruby::Parser do
-  include SnippetParser
+  include ::Support::SnippetParser
 
   context "module declaration with nested syntax AND double colon syntax" do
     let(:application) do

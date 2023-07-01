@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe ::Holistic::Ruby::Parser do
-  include SnippetParser
+  include ::Support::SnippetParser
 
   context "duplicated module declaration" do
     let(:application) do

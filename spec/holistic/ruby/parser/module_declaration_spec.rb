@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe ::Holistic::Ruby::Parser do
-  include SnippetParser
+  include ::Support::SnippetParser
 
   context "module declaration in the root namespace" do
     let(:application) do

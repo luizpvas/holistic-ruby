@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Holistic::Ruby::Parser do
-  include ::SnippetParser
+  include ::Support::SnippetParser
 
   let(:application) do
     parse_snippet_collection do |files|

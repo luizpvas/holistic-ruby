@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe ::Holistic::Ruby::TypeInference::Solve do
-  include ::SnippetParser
+  include ::Support::SnippetParser
 
   context "when the referenced namespace is declared in the same file" do
     let(:application) do

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe ::Holistic::Ruby::Parser::LiveEditing::ProcessFileChanged do
-  include ::SnippetParser
+  include ::Support::SnippetParser
 
   context "when file content did not change" do
     let(:source_code) do

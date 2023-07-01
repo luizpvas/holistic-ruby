@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe ::Holistic::LanguageServer::Requests::TextDocument::GoToDefinition do
-  include ::SnippetParser
+  include ::Support::SnippetParser
   include ::Support::LanguageServer::Factory
 
   let(:application) do

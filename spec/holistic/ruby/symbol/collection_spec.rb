@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe ::Holistic::Ruby::Symbol::Collection do
-  include ::SnippetParser
+  include ::Support::SnippetParser
 
   describe "#index" do
     context "when symbol does not have source locations" do

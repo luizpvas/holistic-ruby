@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe ::Holistic::Ruby::TypeInference::Clue::NamespaceReference do
-  include ::SnippetParser
+  include ::Support::SnippetParser
 
   context "when namespace is referenced inside module definition" do
     let(:application) do
