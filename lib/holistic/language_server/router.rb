@@ -19,13 +19,15 @@ module Holistic::LanguageServer
     def dispatch(message)
       request = Request.new(message:, application: Current.application)
 
-      return respond_with_rejection(request) if Current.lifecycle.reject?(message.method)
+      ::ActiveSupport::Notifications.instrument("holistic.language_server.dispatch", request:) do
+        return respond_with_rejection(request) if Current.lifecycle.reject?(message.method)
 
-      handler = FROM_METHOD_TO_HANDLER[message.method]
+        handler = FROM_METHOD_TO_HANDLER[message.method]
 
-      return Response::NotFound.new if handler.nil?
+        return Response::NotFound.new if handler.nil?
 
-      handler.call(request)
+        handler.call(request)
+      end
     end
 
     private

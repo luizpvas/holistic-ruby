@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 module Holistic::LanguageServer
-  Request = ::Data.define(:message, :application) do
+  Request = ::Struct.new(:message, :application, :response, keyword_init: true) do
     def respond_with(result)
-      Response::Success.new(message_id: message.id, result:)
+      response = Response::Success.new(message_id: message.id, result:)
     end
 
     def respond_with_error(code:, description: nil, data: nil)
-      Response::Error.new(message_id: message.id, code:, message: description, data:)
+      response = Response::Error.new(message_id: message.id, code:, message: description, data:)
     end
 
     def param(*keys)
