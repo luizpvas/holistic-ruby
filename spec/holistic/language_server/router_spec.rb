@@ -11,6 +11,12 @@ describe ::Holistic::LanguageServer::Router do
       })
     end
 
+    around(:each) do |each|
+      lifecycle = ::Holistic::LanguageServer::Lifecycle.new
+
+      ::Holistic::LanguageServer::Current.set(lifecycle:, &each)
+    end
+
     it "calls the handler" do
       expect(::Holistic::LanguageServer::Requests::Lifecycle::Initialize)
         .to receive(:call)
@@ -33,6 +39,14 @@ describe ::Holistic::LanguageServer::Router do
         "method" => "shutdown",
         "params" => {}
       })
+    end
+
+    around(:each) do |each|
+      lifecycle = ::Holistic::LanguageServer::Lifecycle.new
+      lifecycle.waiting_initialized_event!
+      lifecycle.initialized!
+
+      ::Holistic::LanguageServer::Current.set(lifecycle:, &each)
     end
 
     it "calls the handler" do
@@ -58,6 +72,12 @@ describe ::Holistic::LanguageServer::Router do
       })
     end
 
+    around(:each) do |each|
+      lifecycle = ::Holistic::LanguageServer::Lifecycle.new
+
+      ::Holistic::LanguageServer::Current.set(lifecycle:, &each)
+    end
+
     it "calls the handler" do
       expect(::Holistic::LanguageServer::Requests::Lifecycle::Exit)
         .to receive(:call)
@@ -79,6 +99,14 @@ describe ::Holistic::LanguageServer::Router do
         "method" => "textDocument/definition",
         "params" => {}
       })
+    end
+
+    around(:each) do |each|
+      lifecycle = ::Holistic::LanguageServer::Lifecycle.new
+      lifecycle.waiting_initialized_event!
+      lifecycle.initialized!
+
+      ::Holistic::LanguageServer::Current.set(lifecycle:, &each)
     end
 
     it "calls the handler" do
@@ -104,6 +132,14 @@ describe ::Holistic::LanguageServer::Router do
       })
     end
 
+    around(:each) do |each|
+      lifecycle = ::Holistic::LanguageServer::Lifecycle.new
+      lifecycle.waiting_initialized_event!
+      lifecycle.initialized!
+
+      ::Holistic::LanguageServer::Current.set(lifecycle:, &each)
+    end
+
     it "calls the handler" do
       expect(::Holistic::LanguageServer::Requests::TextDocument::DidOpen)
         .to receive(:call)
@@ -125,6 +161,14 @@ describe ::Holistic::LanguageServer::Router do
         "method" => "textDocument/didChange",
         "params" => {}
       })
+    end
+
+    around(:each) do |each|
+      lifecycle = ::Holistic::LanguageServer::Lifecycle.new
+      lifecycle.waiting_initialized_event!
+      lifecycle.initialized!
+
+      ::Holistic::LanguageServer::Current.set(lifecycle:, &each)
     end
 
     it "calls the handler" do
@@ -150,6 +194,14 @@ describe ::Holistic::LanguageServer::Router do
       })
     end
 
+    around(:each) do |each|
+      lifecycle = ::Holistic::LanguageServer::Lifecycle.new
+      lifecycle.waiting_initialized_event!
+      lifecycle.initialized!
+
+      ::Holistic::LanguageServer::Current.set(lifecycle:, &each)
+    end
+
     it "calls the handler" do
       expect(::Holistic::LanguageServer::Requests::TextDocument::DidSave)
         .to receive(:call)
@@ -171,6 +223,14 @@ describe ::Holistic::LanguageServer::Router do
         "method" => "textDocument/didClose",
         "params" => {}
       })
+    end
+
+    around(:each) do |each|
+      lifecycle = ::Holistic::LanguageServer::Lifecycle.new
+      lifecycle.waiting_initialized_event!
+      lifecycle.initialized!
+
+      ::Holistic::LanguageServer::Current.set(lifecycle:, &each)
     end
 
     it "calls the handler" do
@@ -195,6 +255,14 @@ describe ::Holistic::LanguageServer::Router do
         "method" => "unknown",
         "params" => {}
       })
+    end
+
+    around(:each) do |each|
+      lifecycle = ::Holistic::LanguageServer::Lifecycle.new
+      lifecycle.waiting_initialized_event!
+      lifecycle.initialized!
+
+      ::Holistic::LanguageServer::Current.set(lifecycle:, &each)
     end
 
     it "returns a response with :not_found" do

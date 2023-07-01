@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Holistic::LanguageServer
-  # Summary of the lifecycle conditions:
+  # Lifecycle constraints:
   #
   # https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#initialize
   # https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#shutdown
@@ -44,6 +44,10 @@ module Holistic::LanguageServer
       return method != "initialize" && method != "initialized" if @state == :initialized
 
       false
+    end
+
+    def reject?(method)
+      !accept?(method)
     end
   end
 end

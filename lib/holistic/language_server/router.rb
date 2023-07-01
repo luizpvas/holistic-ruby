@@ -18,6 +18,8 @@ module Holistic::LanguageServer
     def dispatch(message)
       ::Holistic.logger.info(message)
 
+      return respond_with_rejection_error(message) if Current.lifecycle.reject?(message.method)
+
       handler = FROM_METHOD_TO_HANDLER[message.method]
 
       if !handler
@@ -33,6 +35,12 @@ module Holistic::LanguageServer
       ::Holistic.logger.info(response)
 
       response
+    end
+
+    private
+
+    def respond_with_rejection_error(message)
+      raise "todo"
     end
   end
 end

@@ -51,7 +51,14 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::DidChange do
 
   let(:application) { ::Holistic::Application.new(name: "dummy", root_directory: ".") }
 
-  around(:each) { |each| ::Holistic::LanguageServer::Current.set(application:, &each) }
+  let(:lifecycle) do
+    ::Holistic::LanguageServer::Lifecycle.new.tap do |lifecycle|
+      lifecycle.waiting_initialized_event!
+      lifecycle.initialized!
+    end
+  end
+
+  around(:each) { |each| ::Holistic::LanguageServer::Current.set(application:, lifecycle:, &each) }
 
   it "applies delta changes to the document in memory" do
     did_open_message = ::Holistic::LanguageServer::Message.new(did_open_payload)
