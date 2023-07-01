@@ -271,4 +271,61 @@ describe ::Holistic::LanguageServer::Router do
       expect(response).to be_a(::Holistic::LanguageServer::Response::NotFound)
     end
   end
+
+  context "when routing a message before initialization" do
+    let(:message) do
+      ::Holistic::LanguageServer::Message.new({
+        "jsonrpc" => "2.0",
+        "method" => "textDocument/didSave",
+        "params" => {}
+      })
+    end
+
+    around(:each) do |each|
+      lifecycle = ::Holistic::LanguageServer::Lifecycle.new
+
+      ::Holistic::LanguageServer::Current.set(lifecycle:, &each)
+    end
+
+    it "returns an error response" do
+      response = described_class.dispatch(message)
+
+      expect(response).to have_attributes(
+        itself: be_a(::Holistic::LanguageServer::Response::Error),
+        code: ::Holistic::LanguageServer::Protocol::SERVER_NOT_INITIALIZED_ERROR_CODE,
+        message: nil,
+        data: nil
+      )
+    end
+  end
+
+  context "when routing a message after shutdown" do
+    let(:message) do
+      ::Holistic::LanguageServer::Message.new({
+        "jsonrpc" => "2.0",
+        "method" => "textDocument/didSave",
+        "params" => {}
+      })
+    end
+
+    around(:each) do |each|
+      lifecycle = ::Holistic::LanguageServer::Lifecycle.new
+      lifecycle.waiting_initialized_event!
+      lifecycle.initialized!
+      lifecycle.shutdown!
+
+      ::Holistic::LanguageServer::Current.set(lifecycle:, &each)
+    end
+
+    it "returns an error response" do
+      response = described_class.dispatch(message)
+
+      expect(response).to have_attributes(
+        itself: be_a(::Holistic::LanguageServer::Response::Error),
+        code: ::Holistic::LanguageServer::Protocol::INVALID_REQUEST_ERROR_CODE,
+        message: nil,
+        data: nil
+      )
+    end
+  end
 end

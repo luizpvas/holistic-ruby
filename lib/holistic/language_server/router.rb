@@ -18,7 +18,9 @@ module Holistic::LanguageServer
     def dispatch(message)
       ::Holistic.logger.info(message)
 
-      return respond_with_rejection_error(message) if Current.lifecycle.reject?(message.method)
+      request = Request.new(message:, application: Current.application)
+
+      return respond_with_rejection_error(request) if Current.lifecycle.reject?(message.method)
 
       handler = FROM_METHOD_TO_HANDLER[message.method]
 
@@ -27,8 +29,6 @@ module Holistic::LanguageServer
 
         return Response::NotFound.new
       end
-
-      request = Request.new(message:, application: Current.application)
 
       response = handler.call(request)
 
@@ -39,8 +39,15 @@ module Holistic::LanguageServer
 
     private
 
-    def respond_with_rejection_error(message)
-      raise "todo"
+    def respond_with_rejection_error(request)
+      error_code =
+        if Current.lifecycle.initialized?
+          Protocol::INVALID_REQUEST_ERROR_CODE
+        else
+          Protocol::SERVER_NOT_INITIALIZED_ERROR_CODE
+        end
+
+      request.respond_with_error(code: error_code)
     end
   end
 end

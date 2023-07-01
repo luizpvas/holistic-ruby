@@ -36,6 +36,10 @@ module Holistic::LanguageServer
       @state = :shutdown
     end
 
+    def initialized?
+      @state == :initialized || @state == :shutdown
+    end
+
     def accept?(method)
       return true if method == "exit"
       return true if method == "initialize" && @state == :waiting_initialize_event

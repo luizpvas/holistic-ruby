@@ -6,7 +6,7 @@ module Holistic::LanguageServer
       Response::Success.new(message_id: message.id, result:)
     end
 
-    def respond_with_error(code:, description:, data: nil)
+    def respond_with_error(code:, description: nil, data: nil)
       Response::Error.new(message_id: message.id, code:, message: description, data:)
     end
 

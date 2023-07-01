@@ -11,9 +11,8 @@ module Holistic::LanguageServer::Protocol
   # https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocument_synchronization
   INCREMENTAL_TEXT_DOCUMENT_SYNCHRONIZATION = 2
 
-  # A request failed but it was syntactically correct, e.g the
-  # method name was known and the parameters were valid. The error
-  # message should contain human readable information about why
-  # the request failed.
-  REQUEST_FAILED_ERROR_CODE = -32803
+  # https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#responseMessage
+  REQUEST_FAILED_ERROR_CODE         = -32803
+  INVALID_REQUEST_ERROR_CODE        = -32600
+  SERVER_NOT_INITIALIZED_ERROR_CODE = -32002
 end
