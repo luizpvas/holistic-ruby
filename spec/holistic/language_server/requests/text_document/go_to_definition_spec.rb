@@ -91,4 +91,9 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::GoToDefinition do
       )
     end
   end
+
+  context "when document has unsaved changes" do
+    it "parses the document" do
+    end
+  end
 end

@@ -1,21 +1,7 @@
 # frozen_string_literal: true
 
 describe ::Holistic::LanguageServer::Requests::TextDocument::DidClose do
-  concerning :Helpers do
-    def apply_change_to_document!(document)
-      change =
-        ::Holistic::Document::Unsaved::Change.new(
-          range_length: 1,
-          text: "a",
-          start_line: 0,
-          start_column: 0,
-          end_line: 0,
-          end_column: 0
-        )
-      
-      document.apply_change(change)
-    end
-  end
+  include ::Support::Document::ApplyChange
 
   let(:application) { ::Holistic::Application.new(name: "dummy", root_directory: ".") }
 
@@ -70,7 +56,7 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::DidClose do
     end
 
     it "calls the parser with the original content" do
-      apply_change_to_document!(unsaved_document)
+      insert_text_on_document(document: unsaved_document, text: "a", line: 0, column: 0)
 
       expect(described_class)
         .to receive(:process_in_background)

@@ -1,21 +1,7 @@
 # frozen_string_literal: true
 
 describe ::Holistic::LanguageServer::Requests::TextDocument::DidSave do
-  concerning :Helpers do
-    def apply_change_to_document!(document)
-      change =
-        ::Holistic::Document::Unsaved::Change.new(
-          range_length: 1,
-          text: "a",
-          start_line: 0,
-          start_column: 0,
-          end_line: 0,
-          end_column: 0
-        )
-      
-      document.apply_change(change)
-    end
-  end
+  include ::Support::Document::ApplyChange
 
   let(:application) { ::Holistic::Application.new(name: "dummy", root_directory: ".") }
 
@@ -52,7 +38,7 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::DidSave do
     it "marks the document as saved" do
       unsaved_document = application.unsaved_documents.find(file_path)
 
-      apply_change_to_document!(unsaved_document)
+      insert_text_on_document(document: unsaved_document, text: "a", line: 0, column: 0)
 
       request = ::Holistic::LanguageServer::Request.new(application:, message:)
       response = described_class.call(request)

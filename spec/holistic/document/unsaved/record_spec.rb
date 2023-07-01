@@ -1,21 +1,7 @@
 # frozen_string_literal: true
 
 describe ::Holistic::Document::Unsaved::Record do
-  concerning :Helpers do
-    def apply_change_to_document!(document)
-      change =
-        ::Holistic::Document::Unsaved::Change.new(
-          range_length: 1,
-          text: "a",
-          start_line: 0,
-          start_column: 0,
-          end_line: 0,
-          end_column: 0
-        )
-      
-      document.apply_change(change)
-    end
-  end
+  include ::Support::Document::ApplyChange
 
   describe "#has_unsaved_changes?" do
     it "returns true if the document has unsaved changes" do
@@ -23,7 +9,7 @@ describe ::Holistic::Document::Unsaved::Record do
 
       expect(document.has_unsaved_changes?).to be(false)
 
-      apply_change_to_document!(document)
+      insert_text_on_document(document:, text: "a", line: 0, column: 0)
 
       expect(document.has_unsaved_changes?).to be(true)
 

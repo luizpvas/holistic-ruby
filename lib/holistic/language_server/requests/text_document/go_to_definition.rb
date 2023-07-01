@@ -6,10 +6,15 @@ module Holistic::LanguageServer
     extend self
 
     def call(request)
-      application = request.application
       cursor = build_cursor_from_params(request)
 
-      case ::Holistic::Ruby::Symbol::FindDefinition.call(application:, cursor:)
+      request.application.unsaved_documents.find(cursor.file_path)&.then do |unsaved_document|
+        if unsaved_document.has_unsaved_changes?
+          raise "todo"
+        end
+      end
+
+      case ::Holistic::Ruby::Symbol::FindDefinition.call(application: request.application, cursor:)
       in :not_found                              then request.respond_with(nil)
       in [:origin_is_not_a_reference, {origin:}] then request.respond_with(nil)
       in [:could_not_find_definition, {origin:}] then request.respond_with(nil)
