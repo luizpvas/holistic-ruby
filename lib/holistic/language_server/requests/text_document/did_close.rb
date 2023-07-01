@@ -7,9 +7,27 @@ module Holistic::LanguageServer
     def call(request)
       path = Format::FileUri.extract_path(request.message.param("textDocument", "uri"))
 
-      request.application.unsaved_documents.delete(path)
+      unsaved_document = request.application.unsaved_documents.find(path)
+
+      if unsaved_document.present?
+        request.application.unsaved_documents.delete(path)
+        
+        if unsaved_document.has_unsaved_changes?
+          unsaved_document.restore_original_content!
+
+          process_in_background(application: request.application, file: unsaved_document.to_file)
+        end
+      end
 
       request.respond_with(nil)
+    end
+
+    private
+
+    def process_in_background(application:, file:)
+      ::Thread.new do
+        ::Holistic::Ruby::Parser::LiveEditing::ProcessFileChanged.call(application:, file:)
+      end
     end
   end
 end

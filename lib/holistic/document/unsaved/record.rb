@@ -14,6 +14,10 @@ module Holistic::Document
       @original_content = @content.dup
     end
 
+    def restore_original_content!
+      @content = @original_content.dup
+    end
+
     def has_unsaved_changes?
       @original_content != @content
     end
