@@ -1,11 +1,10 @@
 # frozen_string_literal: true
 
 describe ::Holistic::LanguageServer::Requests::Lifecycle::Initialize do
+  include ::Support::LanguageServer::Factory
+
   let(:request) do
-    message =
-      ::Holistic::LanguageServer::Message.new(
-        ::JSON.parse(::File.read("spec/fixtures/language_server_initialize_message.json"))
-      )
+    message = build_initialize_message(root_directory: "/my_app")
 
     ::Holistic::LanguageServer::Request.new(message:, application: nil)
   end
@@ -52,8 +51,8 @@ describe ::Holistic::LanguageServer::Requests::Lifecycle::Initialize do
     described_class.call(request)
 
     expect(::Holistic::LanguageServer::Current.application).to have_attributes(
-      name: "holistic",
-      root_directory: "/home/luiz.vasconcellos/Projects/holistic"
+      name: "my_app",
+      root_directory: "/my_app"
     )
   end
 end

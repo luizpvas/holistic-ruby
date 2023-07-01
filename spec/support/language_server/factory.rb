@@ -3,6 +3,20 @@
 module Support
   module LanguageServer
     module Factory
+      def build_initialize_message(root_directory:)
+        data = {
+          "jsonrpc" => ::Holistic::LanguageServer::Protocol::JSONRPC_VERSION,
+          "id" => rand(1..10000),
+          "method" => "initialize",
+          "params" => {
+            "capabilities" => {},
+            "rootPath" => root_directory
+          }
+        }
+
+        ::Holistic::LanguageServer::Message.new(data:)
+      end
+
       def build_definition_message(file_path:, line:, column:)
         data = {
           "jsonrpc" => ::Holistic::LanguageServer::Protocol::JSONRPC_VERSION,
