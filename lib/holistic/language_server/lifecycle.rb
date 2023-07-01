@@ -8,6 +8,8 @@ module Holistic::LanguageServer
   class Lifecycle
     UnexpectedStateError = ::Class.new(::StandardError)
 
+    attr_reader :state
+
     def initialize
       @state = :waiting_initialize_event
     end
