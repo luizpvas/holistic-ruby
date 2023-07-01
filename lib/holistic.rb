@@ -9,6 +9,8 @@ require "active_support/core_ext/module/concerning"
 require "active_support/notifications"
 require "json"
 
+require_relative "../config/logging"
+
 loader = ::Zeitwerk::Loader.for_gem
 loader.setup
 
