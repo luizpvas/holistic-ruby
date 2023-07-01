@@ -11,7 +11,7 @@ module Holistic::LanguageServer
     end
 
     def call(request)
-      file_path = request.param("textDocument", "uri").gsub("file://", "")
+      file_path = Format::FileUri.extract_path(request.param("textDocument", "uri"))
       unsaved_document = request.application.unsaved_documents.find(file_path)
 
       if unsaved_document.nil?

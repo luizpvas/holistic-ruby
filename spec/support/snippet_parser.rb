@@ -4,7 +4,7 @@ module SnippetParser
   def parse_snippet(code)
     application = ::Holistic::Application.new(name: "Snippet", root_directory: "snippet_parser")
 
-    file = ::Holistic::Document::File::Fake.new(path: "snippet.rb", content: code)
+    file = ::Holistic::Document::File::Fake.new(path: "/snippet.rb", content: code)
 
     ::Holistic::Ruby::Parser::WrapParsingUnitWithProcessAtTheEnd.call(application:) do
       ::Holistic::Ruby::Parser::ParseFile.call(application:, file:)

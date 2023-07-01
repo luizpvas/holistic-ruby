@@ -24,7 +24,7 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::DidChange do
     RUBY
   end
 
-  let(:file_path) { "my_app/example.rb" }
+  let(:file_path) { "/my_app/example.rb" }
 
   let(:did_open_payload) do
     {"method"=>"textDocument/didOpen", "jsonrpc"=>"2.0", "params"=>{"textDocument"=>{"uri"=>"file://#{file_path}", "languageId"=>"ruby", "text"=>"# frozen_string_literal: true\n\nmodule Holistic\n  VERSION = \"0.1.0\"\nend\n", "version"=>0}}}

@@ -30,7 +30,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
     end
 
     it "registers a dependency" do
-      references = application.dependencies.list_references(dependency_file_path: "snippet.rb")
+      references = application.dependencies.list_references(dependency_file_path: "/snippet.rb")
 
       expect(references.size).to eql(1)
       expect(references.first.record).to eql(application.symbols.find_reference_to("Example"))
@@ -40,13 +40,13 @@ describe ::Holistic::Ruby::TypeInference::Solve do
   context "when the referenced namespace is declared in another file" do
     let(:application) do
       parse_snippet_collection do |files|
-        files.add "my_app/example.rb", <<~RUBY
+        files.add "/my_app/example.rb", <<~RUBY
         module MyApp
           class Example; end
         end
         RUBY
 
-        files.add "my_app/other.rb", <<~RUBY
+        files.add "/my_app/other.rb", <<~RUBY
         module MyApp
           module Other
             Example.call
@@ -69,7 +69,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
     end
 
     it "registers a dependency" do
-      references = application.dependencies.list_references(dependency_file_path: "my_app/example.rb")
+      references = application.dependencies.list_references(dependency_file_path: "/my_app/example.rb")
 
       expect(references.size).to eql(1)
       expect(references.first.record).to eql(application.symbols.find_reference_to("Example"))
@@ -79,7 +79,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
   context "when the referenced namespace is declared in multiple files" do
     let(:application) do
       parse_snippet_collection do |files|
-        files.add "my_app/example_1.rb", <<~RUBY
+        files.add "/my_app/example_1.rb", <<~RUBY
         module MyApp
           def self.call; end
 
@@ -87,13 +87,13 @@ describe ::Holistic::Ruby::TypeInference::Solve do
         end
         RUBY
 
-        files.add "my_app/example_2.rb", <<~RUBY
+        files.add "/my_app/example_2.rb", <<~RUBY
         module MyApp
           module Example2; end
         end
         RUBY
 
-        files.add "something.rb", <<~RUBY
+        files.add "/something.rb", <<~RUBY
         module Something
           MyApp.call
         end
@@ -102,7 +102,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
     end
 
     it "tries its best to guess the source location" do
-      references = application.dependencies.list_references(dependency_file_path: "my_app/example_1.rb")
+      references = application.dependencies.list_references(dependency_file_path: "/my_app/example_1.rb")
 
       expect(references.size).to eql(1)
       expect(references.first.record).to eql(application.symbols.find_reference_to("MyApp"))
@@ -133,13 +133,13 @@ describe ::Holistic::Ruby::TypeInference::Solve do
   context "when the dependency is declared on root scope without root scope operator" do
     let(:application) do
       parse_snippet_collection do |files|
-        files.add "example_1.rb", <<~RUBY
+        files.add "/example_1.rb", <<~RUBY
         module Example1
           def self.call; end
         end
         RUBY
 
-        files.add "my_app/example_2.rb", <<~RUBY
+        files.add "/my_app/example_2.rb", <<~RUBY
         module MyApp
           module Example2
             Example1.call

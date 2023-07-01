@@ -5,7 +5,7 @@ module Holistic::LanguageServer
     extend self
 
     def call(request)
-      path = request.message.param("textDocument", "uri").gsub("file://", "")
+      path = Format::FileUri.extract_path(request.message.param("textDocument", "uri"))
 
       request.application.unsaved_documents.delete(path)
 

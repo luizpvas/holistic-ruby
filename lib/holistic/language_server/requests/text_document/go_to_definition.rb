@@ -20,7 +20,7 @@ module Holistic::LanguageServer
     private
 
     def build_cursor_from_params(request)
-      file_path = request.param("textDocument", "uri").gsub("file://", "")
+      file_path = Format::FileUri.extract_path(request.param("textDocument", "uri"))
       line = request.param("position", "line")
       column = request.param("position", "character")
 
@@ -36,7 +36,7 @@ module Holistic::LanguageServer
           "start" => { "line" => origin_location.start_line, "character" => origin_location.start_column },
           "end" => { "line" => origin_location.end_line, "character" => origin_location.end_column }
         },
-        "targetUri" => "file://#{target_location.file_path}",
+        "targetUri" => Format::FileUri.from_path(target_location.file_path),
         "targetRange" => {
           "start" => { "line" => target_location.start_line, "character" => target_location.start_column },
           "end" => { "line" => target_location.end_line, "character" => target_location.end_column }

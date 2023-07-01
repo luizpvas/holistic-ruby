@@ -3,7 +3,7 @@
 describe ::Holistic::LanguageServer::Requests::TextDocument::DidSave do
   let(:application) { ::Holistic::Application.new(name: "dummy", root_directory: ".") }
 
-  let(:file_path) { "my_app/example.rb" }
+  let(:file_path) { "/my_app/example.rb" }
 
   let(:message) do
     ::Holistic::LanguageServer::Message.new({
