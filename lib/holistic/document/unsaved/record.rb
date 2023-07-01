@@ -7,6 +7,15 @@ module Holistic::Document
     def initialize(path:, content:)
       @path = path
       @content = content
+      @original_content = content.dup
+    end
+
+    def mark_as_saved!
+      @original_content = @content.dup
+    end
+
+    def has_unsaved_changes?
+      @original_content != @content
     end
 
     LINE_BREAK = "\n"

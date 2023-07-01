@@ -21,6 +21,8 @@ module Holistic::LanguageServer
         )
       end
 
+      unsaved_document.mark_as_saved!
+
       ProcessInBackground.call(application: request.application, file: unsaved_document.to_file)
 
       request.respond_with(nil)
