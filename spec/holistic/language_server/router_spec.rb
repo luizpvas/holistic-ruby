@@ -30,6 +30,37 @@ describe ::Holistic::LanguageServer::Router do
       described_class.dispatch(initialize_message)
     end
   end
+
+  context "when routing 'initialized' requests" do
+    let(:initialized_message) do
+      ::Holistic::LanguageServer::Message.new({
+        "id" => 1,
+        "jsonrpc" => "2.0",
+        "method" => "initialized",
+        "params" => { "capabilities" => {} }
+      })
+    end
+
+    around(:each) do |each|
+      lifecycle = ::Holistic::LanguageServer::Lifecycle.new
+      lifecycle.waiting_initialized_event!
+
+      ::Holistic::LanguageServer::Current.set(lifecycle:, &each)
+    end
+
+    it "calls the handler" do
+      expect(::Holistic::LanguageServer::Requests::Lifecycle::Initialized)
+        .to receive(:call)
+        .with(
+          have_attributes(
+            itself: ::Holistic::LanguageServer::Request,
+            message: initialized_message
+          )
+        )
+
+      described_class.dispatch(initialized_message)
+    end
+  end
   
   context "when routing 'shutdown' requests" do
     let(:shutdown_message) do

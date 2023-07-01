@@ -6,6 +6,7 @@ module Holistic::LanguageServer
 
     FROM_METHOD_TO_HANDLER = {
       "initialize"              => Requests::Lifecycle::Initialize,
+      "initialized"             => Requests::Lifecycle::Initialized,
       "shutdown"                => Requests::Lifecycle::Shutdown,
       "exit"                    => Requests::Lifecycle::Exit,
       "textDocument/didOpen"    => Requests::TextDocument::DidOpen,
