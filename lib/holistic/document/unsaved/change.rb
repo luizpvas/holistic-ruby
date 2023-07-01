@@ -16,5 +16,9 @@ module Holistic::Document::Unsaved
     def deletion?
       text.empty? && (start_line != end_line || start_column != end_column)
     end
+
+    def starts_on?(line, column)
+      start_line == line && start_column == column
+    end
   end
 end

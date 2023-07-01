@@ -25,20 +25,16 @@ module Holistic::Document
       column = 0
 
       @content.each_char.with_index do |char, index|
-        if change.insertion?
-          if change.start_line == line && change.start_column == column
-            content.insert(index, change.text)
+        if change.insertion? && change.starts_on?(line, column)
+          content.insert(index, change.text)
 
-            return
-          end
+          return
         end
 
-        if change.deletion?
-          if change.start_line == line && change.start_column == column
-            content[index..index + change.range_length - 1] = ""
+        if change.deletion? && change.starts_on?(line, column)
+          content[index..index + change.range_length - 1] = ""
 
-            return
-          end
+          return
         end
 
         if char == LINE_BREAK
