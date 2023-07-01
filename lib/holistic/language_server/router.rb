@@ -19,7 +19,7 @@ module Holistic::LanguageServer
     def dispatch(message)
       request = Request.new(message:, application: Current.application)
 
-      return respond_with_rejection_error(request) if Current.lifecycle.reject?(message.method)
+      return respond_with_rejection(request) if Current.lifecycle.reject?(message.method)
 
       handler = FROM_METHOD_TO_HANDLER[message.method]
 
@@ -30,7 +30,7 @@ module Holistic::LanguageServer
 
     private
 
-    def respond_with_rejection_error(request)
+    def respond_with_rejection(request)
       error_code =
         if Current.lifecycle.initialized?
           Protocol::INVALID_REQUEST_ERROR_CODE
