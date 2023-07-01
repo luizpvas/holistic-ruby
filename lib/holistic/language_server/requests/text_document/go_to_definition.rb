@@ -10,7 +10,10 @@ module Holistic::LanguageServer
 
       request.application.unsaved_documents.find(cursor.file_path)&.then do |unsaved_document|
         if unsaved_document.has_unsaved_changes?
-          raise "todo"
+          ::Holistic::Ruby::Parser::LiveEditing::ProcessFileChanged.call(
+            application: request.application,
+            file: unsaved_document.to_file
+          )
         end
       end
 

@@ -18,9 +18,9 @@ module Support
       end
 
       def insert_new_line_on_document(document:, after_line:)
-        column = document.content.split("\n")[after_line].length - 1
+        column = document.content.split("\n")[after_line].length
 
-        insert(document:, text: "\n", line: after_line, column:)
+        insert_text_on_document(document:, text: "\n", line: after_line, column:)
       end
     end
   end
