@@ -21,6 +21,8 @@ module Holistic::LanguageServer
 
       Current.application = ::Holistic::Application.new(name:, root_directory:)
 
+      Current.lifecycle.waiting_initialized_event!
+
       ParseApplicationInBackground.call(Current.application)
 
       request.respond_with({
