@@ -16,25 +16,15 @@ module Holistic::LanguageServer
     }.freeze
 
     def dispatch(message)
-      ::Holistic.logger.info(message)
-
       request = Request.new(message:, application: Current.application)
 
       return respond_with_rejection_error(request) if Current.lifecycle.reject?(message.method)
 
       handler = FROM_METHOD_TO_HANDLER[message.method]
 
-      if !handler
-        ::Holistic.logger.info("handler not defined for: #{message.method}")
+      return Response::NotFound.new if handler.nil?
 
-        return Response::NotFound.new
-      end
-
-      response = handler.call(request)
-
-      ::Holistic.logger.info(response)
-
-      response
+      handler.call(request)
     end
 
     private
