@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "ostruct"
-
 module Holistic::LanguageServer
   module Requests::TextDocument::DidChange
     extend self
