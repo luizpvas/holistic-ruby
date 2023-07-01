@@ -7,7 +7,30 @@ module Holistic::LanguageServer
 
     # TODO: support multiple workspace directories.
 
-    ParseApplicationInBackground = ->(application) do
+    def call(request)
+      application = create_application(request)
+
+      advance_lifecycle_state
+
+      parse_application_in_background(application)
+
+      respond_with_holistic_capabilities(request)
+    end
+
+    private
+
+    def create_application(request)
+      root_directory = request.param("rootPath")
+      name = ::File.basename(root_directory)
+
+      Current.application = ::Holistic::Application.new(name:, root_directory:)
+    end
+
+    def advance_lifecycle_state
+      Current.lifecycle.waiting_initialized_event!
+    end
+
+    def parse_application_in_background(application)
       ::Thread.new do
         ::Holistic::Ruby::Parser::WrapParsingUnitWithProcessAtTheEnd.call(application:) do
           ::Holistic::Ruby::Parser::ParseDirectory.call(application:, directory_path: application.root_directory)
@@ -15,16 +38,7 @@ module Holistic::LanguageServer
       end
     end
 
-    def call(request)
-      root_directory = request.param("rootPath")
-      name = ::File.basename(root_directory)
-
-      Current.application = ::Holistic::Application.new(name:, root_directory:)
-
-      Current.lifecycle.waiting_initialized_event!
-
-      ParseApplicationInBackground.call(Current.application)
-
+    def respond_with_holistic_capabilities(request)
       request.respond_with({
         capabilities: {
           # Defines how the host (editor) should sync document changes to the language server.
