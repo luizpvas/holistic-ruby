@@ -2,6 +2,7 @@
 
 describe ::Holistic::LanguageServer::Requests::TextDocument::GoToDefinition do
   include ::SnippetParser
+  include ::Support::LanguageServer::Factory
 
   let(:application) do
     parse_snippet <<~RUBY
@@ -16,7 +17,7 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::GoToDefinition do
 
   context "when symbol under cursor does not exist" do
     it "responds with null" do
-      message = ::LanguageServer::Factory.build_definition_message(file_path: "/snippet.rb", line: 0, column: 0)
+      message = build_definition_message(file_path: "/snippet.rb", line: 0, column: 0)
 
       request = ::Holistic::LanguageServer::Request.new(message:, application:)
 
@@ -32,7 +33,7 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::GoToDefinition do
 
   context "when symbol under cursor is not a reference" do
     it "responds with null" do
-      message = ::LanguageServer::Factory.build_definition_message(file_path: "/snippet.rb", line: 0, column: 12)
+      message = build_definition_message(file_path: "/snippet.rb", line: 0, column: 12)
 
       request = ::Holistic::LanguageServer::Request.new(message:, application:)
 
@@ -48,7 +49,7 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::GoToDefinition do
 
   context "when symbol under cursor is a reference to something we could not find" do
     it "responds with null" do
-      message = ::LanguageServer::Factory.build_definition_message(file_path: "/snippet.rb", line: 4, column: 9)
+      message = build_definition_message(file_path: "/snippet.rb", line: 4, column: 9)
 
       request = ::Holistic::LanguageServer::Request.new(message:, application:)
 
@@ -64,7 +65,7 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::GoToDefinition do
 
   context "when symbol under cursor is a reference to something we could find" do
     it "responds with the dependency location" do
-      message = ::LanguageServer::Factory.build_definition_message(file_path: "/snippet.rb", line: 3, column: 9)
+      message = build_definition_message(file_path: "/snippet.rb", line: 3, column: 9)
 
       request = ::Holistic::LanguageServer::Request.new(message:, application:)
 
