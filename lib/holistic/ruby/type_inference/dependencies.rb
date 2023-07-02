@@ -1,13 +1,6 @@
 # frozen_string_literal: true
 
 module Holistic::Ruby::TypeInference
-  # Why track `from_dependency_to_references`?
-  #
-  # So that we can provide the `Go to reference` in the language server protocol.
-  #
-  # Why track `from_dependency_file_path_to_references`?
-  #
-  # Because of live editing. We need to know what to recalculate when a file changes.
   class Dependencies
     attr_reader :application
 
