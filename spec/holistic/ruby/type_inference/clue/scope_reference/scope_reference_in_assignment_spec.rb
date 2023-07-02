@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-describe ::Holistic::Ruby::TypeInference::Clue::NamespaceReference do
+describe ::Holistic::Ruby::TypeInference::Clue::ScopeReference do
   include ::Support::SnippetParser
 
-  context "when namespace is referenced on the left hand side of an assignment" do
+  context "when a scope is reference in an assignment" do
     let(:application) do
       parse_snippet <<~RUBY
       module MyApp
@@ -15,11 +15,11 @@ describe ::Holistic::Ruby::TypeInference::Clue::NamespaceReference do
     end
 
     # TODO: make this test pass
-    # it "infers the namespace reference clue" do
+    # it "infers a scope reference clue" do
     #   expect(application.symbols.find_reference_to("::MyApp::Config")).to have_attributes(
     #     clues: [
     #       have_attributes(
-    #         itself: be_a(::Holistic::Ruby::TypeInference::Clue::NamespaceReference),
+    #         itself: be_a(::Holistic::Ruby::TypeInference::Clue::ScopeReference),
     #         name: "Current",
     #         resolution_possibilities: ["::MyApp", "::"]
     #       )

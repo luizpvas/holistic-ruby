@@ -2,12 +2,12 @@
 
 module Holistic
   class Application
-    attr_reader :name, :root_directory, :root_namespace
+    attr_reader :name, :root_directory, :root_scope
 
     def initialize(name:, root_directory:)
       @name = name
       @root_directory = root_directory
-      @root_namespace = Ruby::Namespace::Record.new(kind: Ruby::Namespace::Kind::ROOT, name: "::", parent: nil)
+      @root_scope = Ruby::Scope::Record.new(kind: Ruby::Scope::Kind::ROOT, name: "::", parent: nil)
     end
 
     def symbols

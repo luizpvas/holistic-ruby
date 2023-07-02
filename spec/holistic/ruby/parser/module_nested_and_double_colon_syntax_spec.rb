@@ -18,13 +18,13 @@ describe ::Holistic::Ruby::Parser do
       expect(application.symbols.find_reference_to("Name")).to have_attributes(
         clues: [
           have_attributes(
-            itself: be_a(::Holistic::Ruby::TypeInference::Clue::NamespaceReference),
+            itself: be_a(::Holistic::Ruby::TypeInference::Clue::ScopeReference),
             resolution_possibilities: ["::MyApp::MyModule1::MyModule2", "::MyApp", "::"]
           )
         ]
       )
 
-      expect(application.root_namespace.serialize).to eql({
+      expect(application.root_scope.serialize).to eql({
         "::" => {
           "MyApp" => {
             "MyModule1" => {

@@ -3,7 +3,7 @@
 class Holistic::Ruby::Parser::Current
   # Parsing is done in four phases.
   #
-  # 1. Register namespaces, contants, declarations, lambdas, etc. as they are encountered in source code.
+  # 1. Register scopes, contants, declarations, lambdas, etc. as they are encountered in source code.
   # 2. Update symbol index.
   # 3. Run type inference algorithm.
   # 4. Update dependency graph.
@@ -11,7 +11,7 @@ class Holistic::Ruby::Parser::Current
   # This class is responsible to handle the steps after the first one. If you're interested in the first phase,
   # take a look at the `Visitor` class.
   #
-  # At this point, the source of truth is good. We have namespaces, constants, declarations, lambdas, etc. in their specialized
+  # At this point, the source of truth is good. We have scopes, constants, declarations, lambdas, etc. in their specialized
   # types related to one another.
   #
   # ## When to accumulate and when to process?

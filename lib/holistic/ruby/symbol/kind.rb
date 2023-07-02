@@ -2,7 +2,7 @@
 
 module Holistic::Ruby::Symbol
   module Kind
-    NAMESPACE = :namespace
+    SCOPE     = :scope
     REFERENCE = :reference
   end
 end

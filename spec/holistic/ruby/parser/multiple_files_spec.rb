@@ -24,7 +24,7 @@ describe Holistic::Ruby::Parser do
   end
 
   it "parses the code" do
-    expect(application.root_namespace.serialize).to eql({
+    expect(application.root_scope.serialize).to eql({
       "::" => {
         "MyApp" => {
           "Example1" => {

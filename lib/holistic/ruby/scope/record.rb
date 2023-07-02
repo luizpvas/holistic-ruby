@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Holistic::Ruby::Namespace
+module Holistic::Ruby::Scope
   class Record
     attr_reader :kind, :name, :parent, :children, :locations
 
@@ -45,18 +45,18 @@ module Holistic::Ruby::Namespace
       parent.present? && (parent == other || parent.descendant?(other))
     end
 
-    def namespace
+    def scope
       self
     end
 
     def delete(file_path)
-      Delete.call(namespace: self, file_path: file_path)
+      Delete.call(scope: self, file_path: file_path)
     end
 
     def to_symbol
       ::Holistic::Ruby::Symbol::Record.new(
         identifier: fully_qualified_name,
-        kind: ::Holistic::Ruby::Symbol::Kind::NAMESPACE,
+        kind: ::Holistic::Ruby::Symbol::Kind::SCOPE,
         record: self,
         locations:
       )

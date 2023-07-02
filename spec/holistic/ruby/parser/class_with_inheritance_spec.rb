@@ -16,13 +16,13 @@ describe ::Holistic::Ruby::Parser do
       expect(application.symbols.find_reference_to("MyParentClass")).to have_attributes(
         clues: [
           have_attributes(
-            itself: be_a(::Holistic::Ruby::TypeInference::Clue::NamespaceReference),
+            itself: be_a(::Holistic::Ruby::TypeInference::Clue::ScopeReference),
             resolution_possibilities: ["::MyModule", "::"]
           )
         ]
       )
 
-      expect(application.root_namespace.serialize).to eql({
+      expect(application.root_scope.serialize).to eql({
         "::" => {
           "MyModule" => {
             "MySubClass" => {}

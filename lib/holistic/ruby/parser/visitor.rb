@@ -3,23 +3,23 @@
 module Holistic::Ruby::Parser
   module Visitor
     module Node
-      GetNamespadeDeclaration = ->(node) do
-        namespace_declaration = NamespaceDeclaration.new
+      BuildNestingSyntax = ->(node) do
+        nesting_syntax = NestingSyntax.new
 
         append = ->(node) do
           case node
-          when ::SyntaxTree::ConstRef     then namespace_declaration << node.child_nodes[0].value
-          when ::SyntaxTree::Const        then namespace_declaration << node.value
-          when ::SyntaxTree::VCall        then namespace_declaration << node.value # not sure what to do here e.g. `described_class::Error`
-          when ::SyntaxTree::CallNode     then namespace_declaration << "[dynamic_call]" # not sure what to do here e.g. `::Account.const_get(account.type.classify)::Subscription`
+          when ::SyntaxTree::ConstRef     then nesting_syntax << node.child_nodes[0].value
+          when ::SyntaxTree::Const        then nesting_syntax << node.value
+          when ::SyntaxTree::VCall        then nesting_syntax << node.value # not sure what to do here e.g. `described_class::Error`
+          when ::SyntaxTree::CallNode     then nesting_syntax << "[dynamic_call]" # not sure what to do here e.g. `::Account.const_get(account.type.classify)::Subscription`
           when ::SyntaxTree::VarRef       then node.child_nodes.each(&append)
           when ::SyntaxTree::ConstPathRef then node.child_nodes.each(&append)
-          when ::SyntaxTree::TopConstRef  then namespace_declaration.mark_as_root_scope! and node.child_nodes.each(&append)
+          when ::SyntaxTree::TopConstRef  then nesting_syntax.mark_as_root_scope! and node.child_nodes.each(&append)
           else raise "Unexpected node type: #{node.class}"
           end
         end
 
-        append.(node) and return namespace_declaration
+        append.(node) and return nesting_syntax
       end
 
       BuildLocation = ->(node) do
@@ -41,10 +41,10 @@ module Holistic::Ruby::Parser
         def visit_module(node)
           declaration, statements = node.child_nodes
 
-          namespace_declaration = Node::GetNamespadeDeclaration[declaration]
+          nesting = Node::BuildNestingSyntax[declaration]
           location = Node::BuildLocation[node]
 
-          Current::Namespace.register_child_module(namespace_declaration:, location:) do
+          Current::Scope.register_child_module(nesting:, location:) do
             visit(statements)
           end
         end
@@ -53,26 +53,26 @@ module Holistic::Ruby::Parser
           declaration, superclass, statements = node.child_nodes
 
           if superclass
-            superclass_declaration = Node::GetNamespadeDeclaration[superclass]
+            superclass_nesting = Node::BuildNestingSyntax[superclass]
 
-            if superclass_declaration.root_scope_resolution?
+            if superclass_nesting.root_scope_resolution?
               register_reference(
-                name: superclass_declaration.to_s,
+                name: superclass_nesting.to_s,
                 location: Node::BuildLocation[superclass],
                 resolution_possibilities: ConstantResolutionPossibilities.root_scope
               )
             else
               register_reference(
-                name: superclass_declaration.to_s,
+                name: superclass_nesting.to_s,
                 location: Node::BuildLocation[superclass]
               )
             end
           end
 
-          namespace_declaration = Node::GetNamespadeDeclaration[declaration]
+          nesting = Node::BuildNestingSyntax[declaration]
           location = Node::BuildLocation[node]
 
-          Current::Namespace.register_child_class(namespace_declaration:, location:) do
+          Current::Scope.register_child_class(nesting:, location:) do
             visit(statements)
           end
         end
@@ -88,9 +88,9 @@ module Holistic::Ruby::Parser
             end
 
           method_declaration =
-            ::Holistic::Ruby::Namespace::RegisterChildNamespace.call(
-              parent: Current.namespace,
-              kind: ::Holistic::Ruby::Namespace::Kind::METHOD,
+            ::Holistic::Ruby::Scope::RegisterChildScope.call(
+              parent: Current.scope,
+              kind: ::Holistic::Ruby::Scope::Kind::METHOD,
               name: method_name,
               location: Node::BuildLocation.call(node)
             )
@@ -110,9 +110,9 @@ module Holistic::Ruby::Parser
           end
 
           lambda_declaration =
-            ::Holistic::Ruby::Namespace::RegisterChildNamespace.call(
-              parent: Current.namespace,
-              kind: ::Holistic::Ruby::Namespace::Kind::LAMBDA,
+            ::Holistic::Ruby::Scope::RegisterChildScope.call(
+              parent: Current.scope,
+              kind: ::Holistic::Ruby::Scope::Kind::LAMBDA,
               name: assign.child_nodes.first.value,
               location: Node::BuildLocation.call(node)
             )
@@ -123,17 +123,17 @@ module Holistic::Ruby::Parser
         end
 
         def visit_const_path_ref(node)
-          namespace_declaration = Node::GetNamespadeDeclaration.call(node)
+          nesting = Node::BuildNestingSyntax.call(node)
 
-          if namespace_declaration.root_scope_resolution?
+          if nesting.root_scope_resolution?
             register_reference(
-              name: namespace_declaration.to_s,
+              name: nesting.to_s,
               location: Node::BuildLocation.call(node),
               resolution_possibilities: ConstantResolutionPossibilities.root_scope
             )
           else
             register_reference(
-              name: namespace_declaration.to_s,
+              name: nesting.to_s,
               location: Node::BuildLocation.call(node)
             )
           end
@@ -155,11 +155,11 @@ module Holistic::Ruby::Parser
       private
 
       def register_reference(name:, location:, resolution_possibilities: Current.constant_resolution_possibilities.dup)
-        clue = ::Holistic::Ruby::TypeInference::Clue::NamespaceReference.new(name:, resolution_possibilities:)
+        clue = ::Holistic::Ruby::TypeInference::Clue::ScopeReference.new(name:, resolution_possibilities:)
 
         reference =
           ::Holistic::Ruby::TypeInference::Reference.new(
-            namespace: Current.namespace,
+            scope: Current.scope,
             clues: [clue],
             location:
           )

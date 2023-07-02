@@ -2,10 +2,10 @@
 
 module Holistic::Ruby::Parser
   ParseCode = ->(application:, code:) do
-    namespace = application.root_namespace
+    scope = application.root_scope
     constant_resolution_possibilities = ConstantResolutionPossibilities.root_scope
 
-    Current.set(application:, namespace:, constant_resolution_possibilities:) do
+    Current.set(application:, scope:, constant_resolution_possibilities:) do
       program = ::SyntaxTree.parse(code)
 
       Visitor::ProgramVisitor.new.visit(program)

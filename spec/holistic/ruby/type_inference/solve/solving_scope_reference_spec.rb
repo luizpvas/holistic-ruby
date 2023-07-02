@@ -3,7 +3,7 @@
 describe ::Holistic::Ruby::TypeInference::Solve do
   include ::Support::SnippetParser
 
-  context "when the referenced namespace is declared in the same file" do
+  context "when the referenced scope is declared in the same file" do
     let(:application) do
       parse_snippet <<~RUBY
       module MyApp
@@ -17,10 +17,10 @@ describe ::Holistic::Ruby::TypeInference::Solve do
       RUBY
     end
 
-    it "solves the namespace reference" do
+    it "solves the scope reference" do
       expect(application.symbols.find_reference_to("Example")).to have_attributes(
         itself: be_a(::Holistic::Ruby::TypeInference::Reference),
-        namespace: application.symbols.find("::MyApp::Other").record,
+        scope: application.symbols.find("::MyApp::Other").record,
         conclusion: have_attributes(
           itself: be_a(::Holistic::Ruby::TypeInference::Conclusion),
           dependency_identifier: "::MyApp::Example",
@@ -37,7 +37,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
     end
   end
 
-  context "when the referenced namespace is declared in another file" do
+  context "when the referenced scope is declared in another file" do
     let(:application) do
       parse_snippet_collection do |files|
         files.add "/my_app/example.rb", <<~RUBY
@@ -56,10 +56,10 @@ describe ::Holistic::Ruby::TypeInference::Solve do
       end
     end
 
-    it "solves the namespace reference" do
+    it "solves the scope reference" do
       expect(application.symbols.find_reference_to("Example")).to have_attributes(
         itself: be_a(::Holistic::Ruby::TypeInference::Reference),
-        namespace: application.symbols.find("::MyApp::Other").record,
+        scope: application.symbols.find("::MyApp::Other").record,
         conclusion: have_attributes(
           itself: be_a(::Holistic::Ruby::TypeInference::Conclusion),
           dependency_identifier: "::MyApp::Example",
@@ -76,7 +76,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
     end
   end
 
-  context "when the referenced namespace is declared in multiple files" do
+  context "when the referenced scope is declared in multiple files" do
     let(:application) do
       parse_snippet_collection do |files|
         files.add "/my_app/example_1.rb", <<~RUBY
@@ -109,11 +109,11 @@ describe ::Holistic::Ruby::TypeInference::Solve do
     end
   end
 
-  context "when the clue is a namespace reference and the namespace is found via ancestry scope" do
+  context "when the clue is a scope reference and the scope is found via ancestry lookup" do
     # TODO. How?
   end
 
-  context "when the clue is a namespace reference and the namespace does not exist" do
+  context "when the clue is a scope reference and it does not exist" do
     let(:application) do
       parse_snippet <<~RUBY
       module MyApp
@@ -151,7 +151,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
 
     it "solves the dependency" do
       expect(application.symbols.find_reference_to("Example1")).to have_attributes(
-        namespace: application.symbols.find("::MyApp::Example2").record,
+        scope: application.symbols.find("::MyApp::Example2").record,
         conclusion: have_attributes(
           dependency_identifier: "::Example1"
         )
@@ -172,7 +172,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
 
     it "solves the dependency" do
       expect(application.symbols.find_reference_to("PlusOne")).to have_attributes(
-        namespace: application.symbols.find("::MyApp").record,
+        scope: application.symbols.find("::MyApp").record,
         conclusion: have_attributes(
           dependency_identifier: "::MyApp::PlusOne"
         )

@@ -12,45 +12,45 @@ module Holistic::Ruby::Symbol
       keyword_init: true
     )
 
-    CrawlDeclarationsRecursively = ->(application, namespace) do
-      namespace.children.flat_map do |subnamespace|
-        symbols = [application.symbols.find(subnamespace.fully_qualified_name)]
+    CrawlDeclarationsRecursively = ->(application, scope) do
+      scope.children.flat_map do |sub_scope|
+        symbols = [application.symbols.find(sub_scope.fully_qualified_name)]
 
-        symbols.concat(CrawlDeclarationsRecursively.call(application, subnamespace))
+        symbols.concat(CrawlDeclarationsRecursively.call(application, sub_scope))
       end
     end
 
-    CrawlDependenciesRecursively = ->(application, outlined_namespace, namespace) do
+    CrawlDependenciesRecursively = ->(application, outlined_scope, scope) do
       dependencies = []
 
       is_local_dependency = ->(symbol) do
         dependency = application.symbols.find(symbol.record.conclusion.dependency_identifier)
 
-        dependency.namespace.eql?(outlined_namespace) || dependency.namespace.descendant?(outlined_namespace)
+        dependency.scope.eql?(outlined_scope) || dependency.scope.descendant?(outlined_scope)
       end
 
-      namespace.locations.each do |location|
+      scope.locations.each do |location|
         application.symbols
           .list_symbols_in_file(location.file_path)
           .filter { _1.kind == Kind::REFERENCE }
-          .filter { _1.record.namespace == namespace }
+          .filter { _1.record.scope == scope }
           .reject(&is_local_dependency)
           .tap { dependencies.concat(_1) }
       end
 
-      namespace.children.map(&CrawlDependenciesRecursively.curry[application, outlined_namespace]).flatten.concat(dependencies)
+      scope.children.map(&CrawlDependenciesRecursively.curry[application, outlined_scope]).flatten.concat(dependencies)
     end
 
     def call(application:, symbol:)
       declarations =
-        if symbol.record.is_a?(::Holistic::Ruby::Namespace::Record)
+        if symbol.record.is_a?(::Holistic::Ruby::Scope::Record)
           CrawlDeclarationsRecursively.call(application, symbol.record).sort_by { _1.identifier }
         else
           []
         end
 
       dependencies =
-        if symbol.record.is_a?(::Holistic::Ruby::Namespace::Record)
+        if symbol.record.is_a?(::Holistic::Ruby::Scope::Record)
           CrawlDependenciesRecursively.call(application, symbol.record, symbol.record)
         else
           []
@@ -58,7 +58,7 @@ module Holistic::Ruby::Symbol
 
       references = application.dependencies.list_references(dependency_identifier: symbol.identifier)
 
-      dependants = references.map { |symbol| symbol.record.namespace }.uniq
+      dependants = references.map { |symbol| symbol.record.scope }.uniq
 
       Result.new(declarations:, dependencies:, references:, dependants:)
     end

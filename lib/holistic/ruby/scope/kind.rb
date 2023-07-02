@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Holistic::Ruby::Namespace
+module Holistic::Ruby::Scope
   module Kind
     ROOT   = :root
     MODULE = :module

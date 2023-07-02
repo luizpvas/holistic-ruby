@@ -8,8 +8,8 @@ module Holistic::Ruby::Symbol
     :locations,
     keyword_init: true
   ) do
-    def namespace
-      record.namespace
+    def scope
+      record.scope
     end
 
     def delete(file_path)

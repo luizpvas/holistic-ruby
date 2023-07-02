@@ -47,7 +47,7 @@ describe ::Holistic::Ruby::Parser::LiveEditing::ProcessFileChanged do
     end
   end
 
-  context "when changed file contains the definition of a namespace referenced from another file" do
+  context "when changed file contains the definition of a scope referenced by another file" do
     let(:example_1_source_code_before) do
       <<~RUBY
       module MyApp
