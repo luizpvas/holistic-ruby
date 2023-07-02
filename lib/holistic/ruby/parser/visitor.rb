@@ -109,6 +109,8 @@ module Holistic::Ruby::Parser
             return # TODO
           end
 
+          # TODO: calling it a lambda_declaration is wrong. The only thing we know is that we're assigning to a const,
+          # the value can be anything.
           lambda_declaration =
             ::Holistic::Ruby::Scope::RegisterChildScope.call(
               parent: Current.scope,

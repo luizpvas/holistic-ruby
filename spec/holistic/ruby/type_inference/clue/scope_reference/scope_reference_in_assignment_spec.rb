@@ -14,7 +14,6 @@ describe ::Holistic::Ruby::TypeInference::Clue::ScopeReference do
       RUBY
     end
 
-    # TODO: make this test pass
     # it "infers a scope reference clue" do
     #   expect(application.symbols.find_reference_to("::MyApp::Config")).to have_attributes(
     #     clues: [
