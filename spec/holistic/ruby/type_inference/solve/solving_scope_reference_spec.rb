@@ -101,6 +101,9 @@ describe ::Holistic::Ruby::TypeInference::Solve do
       end
     end
 
+    # TODO: This test is wrong. The current implementation stores a reference from all locations the dependency has
+    # pointing to the reference.
+
     it "tries its best to guess the source location" do
       references = application.dependencies.list_references(dependency_file_path: "/my_app/example_1.rb")
 
