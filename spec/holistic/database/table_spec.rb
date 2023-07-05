@@ -63,6 +63,30 @@ describe ::Holistic::Database::Table do
     end
   end
 
+  describe "#update" do
+    context "when record does not exist" do
+      it "inserts the record" do
+        record = { identifier: "example", color: "green" }
+
+        table.update(record)
+
+        expect(table.find("example")).to eql(record)
+        expect(table.filter(:color, "green")).to eql([record])
+      end
+    end
+
+    context "when record already exists" do
+      it "updates all indices with the new data" do
+        table.insert({ identifier: "example", color: "green" })
+        table.update({ identifier: "example", color: ["green", "blue"] })
+
+        expect(table.count).to be(1)
+
+        expect(table.find("example")).to eql({ identifier: "example", color: ["green", "blue"] })
+      end
+    end
+  end
+
   describe "#delete" do
     context "when record exists" do
       it "returns the deleted data" do

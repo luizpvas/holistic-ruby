@@ -40,6 +40,14 @@ class Holistic::Database::Table
     indices.dig(attribute_name, value).to_a
   end
 
+  def update(record)
+    primary_key = record.fetch(PRIMARY_KEY)
+
+    delete(primary_key)
+
+    insert(record)
+  end
+
   def delete(identifier)
     return unless primary_key_index.key?(identifier)
 
