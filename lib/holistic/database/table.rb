@@ -26,7 +26,7 @@ class Holistic::Database::Table
 
     secondary_indices.each do |attribute_name, secondary_index|
       Array(record[attribute_name]).each do |value|
-        secondary_index[value].add(record)
+        secondary_index[value].add(primary_key)
       end
     end
   end
@@ -36,9 +36,9 @@ class Holistic::Database::Table
   end
 
   def filter(name, value)
-    return unless secondary_indices[name].key?(value)
+    return [] unless secondary_indices[name].key?(value)
 
-    secondary_indices.dig(name, value).to_a
+    secondary_indices.dig(name, value).to_a.map { find(_1) }
   end
 
   def update(record)
@@ -49,16 +49,16 @@ class Holistic::Database::Table
     insert(record)
   end
 
-  def delete(identifier)
-    record = find(identifier)
+  def delete(primary_key)
+    record = find(primary_key)
 
     return if record.nil?
 
-    primary_index.delete(identifier)
+    primary_index.delete(primary_key)
 
     secondary_indices.each do |attribute_name, index_data|
       Array(record[attribute_name]).each do |value|
-        index_data[value].delete(record)
+        index_data[value].delete(primary_key)
         index_data.delete(value) if index_data[value].empty?
       end
     end

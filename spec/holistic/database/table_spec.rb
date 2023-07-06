@@ -77,12 +77,19 @@ describe ::Holistic::Database::Table do
 
     context "when record already exists" do
       it "updates all indices with the new data" do
-        table.insert({ identifier: "example", color: "green" })
-        table.update({ identifier: "example", color: ["green", "blue"] })
+        record = { identifier: "example", color: "green" }
+
+        table.insert(record)
+
+        record[:color] = ["green", "blue"]
+
+        table.update(record)
 
         expect(table.size).to be(1)
 
-        expect(table.find("example")).to eql({ identifier: "example", color: ["green", "blue"] })
+        expect(table.find("example")).to eql(record)
+        expect(table.filter(:color, "green")).to match_array([record])
+        expect(table.filter(:color, "blue")).to match_array([record])
       end
     end
   end
