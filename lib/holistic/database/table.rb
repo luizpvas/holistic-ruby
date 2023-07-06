@@ -3,21 +3,19 @@
 class Holistic::Database::Table
   RecordNotUniqueError = ::Class.new(::StandardError)
 
-  PRIMARY_KEY = :identifier
-
   attr_reader :indices
 
   def initialize(indices: [])
     @indices =
-      indices.append(PRIMARY_KEY).map do |attribute_name|
+      indices.append(:identifier).map do |attribute_name|
         [attribute_name, ::Hash.new { |hash, key| hash[key] = ::Set.new }]
       end.to_h
   end
 
   def insert(data)
-    primary_key = data.fetch(PRIMARY_KEY)
+    primary_key = data.fetch(:identifier)
 
-    if primary_key_index.key?(primary_key)
+    if identifier_index.key?(primary_key)
       raise RecordNotUniqueError, "record already inserted: #{data.inspect}"
     end
 
@@ -29,9 +27,9 @@ class Holistic::Database::Table
   end
 
   def find(identifier)
-    return unless primary_key_index.key?(identifier)
+    return unless identifier_index.key?(identifier)
 
-    primary_key_index[identifier].first
+    identifier_index[identifier].first
   end
 
   def filter(attribute_name, value)
@@ -41,7 +39,7 @@ class Holistic::Database::Table
   end
 
   def update(record)
-    primary_key = record.fetch(PRIMARY_KEY)
+    primary_key = record.fetch(:identifier)
 
     delete(primary_key)
 
@@ -49,9 +47,9 @@ class Holistic::Database::Table
   end
 
   def delete(identifier)
-    return unless primary_key_index.key?(identifier)
+    return unless identifier_index.key?(identifier)
 
-    record = primary_key_index[identifier].first
+    record = identifier_index[identifier].first
 
     indices.each do |attribute_name, index_data|
       Array(record[attribute_name]).each do |value|
@@ -64,12 +62,12 @@ class Holistic::Database::Table
   end
 
   def count
-    primary_key_index.size
+    identifier_index.size
   end
 
   private
 
-  def primary_key_index
-    @indices[PRIMARY_KEY]
+  def identifier_index
+    indices[:identifier]
   end
 end
