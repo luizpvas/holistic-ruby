@@ -2,10 +2,9 @@
 
 module Holistic::Ruby::Symbol
   class Collection
-    attr_reader :application, :table
+    attr_reader :table
 
-    def initialize(application:)
-      @application = application
+    def initialize
       @table = ::Holistic::Database::Table.new(indices: [:locations])
     end
 

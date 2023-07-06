@@ -94,7 +94,7 @@ describe ::Holistic::Ruby::Symbol::Collection do
   end
 
   describe "#find_by_cursor" do
-    let(:symbols) { described_class.new(application: nil) }
+    let(:symbols) { described_class.new }
 
     let(:symbol) do
       ::Holistic::Ruby::Symbol::Record.new(

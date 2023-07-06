@@ -11,7 +11,7 @@ module Holistic
     end
 
     def symbols
-      @symbols ||= Ruby::Symbol::Collection.new(application: self)
+      @symbols ||= Ruby::Symbol::Collection.new
     end
 
     def dependencies
