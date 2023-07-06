@@ -3,43 +3,46 @@
 class Holistic::Database::Table
   RecordNotUniqueError = ::Class.new(::StandardError)
 
-  attr_reader :indices
+  PRIMARY_ATTRIBUTE = :identifier
+
+  attr_reader :primary_index, :secondary_indices
 
   def initialize(indices: [])
-    @indices =
-      indices.append(:identifier).map do |attribute_name|
-        [attribute_name, ::Hash.new { |hash, key| hash[key] = ::Set.new }]
-      end.to_h
+    @primary_index = ::Hash.new
+
+    @secondary_indices = indices.map do |attribute_name|
+      [attribute_name, ::Hash.new { |hash, key| hash[key] = ::Set.new }]
+    end.to_h
   end
 
-  def insert(data)
-    primary_key = data.fetch(:identifier)
+  def insert(record)
+    primary_key = record.fetch(PRIMARY_ATTRIBUTE)
 
-    if identifier_index.key?(primary_key)
-      raise RecordNotUniqueError, "record already inserted: #{data.inspect}"
+    if primary_index.key?(primary_key)
+      raise RecordNotUniqueError, "record already inserted: #{record.inspect}"
     end
 
-    indices.each do |attribute_name, index_data|
-      Array(data[attribute_name]).each do |value|
-        index_data[value].add(data)
+    primary_index[primary_key] = record
+
+    secondary_indices.each do |attribute_name, secondary_index|
+      Array(record[attribute_name]).each do |value|
+        secondary_index[value].add(record)
       end
     end
   end
 
   def find(identifier)
-    return unless identifier_index.key?(identifier)
-
-    identifier_index[identifier].first
+    primary_index[identifier]
   end
 
-  def filter(attribute_name, value)
-    return unless indices[attribute_name].key?(value)
+  def filter(name, value)
+    return unless secondary_indices[name].key?(value)
 
-    indices.dig(attribute_name, value).to_a
+    secondary_indices.dig(name, value).to_a
   end
 
   def update(record)
-    primary_key = record.fetch(:identifier)
+    primary_key = record.fetch(PRIMARY_ATTRIBUTE)
 
     delete(primary_key)
 
@@ -47,11 +50,13 @@ class Holistic::Database::Table
   end
 
   def delete(identifier)
-    return unless identifier_index.key?(identifier)
+    record = find(identifier)
 
-    record = identifier_index[identifier].first
+    return if record.nil?
 
-    indices.each do |attribute_name, index_data|
+    primary_index.delete(identifier)
+
+    secondary_indices.each do |attribute_name, index_data|
       Array(record[attribute_name]).each do |value|
         index_data[value].delete(record)
         index_data.delete(value) if index_data[value].empty?
@@ -61,13 +66,13 @@ class Holistic::Database::Table
     record
   end
 
-  def count
-    identifier_index.size
-  end
+  concerning :TestHelpers do
+    def all
+      primary_index.values
+    end
 
-  private
-
-  def identifier_index
-    indices[:identifier]
+    def size
+      primary_index.size
+    end
   end
 end

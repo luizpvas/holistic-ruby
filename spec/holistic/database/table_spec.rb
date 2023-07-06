@@ -7,21 +7,21 @@ describe ::Holistic::Database::Table do
 
   describe "#insert" do
     it "inserts the record" do
-      expect(table.count).to be(0)
+      expect(table.size).to be(0)
 
       table.insert({ identifier: "example" })
 
-      expect(table.count).to be(1)
+      expect(table.size).to be(1)
     end
 
     it "inserts multiple records" do
-      expect(table.count).to be(0)
+      expect(table.size).to be(0)
 
       table.insert({ identifier: "example1" })
       table.insert({ identifier: "example2" })
       table.insert({ identifier: "example3" })
       
-      expect(table.count).to be(3)
+      expect(table.size).to be(3)
     end
 
     it "inserts an entry for each indexed attribute" do
@@ -29,8 +29,8 @@ describe ::Holistic::Database::Table do
 
       table.insert(record)
 
-      expect(table.indices[:identifier]).to include("example")
-      expect(table.indices[:color]).to include("green")
+      expect(table.primary_index).to include("example")
+      expect(table.secondary_indices[:color]).to include("green")
 
       expect(table.find("example")).to eql(record)
       expect(table.filter(:color, "green")).to eql([record])
@@ -41,8 +41,8 @@ describe ::Holistic::Database::Table do
 
       table.insert(record)
 
-      expect(table.indices[:color]).to include("green")
-      expect(table.indices[:color]).to include("blue")
+      expect(table.secondary_indices[:color]).to include("green")
+      expect(table.secondary_indices[:color]).to include("blue")
 
       expect(table.filter(:color, "green")).to eql([record])
       expect(table.filter(:color, "blue")).to eql([record])
@@ -80,7 +80,7 @@ describe ::Holistic::Database::Table do
         table.insert({ identifier: "example", color: "green" })
         table.update({ identifier: "example", color: ["green", "blue"] })
 
-        expect(table.count).to be(1)
+        expect(table.size).to be(1)
 
         expect(table.find("example")).to eql({ identifier: "example", color: ["green", "blue"] })
       end
@@ -100,23 +100,23 @@ describe ::Holistic::Database::Table do
 
         expect(result).to be_nil
 
-        expect(table.count).to be(0)
+        expect(table.size).to be(0)
       end
 
       it "deletes the record from all indices" do
         table.insert({ identifier: "example", color: "green" })
         table.delete("example")
 
-        expect(table.indices[:identifier]).to be_empty
-        expect(table.indices[:color]).to be_empty
+        expect(table.primary_index).to be_empty
+        expect(table.secondary_indices[:color]).to be_empty
       end
 
       it "deletes the record from all indices when value is an array" do
         table.insert({ identifier: "example", color: ["green", "blue"] })
         table.delete("example")
 
-        expect(table.indices[:identifier]).to be_empty
-        expect(table.indices[:color]).to be_empty
+        expect(table.primary_index).to be_empty
+        expect(table.secondary_indices[:color]).to be_empty
       end
     end
 
