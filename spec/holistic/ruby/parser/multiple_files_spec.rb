@@ -5,7 +5,7 @@ describe Holistic::Ruby::Parser do
 
   let(:application) do
     parse_snippet_collection do |files|
-      files.add "my_app/example_1.rb", <<~RUBY
+      files.add "/my_app/example_1.rb", <<~RUBY
       module MyApp
         module Example1
           def self.call; end
@@ -13,7 +13,7 @@ describe Holistic::Ruby::Parser do
       end
       RUBY
 
-      files.add "my_app/example_2.rb", <<~RUBY
+      files.add "/my_app/example_2.rb", <<~RUBY
       module MyApp
         module Example2
           Example1.call
@@ -35,9 +35,20 @@ describe Holistic::Ruby::Parser do
       }
     })
 
-    expect(application.symbols.from_file_path_to_identifier).to eql({
-      "my_app/example_1.rb" => ::Set.new(["::MyApp", "::MyApp::Example1", "::MyApp::Example1#self.call"]),
-      "my_app/example_2.rb" => ::Set.new(["::MyApp", "::MyApp::Example2", "my_app/example_2.rb[2,4,2,12]"]),
-    })
+    expect(
+      application.symbols.list_symbols_in_file("/my_app/example_1.rb").map(&:identifier)
+    ).to match_array([
+      "::MyApp",
+      "::MyApp::Example1",
+      "::MyApp::Example1#self.call"
+    ])
+
+    expect(
+      application.symbols.list_symbols_in_file("/my_app/example_2.rb").map(&:identifier)
+    ).to match_array([
+      "::MyApp",
+      "::MyApp::Example2",
+      "/my_app/example_2.rb[2,4,2,12]"
+    ])
   end
 end

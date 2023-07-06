@@ -2,39 +2,28 @@
 
 module Holistic::Ruby::Symbol
   class Collection
-    attr_reader :application, :from_file_path_to_identifier
+    attr_reader :application, :table
 
     def initialize(application:)
       @application = application
-      @from_identifier_to_symbol = {}
-      @from_file_path_to_identifier = ::Hash.new { |hash, key| hash[key] = ::Set.new }
+      @table = ::Holistic::Database::Table.new(indices: [:locations])
     end
 
-    AttemptingToIndexDifferentSymbolWithSameIdentifier = ::Class.new(::StandardError)
-
     def index(symbol)
-      raise ::ArgumentError unless symbol.is_a?(::Holistic::Ruby::Symbol::Record)
-
-      if @from_identifier_to_symbol.key?(symbol.identifier)
-        if find(symbol.identifier) != symbol
-          raise AttemptingToIndexDifferentSymbolWithSameIdentifier, "symbol #{symbol.identifier} already indexed"
-        end
-      else
-        @from_identifier_to_symbol[symbol.identifier] = symbol
-      end
-
-      symbol.locations.each do |location|
-        @from_file_path_to_identifier[location.file_path].add(symbol.identifier)
-      end
+      table.update({
+        identifier: symbol.identifier,
+        locations: symbol.locations.map(&:file_path),
+        symbol: symbol
+      })
     end
 
     def find(identifier)
-      @from_identifier_to_symbol[identifier]
+      table.find(identifier)&.dig(:symbol)
     end
 
     def find_by_cursor(cursor)
-      @from_file_path_to_identifier[cursor.file_path].each do |identifier|
-        symbol = find(identifier)
+      table.filter(:locations, cursor.file_path).each do |record|
+        symbol = record[:symbol]
 
         return symbol if symbol.locations.any? { _1.contains?(cursor) }
       end
@@ -43,17 +32,15 @@ module Holistic::Ruby::Symbol
     end
 
     def delete_symbols_in_file(file_path)
-      @from_file_path_to_identifier[file_path].each do |identifier|
-        find(identifier).delete(file_path)
+      table.filter(:locations, file_path).each do |record|
+        record[:symbol].delete(file_path)
 
-        @from_identifier_to_symbol.delete(identifier)
+        table.delete(record[:identifier])
       end
-
-      @from_file_path_to_identifier[file_path].clear
     end
     
     def list_symbols_in_file(file_path)
-      @from_file_path_to_identifier[file_path].map { find(_1) }
+      table.filter(:locations, file_path).map { _1[:symbol] }
     end
 
     concerning :TestingHelpers do
@@ -68,11 +55,13 @@ module Holistic::Ruby::Symbol
       end
 
       def find_references_to(name)
-        @from_identifier_to_symbol.values.select do |symbol|
+        table.all.filter do |record|
+          symbol = record[:symbol]
+
           next if symbol.kind != Kind::REFERENCE
 
           symbol.record.conclusion&.dependency_identifier == name || symbol.record.clues.find { _1.name == name }
-        end
+        end.map { _1[:symbol] }
       end
     end
   end
