@@ -16,14 +16,14 @@ module Holistic::Ruby::TypeInference
 
       return unless has_scope_reference_clue
 
-      scope_reference = reference.clues.first
+      referenced_scope = reference.clues.first
 
-      scope_reference.resolution_possibilities.each do |resolution_candidate|
+      referenced_scope.resolution_possibilities.each do |resolution_candidate|
         dependency_identifier =
           if resolution_candidate == "::"
-            "::#{scope_reference.name}"
+            "::#{referenced_scope.name}"
           else
-            "#{resolution_candidate}::#{scope_reference.name}"
+            "#{resolution_candidate}::#{referenced_scope.name}"
           end
 
         dependency = application.symbols.find(dependency_identifier)

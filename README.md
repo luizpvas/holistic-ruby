@@ -1,12 +1,16 @@
-# Holistic
+# What problem am I trying to solve?
 
-TODO: Delete this and the text below, and describe your gem
+make memory leaks impossible;
+make state easy to serialize and restore;
+make inconsistency impossible;
+with good performance.
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/holistic`. To experiment with that code, run `bin/console` for an interactive prompt.
+## scope
 
-## Glossary
+* create: from visitor. insert in symbol index and as children of application's root scope. symbol points to record. record points to its parent and children.
+* update: from visitor. new source location is added.
+* who knows about it: itself via parent and children. references via type inferece conclusion. dependency map set during type solving. symbols via record subtype.
 
-Namespace - Constant declaration (either module or class)
-Reference - Constant usage
-Constant
-Symbol - Anything identified by a name. Records of the global search.
+## reference
+
+* create: from visitor. insert in symbol table. nothing else points to it.
