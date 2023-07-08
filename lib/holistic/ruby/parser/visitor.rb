@@ -89,6 +89,7 @@ module Holistic::Ruby::Parser
 
           method_declaration =
             ::Holistic::Ruby::Scope::RegisterChildScope.call(
+              repository: Current.application.scopes,
               parent: Current.scope,
               kind: ::Holistic::Ruby::Scope::Kind::METHOD,
               name: method_name,
@@ -113,6 +114,7 @@ module Holistic::Ruby::Parser
           # the value can be anything.
           lambda_declaration =
             ::Holistic::Ruby::Scope::RegisterChildScope.call(
+              repository: Current.application.scopes,
               parent: Current.scope,
               kind: ::Holistic::Ruby::Scope::Kind::LAMBDA,
               name: assign.child_nodes.first.value,

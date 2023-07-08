@@ -4,8 +4,13 @@ module Holistic::Ruby::Scope
   module RegisterChildScope
     extend self
 
-    def call(parent:, kind:, name:, location:)
-      append_location_to_existing_scope(scope: parent, name:, location:) || add_new_scope(parent:, kind:, name:, location:)
+    def call(repository:, parent:, kind:, name:, location:)
+      child_scope =
+        append_location_to_existing_scope(scope: parent, name:, location:) || add_new_scope(parent:, kind:, name:, location:)
+
+      repository.register_scope(child_scope)
+
+      child_scope
     end
 
     private

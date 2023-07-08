@@ -8,7 +8,14 @@ module Holistic::Ruby::Parser
       starting_scope = Current.scope
 
       nesting.each do |name|
-        Current.scope = ::Holistic::Ruby::Scope::RegisterChildScope.call(parent: Current.scope, kind: ::Holistic::Ruby::Scope::Kind::MODULE, name:, location:)
+        Current.scope =
+          ::Holistic::Ruby::Scope::RegisterChildScope.call(
+            repository: Current.application.scopes,
+            parent: Current.scope,
+            kind: ::Holistic::Ruby::Scope::Kind::MODULE,
+            name:,
+            location:
+          )
 
         Current.registration_queue.register(Current.scope.to_symbol)
       end
@@ -25,7 +32,14 @@ module Holistic::Ruby::Parser
       starting_scope = Current.scope
 
       nesting.each do |name|
-        Current.scope = ::Holistic::Ruby::Scope::RegisterChildScope.call(parent: Current.scope, kind: ::Holistic::Ruby::Scope::Kind::CLASS, name:, location:)
+        Current.scope =
+          ::Holistic::Ruby::Scope::RegisterChildScope.call(
+            repository: Current.application.scopes,
+            parent: Current.scope,
+            kind: ::Holistic::Ruby::Scope::Kind::CLASS,
+            name:,
+            location:
+          )
 
         Current.registration_queue.register(Current.scope.to_symbol)
       end

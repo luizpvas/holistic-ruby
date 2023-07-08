@@ -7,11 +7,16 @@ module Holistic
     def initialize(name:, root_directory:)
       @name = name
       @root_directory = root_directory
-      @root_scope = Ruby::Scope::Record.new(kind: Ruby::Scope::Kind::ROOT, name: "::", parent: nil)
+      @root_scope = Ruby::Scope::CreateRootScope.call
     end
 
+    # TODO: deprecated
     def symbols
       @symbols ||= Ruby::Symbol::Collection.new
+    end
+
+    def scopes
+      @scopes ||= Ruby::Scope::Repository.new
     end
 
     def dependencies

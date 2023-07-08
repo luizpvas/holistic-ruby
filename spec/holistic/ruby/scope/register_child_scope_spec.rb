@@ -2,57 +2,88 @@
 
 describe ::Holistic::Ruby::Scope::RegisterChildScope do
   context "when a scope with the same name DOES NOT EXIST in the parent scope" do
-    it "adds new children" do
-      parent = ::Holistic::Ruby::Scope::Record.new(kind: ::Holistic::Ruby::Scope::Kind::MODULE, name: "MyModule", parent: nil)
+    let(:repository) { ::Holistic::Ruby::Scope::Repository.new }
 
-      location_1 = ::Holistic::Document::Location.beginning_of_file("app.rb")
-      child_1 = described_class.call(parent: parent, kind: ::Holistic::Ruby::Scope::Kind::MODULE, name: "MyChild1", location: location_1)
+    let(:parent) do
+      ::Holistic::Ruby::Scope::Record.new(
+        kind: ::Holistic::Ruby::Scope::Kind::MODULE,
+        name: "MyModule",
+        parent: ::Holistic::Ruby::Scope::CreateRootScope.call
+      )
+    end
 
-      location_2 = ::Holistic::Document::Location.beginning_of_file("app.rb")
-      child_2 = described_class.call(parent: parent, kind: ::Holistic::Ruby::Scope::Kind::MODULE, name: "MyChild2", location: location_2)
+    let(:child_1_location) do
+      ::Holistic::Document::Location.beginning_of_file("app.rb")
+    end
 
-      expect(parent.children.size).to be(2)
+    let!(:child_1) do
+      described_class.call(repository:, parent:, kind: ::Holistic::Ruby::Scope::Kind::MODULE, name: "MyChild1", location: child_1_location)
+    end
+
+    let(:child_2_location) do
+      ::Holistic::Document::Location.beginning_of_file("app.rb")
+    end
+
+    let!(:child_2) do
+      described_class.call(repository:, parent:, kind: ::Holistic::Ruby::Scope::Kind::MODULE, name: "MyChild2", location: child_2_location)
+    end
+
+    it "adds new children in the parent scope" do
+      expect(parent.children).to match_array([child_1, child_2])
 
       expect(child_1).to have_attributes(
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
         name: "MyChild1",
         parent: parent,
-        locations: [location_1]
+        locations: [child_1_location]
       )
 
       expect(child_2).to have_attributes(
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
         name: "MyChild2",
         parent: parent,
-        locations: [location_2]
+        locations: [child_2_location]
       )
+    end
+
+    it "inserts the scope in the repository" do
+      expect(repository.table.size).to be(2)
+
+      expect(repository.find_by_fully_qualified_name("::MyModule::MyChild1")).to be(child_1)
+      expect(repository.find_by_fully_qualified_name("::MyModule::MyChild2")).to be(child_2)
     end
   end
 
   context "when a scope with the same name EXISTS in the parent scope" do
-    it "returns the existing scope" do
-      parent = ::Holistic::Ruby::Scope::Record.new(kind: ::Holistic::Ruby::Scope::Kind::MODULE, name: "MyModule", parent: nil)
+    let(:repository) { ::Holistic::Ruby::Scope::Repository.new }
 
-      child_1 = described_class.call(parent:, kind: ::Holistic::Ruby::Scope::Kind::MODULE, name: "MyChild", location: nil)
-      child_2 = described_class.call(parent:, kind: ::Holistic::Ruby::Scope::Kind::MODULE, name: "MyChild", location: nil)
+    let(:parent) do
+      ::Holistic::Ruby::Scope::Record.new(
+        kind: ::Holistic::Ruby::Scope::Kind::MODULE,
+        name: "MyModule",
+        parent: ::Holistic::Ruby::Scope::CreateRootScope.call
+      )
+    end
 
-      expect(parent.children.size).to be(1)
+    let(:location_1) { ::Holistic::Document::Location.beginning_of_file("app.rb") }
+    let(:location_2) { ::Holistic::Document::Location.beginning_of_file("app.rb") }
 
-      expect(child_1).to be(child_2)
+    let!(:child_1) do
+      described_class.call(repository:, parent:, kind: ::Holistic::Ruby::Scope::Kind::MODULE, name: "MyChild", location: location_1)
+    end
+
+    let!(:child_2) do
+      described_class.call(repository:, parent:, kind: ::Holistic::Ruby::Scope::Kind::MODULE, name: "MyChild", location: location_2)
     end
 
     it "appends the source location to the existing scope" do
-      parent = ::Holistic::Ruby::Scope::Record.new(kind: ::Holistic::Ruby::Scope::Kind::MODULE, name: "MyModule", parent: nil)
+      expect(child_1).to be(child_2)
 
-      location_1 = ::Holistic::Document::Location.beginning_of_file("app.rb")
-      location_2 = ::Holistic::Document::Location.beginning_of_file("app.rb")
+      expect(child_2.locations).to match_array([location_1, location_2])
+    end
 
-      child_from_call_1 = described_class.call(parent:, kind: ::Holistic::Ruby::Scope::Kind::MODULE, name: "MyChild", location: location_1)
-      child_from_call_2 = described_class.call(parent:, kind: ::Holistic::Ruby::Scope::Kind::MODULE, name: "MyChild", location: location_2)
-
-      expect(child_from_call_1).to be(child_from_call_2)
-
-      expect(child_from_call_2.locations).to contain_exactly(location_1, location_2)
+    it "updates the source locations in the repository" do
+      expect(repository.find_by_fully_qualified_name("::MyModule::MyChild")).to be(child_2)
     end
   end
 end
