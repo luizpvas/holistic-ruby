@@ -14,3 +14,12 @@ with good performance.
 ## reference
 
 * create: from visitor. insert in symbol table. nothing else points to it.
+
+## hypothesis - kill the symbol abstraction
+
+scopes have their own table
+references have their own table (consolidate into dependencies)
+
+on file change:
+  - delete all scopes
+  - delete all references
