@@ -7,7 +7,7 @@ module Holistic::Ruby::Reference
     def call(repository:, scope:, clues:, location:)
       conclusion = ::Holistic::Ruby::TypeInference::Conclusion.pending
 
-      reference = ::Holistic::Ruby::TypeInference::Reference.new(scope:, clues:, location:, conclusion:)
+      reference = ::Holistic::Ruby::Reference::Record.new(scope:, clues:, location:, conclusion:)
 
       repository.register_reference(reference)
     end

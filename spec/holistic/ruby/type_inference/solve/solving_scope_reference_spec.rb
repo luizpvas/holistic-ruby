@@ -19,7 +19,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
 
     it "solves the scope reference" do
       expect(application.references.find_reference_to("Example")).to have_attributes(
-        itself: be_a(::Holistic::Ruby::TypeInference::Reference),
+        itself: be_a(::Holistic::Ruby::Reference::Record),
         scope: application.scopes.find_by_fully_qualified_name("::MyApp::Other"),
         conclusion: have_attributes(
           itself: be_a(::Holistic::Ruby::TypeInference::Conclusion),
@@ -58,7 +58,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
 
     it "solves the scope reference" do
       expect(application.references.find_reference_to("Example")).to have_attributes(
-        itself: be_a(::Holistic::Ruby::TypeInference::Reference),
+        itself: be_a(::Holistic::Ruby::Reference::Record),
         scope: application.scopes.find_by_fully_qualified_name("::MyApp::Other"),
         conclusion: have_attributes(
           itself: be_a(::Holistic::Ruby::TypeInference::Conclusion),
@@ -127,7 +127,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
 
     it "leaves the conclusion empty" do
       expect(application.references.find_reference_to("Unknown")).to have_attributes(
-        itself: be_a(::Holistic::Ruby::TypeInference::Reference),
+        itself: be_a(::Holistic::Ruby::Reference::Record),
         conclusion: have_attributes(
           status: :done,
           dependency_identifier: nil

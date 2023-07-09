@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module Holistic::Ruby::TypeInference
-  Reference = ::Struct.new(
+module Holistic::Ruby::Reference
+  Record = ::Struct.new(
     :scope,
     :clues,
     :conclusion,
