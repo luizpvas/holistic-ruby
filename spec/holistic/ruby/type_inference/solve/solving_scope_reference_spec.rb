@@ -30,7 +30,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
     end
 
     it "registers a dependency" do
-      references = application.dependencies.list_references(dependency_file_path: "/snippet.rb")
+      references = application.references.list_references_to_scopes_in_file(scopes: application.scopes, file_path: "/snippet.rb")
 
       expect(references.size).to eql(1)
       expect(references.first).to eql(application.references.find_reference_to("Example"))
@@ -69,7 +69,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
     end
 
     it "registers a dependency" do
-      references = application.dependencies.list_references(dependency_file_path: "/my_app/example.rb")
+      references = application.references.list_references_to_scopes_in_file(scopes: application.scopes, file_path: "/my_app/example.rb")
 
       expect(references.size).to eql(1)
       expect(references.first).to eql(application.references.find_reference_to("Example"))
@@ -105,7 +105,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
     # pointing to the reference.
 
     it "tries its best to guess the source location" do
-      references = application.dependencies.list_references(dependency_file_path: "/my_app/example_1.rb")
+      references = application.references.list_references_to_scopes_in_file(scopes: application.scopes, file_path: "/my_app/example_1.rb")
 
       expect(references.size).to eql(1)
       expect(references.first).to eql(application.references.find_reference_to("MyApp"))

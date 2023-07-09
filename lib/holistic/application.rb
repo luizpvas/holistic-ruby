@@ -23,10 +23,6 @@ module Holistic
       @references ||= Ruby::Reference::Repository.new
     end
 
-    def dependencies
-      @dependencies ||= Ruby::TypeInference::Dependencies.new(application: self)
-    end
-
     def unsaved_documents
       @unsaved_documents ||= Document::Unsaved::Collection.new
     end

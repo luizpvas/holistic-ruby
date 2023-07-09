@@ -4,6 +4,9 @@ module Holistic::Ruby::TypeInference
   module Solve
     extend self
 
+    # TODO: I don't like that `solve_scope_reference` mutates the reference. It should return a conclusion instead,
+    # and the mutation + call to the repository happen in one place.
+
     def call(application:, reference:)
       solved = solve_scope_reference(application:, reference:)
 
@@ -33,8 +36,6 @@ module Holistic::Ruby::TypeInference
         referenced_scope = application.scopes.find_by_fully_qualified_name(fully_qualified_scope_name)
 
         if referenced_scope.present?
-          application.dependencies.register(dependency: referenced_scope, reference_identifier: reference.identifier)
-
           reference.conclusion.dependency_identifier = fully_qualified_scope_name
 
           return true
