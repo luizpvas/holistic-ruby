@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe ::Holistic::Ruby::Symbol::Outline do
+describe ::Holistic::Ruby::Scope::Outline do
   include ::Support::SnippetParser
 
   let(:application) do
