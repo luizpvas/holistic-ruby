@@ -5,10 +5,10 @@ module Holistic::Ruby::Parser
     extend self
 
     def call(application:, file:)
-      references = application.dependencies.delete_references(scope_file_path: file.path)
+      references = application.references.list_references_to_scopes_in_file(scopes: application.scopes, file_path: file.path)
 
-      delete_symbols_in_file(application:, file:) # TODO: remove
       unregister_scopes_in_file(application:, file:)
+      unregsiter_references_in_file(application:, file:)
 
       parse_again(application:, file:)
 
@@ -16,10 +16,6 @@ module Holistic::Ruby::Parser
     end
 
     private
-
-    def delete_symbols_in_file(application:, file:)
-      application.symbols.delete_symbols_in_file(file.path)
-    end
 
     def unregister_scopes_in_file(application:, file:)
       application.scopes.list_scopes_in_file(file.path).each do |scope|
@@ -31,6 +27,15 @@ module Holistic::Ruby::Parser
       end
     end
 
+    def unregsiter_references_in_file(application:, file:)
+      application.references.list_references_in_file(file.path).each do |reference|
+        ::Holistic::Ruby::Reference::Unregister.call(
+          repository: application.references,
+          reference: reference
+        )
+      end
+    end
+
     def parse_again(application:, file:)
       WrapParsingUnitWithProcessAtTheEnd.call(application:) do
         ParseFile.call(application:, file:)
@@ -38,10 +43,8 @@ module Holistic::Ruby::Parser
     end
 
     def recalculate_type_inference_for_references(application:, references:)
-      references.each do |symbol|
-        reference = symbol.record
-
-        reference.conclusion = nil
+      references.each do |reference|
+        reference.conclusion = ::Holistic::Ruby::TypeInference::Conclusion.pending
 
         ::Holistic::Ruby::TypeInference::Solve.call(application:, reference:)
       end

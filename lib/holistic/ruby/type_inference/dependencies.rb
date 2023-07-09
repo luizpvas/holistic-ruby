@@ -39,7 +39,7 @@ module Holistic::Ruby::TypeInference
     # TODO: do we really need it?
     def list_references(dependency_file_path: nil, dependency_identifier: nil)
       if dependency_file_path.present?
-        return @from_scope_file_path_to_references[dependency_file_path].map { application.symbols.find(_1) }
+        return @from_scope_file_path_to_references[dependency_file_path].map { application.references.find(_1) }
       end
 
       if dependency_identifier.present?

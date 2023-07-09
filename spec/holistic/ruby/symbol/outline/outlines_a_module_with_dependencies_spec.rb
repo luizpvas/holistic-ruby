@@ -30,7 +30,7 @@ describe ::Holistic::Ruby::Symbol::Outline do
       "::MyApp::Example::PlusThree"
     ])
 
-    dependencies = result.dependencies.map { _1.record.conclusion.dependency_identifier }
+    dependencies = result.dependencies.map { _1.conclusion.dependency_identifier }
 
     expect(dependencies).to match_array([
       "::MyApp::PlusOne",

@@ -17,19 +17,18 @@ module Holistic::Ruby::Symbol
     end
 
     CrawlDependenciesRecursively = ->(application, outlined_scope, scope) do
-      dependencies = []
-
-      is_local_dependency = ->(symbol) do
-        scope = application.scopes.find_by_fully_qualified_name(symbol.record.conclusion.dependency_identifier)
+      is_local_dependency = ->(reference) do
+        scope = application.scopes.find_by_fully_qualified_name(reference.conclusion.dependency_identifier)
 
         scope.eql?(outlined_scope) || scope.descendant?(outlined_scope)
       end
 
+      dependencies = []
+
       scope.locations.each do |location|
-        application.symbols
-          .list_symbols_in_file(location.file_path)
-          .filter { _1.kind == Kind::REFERENCE }
-          .filter { _1.record.scope == scope }
+        application.references
+          .list_references_in_file(location.file_path)
+          .filter { _1.scope == scope }
           .reject(&is_local_dependency)
           .tap { dependencies.concat(_1) }
       end
@@ -42,9 +41,9 @@ module Holistic::Ruby::Symbol
 
       dependencies = CrawlDependenciesRecursively.call(application, scope, scope)
 
-      references = application.dependencies.list_references(dependency_identifier: scope.fully_qualified_name)
+      references = application.references.list_references_to(scope.fully_qualified_name)
 
-      dependants = references.map { |symbol| symbol.record.scope }.uniq
+      dependants = references.map { |reference| reference.scope }.uniq
 
       Result.new(declarations:, dependencies:, references:, dependants:)
     end

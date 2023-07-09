@@ -4,17 +4,15 @@ module Holistic::Ruby::Reference
   module Register
     extend self
 
-    # TODO: remove `application:` argument, not needed.
-    def call(application:, scope:, clues:, location:)
-      reference = ::Holistic::Ruby::TypeInference::Reference.new(scope:, clues:, location:)
+    def call(repository:, scope:, clues:, location:)
+      conclusion = ::Holistic::Ruby::TypeInference::Conclusion.pending
+
+      reference = ::Holistic::Ruby::TypeInference::Reference.new(scope:, clues:, location:, conclusion:)
 
       # TODO: change the registration queue to some other abstraction
       ::Holistic::Ruby::Parser::Current.registration_queue.register(reference)
 
-      # TODO: migrate to reference table
-      application.symbols.index(reference.to_symbol)
-
-      reference
+      repository.register_reference(reference)
     end
   end
 end

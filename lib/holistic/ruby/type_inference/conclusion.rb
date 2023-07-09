@@ -1,13 +1,16 @@
 # frozen_string_literal: true
 
 module Holistic::Ruby::TypeInference
+  STATUS_PENDING = :pending
+  STATUS_DONE    = :done
+
   Conclusion = ::Struct.new(
+    :status,
     :dependency_identifier,
-    :confidence,
     keyword_init: true
   ) do
-    def self.with_strong_confidence(dependency_identifier)
-      new(dependency_identifier:, confidence: :strong)
+    def self.pending
+      new(status: STATUS_PENDING, dependency_identifier: nil)
     end
   end
 end

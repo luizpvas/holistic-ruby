@@ -19,7 +19,7 @@ describe ::Holistic::Ruby::Parser do
     end
 
     it "parses the code" do
-      expect(application.symbols.find_reference_to("Foo1")).to have_attributes(
+      expect(application.references.find_reference_to("Foo1")).to have_attributes(
         clues: [
           have_attributes(
             itself: be_a(::Holistic::Ruby::TypeInference::Clue::ScopeReference),
@@ -28,7 +28,7 @@ describe ::Holistic::Ruby::Parser do
         ]
       )
 
-      expect(application.symbols.find_reference_to("Foo2")).to have_attributes(
+      expect(application.references.find_reference_to("Foo2")).to have_attributes(
         clues: [
           have_attributes(
             itself: be_a(::Holistic::Ruby::TypeInference::Clue::ScopeReference),

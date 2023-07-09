@@ -19,14 +19,14 @@ describe ::Holistic::Ruby::Parser::LiveEditing::ProcessFileChanged do
     it "ends up in the same state as before the change" do
       my_app_before = application.scopes.find_by_fully_qualified_name("::MyApp")
       my_app_example_before = application.scopes.find_by_fully_qualified_name("::MyApp::Example")
-      foo_reference_before = application.symbols.find_reference_to("Foo")
+      foo_reference_before = application.references.find_reference_to("Foo")
 
       file = ::Holistic::Document::File::Fake.new(path: "/snippet.rb", content: source_code)
       described_class.call(application:, file:)
 
       my_app_after = application.scopes.find_by_fully_qualified_name("::MyApp")
       my_app_example_after = application.scopes.find_by_fully_qualified_name("::MyApp::Example")
-      foo_reference_after = application.symbols.find_reference_to("Foo")
+      foo_reference_after = application.references.find_reference_to("Foo")
 
       expect(my_app_before.fully_qualified_name).to eql(my_app_after.fully_qualified_name)
       expect(my_app_before).not_to be(my_app_after)
@@ -66,8 +66,8 @@ describe ::Holistic::Ruby::Parser::LiveEditing::ProcessFileChanged do
       my_app_before = application.scopes.find_by_fully_qualified_name("::MyApp")
       my_app_example_1_before = application.scopes.find_by_fully_qualified_name("::MyApp::Example1")
       my_app_example_2_before = application.scopes.find_by_fully_qualified_name("::MyApp::Example2")
-      foo_1_reference_before = application.symbols.find_reference_to("Foo1")
-      foo_2_reference_before = application.symbols.find_reference_to("Foo2") rescue nil
+      foo_1_reference_before = application.references.find_reference_to("Foo1")
+      foo_2_reference_before = application.references.find_reference_to("Foo2") rescue nil
 
       file = ::Holistic::Document::File::Fake.new(path: "/snippet.rb", content: source_code_after)
       described_class.call(application:, file:)
@@ -75,8 +75,8 @@ describe ::Holistic::Ruby::Parser::LiveEditing::ProcessFileChanged do
       my_app_after = application.scopes.find_by_fully_qualified_name("::MyApp")
       my_app_example_1_after = application.scopes.find_by_fully_qualified_name("::MyApp::Example1")
       my_app_example_2_after = application.scopes.find_by_fully_qualified_name("::MyApp::Example2")
-      foo_1_reference_after = application.symbols.find_reference_to("Foo1") rescue nil
-      foo_2_reference_after = application.symbols.find_reference_to("Foo2")
+      foo_1_reference_after = application.references.find_reference_to("Foo1") rescue nil
+      foo_2_reference_after = application.references.find_reference_to("Foo2")
 
       expect(my_app_before.fully_qualified_name).to eql(my_app_after.fully_qualified_name)
       expect(my_app_before).not_to be(my_app_after)

@@ -19,6 +19,10 @@ module Holistic
       @scopes ||= Ruby::Scope::Repository.new
     end
 
+    def references
+      @references ||= Ruby::Reference::Repository.new
+    end
+
     def dependencies
       @dependencies ||= Ruby::TypeInference::Dependencies.new(application: self)
     end

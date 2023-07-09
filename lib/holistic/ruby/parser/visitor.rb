@@ -154,7 +154,7 @@ module Holistic::Ruby::Parser
         clue = ::Holistic::Ruby::TypeInference::Clue::ScopeReference.new(name:, resolution_possibilities:)
 
         ::Holistic::Ruby::Reference::Register.call(
-          application: Current.application,
+          repository: Current.application.references,
           scope: Current.scope,
           clues: [clue],
           location:

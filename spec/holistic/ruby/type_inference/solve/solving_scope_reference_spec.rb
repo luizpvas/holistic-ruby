@@ -18,13 +18,13 @@ describe ::Holistic::Ruby::TypeInference::Solve do
     end
 
     it "solves the scope reference" do
-      expect(application.symbols.find_reference_to("Example")).to have_attributes(
+      expect(application.references.find_reference_to("Example")).to have_attributes(
         itself: be_a(::Holistic::Ruby::TypeInference::Reference),
         scope: application.scopes.find_by_fully_qualified_name("::MyApp::Other"),
         conclusion: have_attributes(
           itself: be_a(::Holistic::Ruby::TypeInference::Conclusion),
+          status: :done,
           dependency_identifier: "::MyApp::Example",
-          confidence: :strong
         )
       )
     end
@@ -33,7 +33,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
       references = application.dependencies.list_references(dependency_file_path: "/snippet.rb")
 
       expect(references.size).to eql(1)
-      expect(references.first.record).to eql(application.symbols.find_reference_to("Example"))
+      expect(references.first).to eql(application.references.find_reference_to("Example"))
     end
   end
 
@@ -57,13 +57,13 @@ describe ::Holistic::Ruby::TypeInference::Solve do
     end
 
     it "solves the scope reference" do
-      expect(application.symbols.find_reference_to("Example")).to have_attributes(
+      expect(application.references.find_reference_to("Example")).to have_attributes(
         itself: be_a(::Holistic::Ruby::TypeInference::Reference),
         scope: application.scopes.find_by_fully_qualified_name("::MyApp::Other"),
         conclusion: have_attributes(
           itself: be_a(::Holistic::Ruby::TypeInference::Conclusion),
-          dependency_identifier: "::MyApp::Example",
-          confidence: :strong
+          status: :done,
+          dependency_identifier: "::MyApp::Example"
         )
       )
     end
@@ -72,7 +72,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
       references = application.dependencies.list_references(dependency_file_path: "/my_app/example.rb")
 
       expect(references.size).to eql(1)
-      expect(references.first.record).to eql(application.symbols.find_reference_to("Example"))
+      expect(references.first).to eql(application.references.find_reference_to("Example"))
     end
   end
 
@@ -108,7 +108,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
       references = application.dependencies.list_references(dependency_file_path: "/my_app/example_1.rb")
 
       expect(references.size).to eql(1)
-      expect(references.first.record).to eql(application.symbols.find_reference_to("MyApp"))
+      expect(references.first).to eql(application.references.find_reference_to("MyApp"))
     end
   end
 
@@ -126,9 +126,12 @@ describe ::Holistic::Ruby::TypeInference::Solve do
     end
 
     it "leaves the conclusion empty" do
-      expect(application.symbols.find_reference_to("Unknown")).to have_attributes(
+      expect(application.references.find_reference_to("Unknown")).to have_attributes(
         itself: be_a(::Holistic::Ruby::TypeInference::Reference),
-        conclusion: be_nil
+        conclusion: have_attributes(
+          status: :done,
+          dependency_identifier: nil
+        )
       )
     end
   end
@@ -153,7 +156,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
     end
 
     it "solves the dependency" do
-      expect(application.symbols.find_reference_to("Example1")).to have_attributes(
+      expect(application.references.find_reference_to("Example1")).to have_attributes(
         scope: application.scopes.find_by_fully_qualified_name("::MyApp::Example2"),
         conclusion: have_attributes(
           dependency_identifier: "::Example1"
@@ -174,7 +177,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
     end
 
     it "solves the dependency" do
-      expect(application.symbols.find_reference_to("PlusOne")).to have_attributes(
+      expect(application.references.find_reference_to("PlusOne")).to have_attributes(
         scope: application.scopes.find_by_fully_qualified_name("::MyApp"),
         conclusion: have_attributes(
           dependency_identifier: "::MyApp::PlusOne"

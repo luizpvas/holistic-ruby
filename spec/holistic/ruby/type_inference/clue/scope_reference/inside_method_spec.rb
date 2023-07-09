@@ -15,7 +15,7 @@ describe ::Holistic::Ruby::TypeInference::Clue::ScopeReference do
     end
 
     it "infers a scope reference clue" do
-      expect(application.symbols.find_reference_to("Example")).to have_attributes(
+      expect(application.references.find_reference_to("Example")).to have_attributes(
         clues: [
           have_attributes(
             itself: be_a(::Holistic::Ruby::TypeInference::Clue::ScopeReference),

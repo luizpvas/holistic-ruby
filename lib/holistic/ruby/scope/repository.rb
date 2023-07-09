@@ -28,9 +28,5 @@ module Holistic::Ruby::Scope
     def list_scopes_in_file(file_path)
       table.filter(:locations, file_path).map { _1[:scope] }
     end
-
-    def delete_scopes_in_file(file_path)
-      raise "todo"
-    end
   end
 end

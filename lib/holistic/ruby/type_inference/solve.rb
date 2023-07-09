@@ -5,7 +5,11 @@ module Holistic::Ruby::TypeInference
     extend self
 
     def call(application:, reference:)
-      solve_scope_reference(application:, reference:)
+      solved = solve_scope_reference(application:, reference:)
+
+      reference.conclusion.status = STATUS_DONE
+
+      application.references.register_reference(reference)
     end
 
     private
@@ -31,7 +35,7 @@ module Holistic::Ruby::TypeInference
         if referenced_scope.present?
           application.dependencies.register(dependency: referenced_scope, reference_identifier: reference.identifier)
 
-          reference.conclusion = Conclusion.with_strong_confidence(fully_qualified_scope_name)
+          reference.conclusion.dependency_identifier = fully_qualified_scope_name
 
           return true
         end
