@@ -5,6 +5,7 @@ module Holistic::Ruby::Scope
     attr_reader :table
 
     def initialize
+      # TODO: rename `locations` to `file_paths`.
       @table = ::Holistic::Database::Table.new(indices: [:locations])
     end
 
