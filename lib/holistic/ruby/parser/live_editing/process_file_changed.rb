@@ -5,7 +5,7 @@ module Holistic::Ruby::Parser
     extend self
 
     def call(application:, file:)
-      references = application.dependencies.delete_references(dependency_file_path: file.path)
+      references = application.dependencies.delete_references(scope_file_path: file.path)
 
       delete_symbols_in_file(application:, file:) # TODO: remove
       unregister_scopes_in_file(application:, file:)

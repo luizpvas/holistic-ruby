@@ -21,12 +21,12 @@ describe ::Holistic::Ruby::Symbol::Outline do
   end
 
   it "outlines a module with dependencies declared outside of the outlined module" do
-    result = described_class.call(application:, symbol: application.symbols.find("::MyApp::Example"))
+    result = described_class.call(application:, scope: application.scopes.find_by_fully_qualified_name("::MyApp::Example"))
 
     expect(result.references).to be_empty
     expect(result.dependants).to be_empty
 
-    expect(result.declarations.map(&:identifier)).to match_array([
+    expect(result.declarations.map(&:fully_qualified_name)).to match_array([
       "::MyApp::Example::PlusThree"
     ])
 

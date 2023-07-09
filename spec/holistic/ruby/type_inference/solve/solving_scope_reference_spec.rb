@@ -20,7 +20,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
     it "solves the scope reference" do
       expect(application.symbols.find_reference_to("Example")).to have_attributes(
         itself: be_a(::Holistic::Ruby::TypeInference::Reference),
-        scope: application.symbols.find("::MyApp::Other").record,
+        scope: application.scopes.find_by_fully_qualified_name("::MyApp::Other"),
         conclusion: have_attributes(
           itself: be_a(::Holistic::Ruby::TypeInference::Conclusion),
           dependency_identifier: "::MyApp::Example",
@@ -59,7 +59,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
     it "solves the scope reference" do
       expect(application.symbols.find_reference_to("Example")).to have_attributes(
         itself: be_a(::Holistic::Ruby::TypeInference::Reference),
-        scope: application.symbols.find("::MyApp::Other").record,
+        scope: application.scopes.find_by_fully_qualified_name("::MyApp::Other"),
         conclusion: have_attributes(
           itself: be_a(::Holistic::Ruby::TypeInference::Conclusion),
           dependency_identifier: "::MyApp::Example",
@@ -154,7 +154,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
 
     it "solves the dependency" do
       expect(application.symbols.find_reference_to("Example1")).to have_attributes(
-        scope: application.symbols.find("::MyApp::Example2").record,
+        scope: application.scopes.find_by_fully_qualified_name("::MyApp::Example2"),
         conclusion: have_attributes(
           dependency_identifier: "::Example1"
         )
@@ -175,7 +175,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
 
     it "solves the dependency" do
       expect(application.symbols.find_reference_to("PlusOne")).to have_attributes(
-        scope: application.symbols.find("::MyApp").record,
+        scope: application.scopes.find_by_fully_qualified_name("::MyApp"),
         conclusion: have_attributes(
           dependency_identifier: "::MyApp::PlusOne"
         )

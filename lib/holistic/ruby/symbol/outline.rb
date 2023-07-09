@@ -13,20 +13,16 @@ module Holistic::Ruby::Symbol
     )
 
     CrawlDeclarationsRecursively = ->(application, scope) do
-      scope.children.flat_map do |sub_scope|
-        symbols = [application.symbols.find(sub_scope.fully_qualified_name)]
-
-        symbols.concat(CrawlDeclarationsRecursively.call(application, sub_scope))
-      end
+      scope.children + scope.children.flat_map { CrawlDeclarationsRecursively[application, _1] }
     end
 
     CrawlDependenciesRecursively = ->(application, outlined_scope, scope) do
       dependencies = []
 
       is_local_dependency = ->(symbol) do
-        dependency = application.symbols.find(symbol.record.conclusion.dependency_identifier)
+        scope = application.scopes.find_by_fully_qualified_name(symbol.record.conclusion.dependency_identifier)
 
-        dependency.scope.eql?(outlined_scope) || dependency.scope.descendant?(outlined_scope)
+        scope.eql?(outlined_scope) || scope.descendant?(outlined_scope)
       end
 
       scope.locations.each do |location|
@@ -41,22 +37,12 @@ module Holistic::Ruby::Symbol
       scope.children.map(&CrawlDependenciesRecursively.curry[application, outlined_scope]).flatten.concat(dependencies)
     end
 
-    def call(application:, symbol:)
-      declarations =
-        if symbol.record.is_a?(::Holistic::Ruby::Scope::Record)
-          CrawlDeclarationsRecursively.call(application, symbol.record).sort_by { _1.identifier }
-        else
-          []
-        end
+    def call(application:, scope:)
+      declarations = CrawlDeclarationsRecursively.call(application, scope).sort_by { _1.fully_qualified_name }
 
-      dependencies =
-        if symbol.record.is_a?(::Holistic::Ruby::Scope::Record)
-          CrawlDependenciesRecursively.call(application, symbol.record, symbol.record)
-        else
-          []
-        end
+      dependencies = CrawlDependenciesRecursively.call(application, scope, scope)
 
-      references = application.dependencies.list_references(dependency_identifier: symbol.identifier)
+      references = application.dependencies.list_references(dependency_identifier: scope.fully_qualified_name)
 
       dependants = references.map { |symbol| symbol.record.scope }.uniq
 

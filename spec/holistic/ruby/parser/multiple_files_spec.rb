@@ -36,7 +36,7 @@ describe Holistic::Ruby::Parser do
     })
 
     expect(
-      application.symbols.list_symbols_in_file("/my_app/example_1.rb").map(&:identifier)
+      application.scopes.list_scopes_in_file("/my_app/example_1.rb").map(&:fully_qualified_name)
     ).to match_array([
       "::MyApp",
       "::MyApp::Example1",
@@ -44,10 +44,15 @@ describe Holistic::Ruby::Parser do
     ])
 
     expect(
-      application.symbols.list_symbols_in_file("/my_app/example_2.rb").map(&:identifier)
+      application.scopes.list_scopes_in_file("/my_app/example_2.rb").map(&:fully_qualified_name)
     ).to match_array([
       "::MyApp",
-      "::MyApp::Example2",
+      "::MyApp::Example2"
+    ])
+
+    expect(
+      application.symbols.list_symbols_in_file("/my_app/example_2.rb").map(&:identifier)
+    ).to match_array([
       "/my_app/example_2.rb[2,4,2,12]"
     ])
   end

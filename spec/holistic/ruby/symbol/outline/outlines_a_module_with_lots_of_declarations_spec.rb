@@ -18,13 +18,13 @@ describe ::Holistic::Ruby::Symbol::Outline do
   end
 
   it "outlines a module with lots of declarations" do
-    result = described_class.call(application:, symbol: application.symbols.find("::MyApp"))
+    result = described_class.call(application:, scope: application.scopes.find_by_fully_qualified_name("::MyApp"))
 
     expect(result.dependants).to be_empty
     expect(result.references).to be_empty
     expect(result.dependencies).to be_empty
 
-    expect(result.declarations.map(&:identifier)).to match_array([
+    expect(result.declarations.map(&:fully_qualified_name)).to match_array([
       "::MyApp::PlusOne",
       "::MyApp::Example1",
       "::MyApp::Example2",

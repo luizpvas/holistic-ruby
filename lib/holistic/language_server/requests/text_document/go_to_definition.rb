@@ -17,11 +17,13 @@ module Holistic::LanguageServer
         end
       end
 
-      case ::Holistic::Ruby::Symbol::FindDefinition.call(application: request.application, cursor:)
-      in :not_found                              then request.respond_with(nil)
-      in [:origin_is_not_a_reference, {origin:}] then request.respond_with(nil)
-      in [:could_not_find_definition, {origin:}] then request.respond_with(nil)
-      in [:definition_found, {origin:, target:}] then respond_with_location_link(request, origin, target)
+      case ::Holistic::Ruby::Reference::FindReferencedScope.call(application: request.application, cursor:)
+      in :not_found
+        request.respond_with(nil)
+      in :could_not_find_referenced_scope
+        request.respond_with(nil)
+      in [:referenced_scope_found, {reference:, referenced_scope:}]
+        respond_with_location_link(request, reference, referenced_scope)
       end
     end
 
@@ -35,9 +37,9 @@ module Holistic::LanguageServer
       ::Holistic::Document::Cursor.new(file_path:, line:, column:)
     end
 
-    def respond_with_location_link(request, origin, target)
-      origin_location = origin.locations.first
-      target_location = target.locations.first
+    def respond_with_location_link(request, reference, referenced_scope)
+      origin_location = reference.location
+      target_location = referenced_scope.locations.first
 
       location_link = {
         "originSelectionRange" => {
