@@ -16,8 +16,6 @@ module Holistic::Ruby::Parser
             name:,
             location:
           )
-
-        Current.registration_queue.register(Current.scope.to_symbol)
       end
 
       Current.constant_resolution_possibilities.unshift(nesting.to_s)
@@ -40,8 +38,6 @@ module Holistic::Ruby::Parser
             name:,
             location:
           )
-
-        Current.registration_queue.register(Current.scope.to_symbol)
       end
 
       Current.constant_resolution_possibilities.unshift(nesting.to_s)

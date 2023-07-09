@@ -19,7 +19,8 @@ describe ::Holistic::Ruby::Parser do
             itself: be_a(::Holistic::Ruby::TypeInference::Clue::ScopeReference),
             resolution_possibilities: ["::MyClass", "::"]
           )
-        ]
+        ],
+        conclusion: nil
       )
 
       expect(application.root_scope.serialize).to eql({

@@ -6,40 +6,19 @@ class Holistic::Ruby::Parser::Current
 
     def initialize(application:)
       @application = application
-      @symbols = []
+      @references = []
     end
 
-    def register(symbol)
-      raise ::ArgumentError, "#{symbol.inspect} must be a Symbol" unless symbol.is_a?(::Holistic::Ruby::Symbol::Record)
-
-      @symbols << symbol
+    def register(reference)
+      @references << reference
     end
 
     def process
-      @symbols.each do |symbol|
-        update_search_index(symbol)
+      @references.each do |reference|
+        ::Holistic::Ruby::TypeInference::Solve.call(application:, reference:)
       end
 
-      @symbols.each do |symbol|
-        solve_type_inference(symbol)
-      end
-
-      @symbols.clear
-    end
-
-    private
-
-    def update_search_index(symbol)
-      application.symbols.index(symbol)
-    end
-  
-    def solve_type_inference(symbol)
-      return unless symbol.record.is_a?(::Holistic::Ruby::TypeInference::Reference)
-
-      ::Holistic::Ruby::TypeInference::Solve.call(
-        application:,
-        reference: symbol.record
-      )
+      @references.clear
     end
   end
 end

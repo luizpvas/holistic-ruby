@@ -87,16 +87,13 @@ module Holistic::Ruby::Parser
               method_name.value
             end
 
-          method_declaration =
-            ::Holistic::Ruby::Scope::Register.call(
-              repository: Current.application.scopes,
-              parent: Current.scope,
-              kind: ::Holistic::Ruby::Scope::Kind::METHOD,
-              name: method_name,
-              location: Node::BuildLocation.call(node)
-            )
-
-          Current.registration_queue.register(method_declaration.to_symbol)
+          ::Holistic::Ruby::Scope::Register.call(
+            repository: Current.application.scopes,
+            parent: Current.scope,
+            kind: ::Holistic::Ruby::Scope::Kind::METHOD,
+            name: method_name,
+            location: Node::BuildLocation.call(node)
+          )
 
           visit(body_statement)
         end
@@ -110,18 +107,13 @@ module Holistic::Ruby::Parser
             return # TODO
           end
 
-          # TODO: calling it a lambda_declaration is wrong. The only thing we know is that we're assigning to a const,
-          # the value can be anything.
-          lambda_declaration =
-            ::Holistic::Ruby::Scope::Register.call(
-              repository: Current.application.scopes,
-              parent: Current.scope,
-              kind: ::Holistic::Ruby::Scope::Kind::LAMBDA,
-              name: assign.child_nodes.first.value,
-              location: Node::BuildLocation.call(node)
-            )
-
-          Current.registration_queue.register(lambda_declaration.to_symbol)
+          ::Holistic::Ruby::Scope::Register.call(
+            repository: Current.application.scopes,
+            parent: Current.scope,
+            kind: ::Holistic::Ruby::Scope::Kind::LAMBDA,
+            name: assign.child_nodes.first.value,
+            location: Node::BuildLocation.call(node)
+          )
 
           visit(statement)
         end
@@ -161,14 +153,12 @@ module Holistic::Ruby::Parser
       def register_reference(name:, location:, resolution_possibilities: Current.constant_resolution_possibilities.dup)
         clue = ::Holistic::Ruby::TypeInference::Clue::ScopeReference.new(name:, resolution_possibilities:)
 
-        reference =
-          ::Holistic::Ruby::TypeInference::Reference.new(
-            scope: Current.scope,
-            clues: [clue],
-            location:
-          )
-
-        Current.registration_queue.register(reference.to_symbol)
+        ::Holistic::Ruby::Reference::Register.call(
+          application: Current.application,
+          scope: Current.scope,
+          clues: [clue],
+          location:
+        )
       end
     end
   end
