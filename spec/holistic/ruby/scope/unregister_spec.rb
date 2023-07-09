@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe ::Holistic::Ruby::Scope::UnregisterDefinition do
+describe ::Holistic::Ruby::Scope::Unregister do
   context "when scope does not exist" do
     let(:repository) { ::Holistic::Ruby::Scope::Repository.new }
 
@@ -15,7 +15,7 @@ describe ::Holistic::Ruby::Scope::UnregisterDefinition do
     let(:repository) { ::Holistic::Ruby::Scope::Repository.new }
 
     let!(:scope) do
-      ::Holistic::Ruby::Scope::RegisterChildScope.call(
+      ::Holistic::Ruby::Scope::Register.call(
         repository:,
         parent: ::Holistic::Ruby::Scope::CreateRootScope.call,
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
@@ -37,7 +37,7 @@ describe ::Holistic::Ruby::Scope::UnregisterDefinition do
     let(:parent) { ::Holistic::Ruby::Scope::CreateRootScope.call }
 
     let!(:scope) do
-      ::Holistic::Ruby::Scope::RegisterChildScope.call(
+      ::Holistic::Ruby::Scope::Register.call(
         repository:,
         parent:,
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
@@ -65,7 +65,7 @@ describe ::Holistic::Ruby::Scope::UnregisterDefinition do
     let(:location_2) { ::Holistic::Document::Location.beginning_of_file("/snippet_2.rb") }
 
     let!(:scope) do
-      ::Holistic::Ruby::Scope::RegisterChildScope.call(
+      ::Holistic::Ruby::Scope::Register.call(
         repository:,
         parent:,
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
@@ -73,7 +73,7 @@ describe ::Holistic::Ruby::Scope::UnregisterDefinition do
         location: location_1
       )
 
-      ::Holistic::Ruby::Scope::RegisterChildScope.call(
+      ::Holistic::Ruby::Scope::Register.call(
         repository:,
         parent:,
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,

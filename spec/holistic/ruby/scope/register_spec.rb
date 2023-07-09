@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe ::Holistic::Ruby::Scope::RegisterChildScope do
+describe ::Holistic::Ruby::Scope::Register do
   context "when a scope with the same name DOES NOT EXIST in the parent scope" do
     let(:repository) { ::Holistic::Ruby::Scope::Repository.new }
 

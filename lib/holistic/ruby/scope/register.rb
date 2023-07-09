@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Holistic::Ruby::Scope
-  module RegisterChildScope
+  module Register
     extend self
 
     def call(repository:, parent:, kind:, name:, location:)

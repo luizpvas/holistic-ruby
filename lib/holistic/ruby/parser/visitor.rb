@@ -88,7 +88,7 @@ module Holistic::Ruby::Parser
             end
 
           method_declaration =
-            ::Holistic::Ruby::Scope::RegisterChildScope.call(
+            ::Holistic::Ruby::Scope::Register.call(
               repository: Current.application.scopes,
               parent: Current.scope,
               kind: ::Holistic::Ruby::Scope::Kind::METHOD,
@@ -113,7 +113,7 @@ module Holistic::Ruby::Parser
           # TODO: calling it a lambda_declaration is wrong. The only thing we know is that we're assigning to a const,
           # the value can be anything.
           lambda_declaration =
-            ::Holistic::Ruby::Scope::RegisterChildScope.call(
+            ::Holistic::Ruby::Scope::Register.call(
               repository: Current.application.scopes,
               parent: Current.scope,
               kind: ::Holistic::Ruby::Scope::Kind::LAMBDA,

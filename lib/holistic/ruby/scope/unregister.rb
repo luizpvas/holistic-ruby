@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Holistic::Ruby::Scope
-  module UnregisterDefinition
+  module Unregister
     extend self
 
     def call(repository:, fully_qualified_name:, file_path:)

@@ -15,7 +15,7 @@ describe ::Holistic::Ruby::Scope::Delete do
     end
 
     let(:scope) do
-      ::Holistic::Ruby::Scope::RegisterChildScope.call(
+      ::Holistic::Ruby::Scope::Register.call(
         repository:,
         parent: root_scope,
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
@@ -47,7 +47,7 @@ describe ::Holistic::Ruby::Scope::Delete do
 
     let(:scope) do
       # register with the first source location
-      ::Holistic::Ruby::Scope::RegisterChildScope.call(
+      ::Holistic::Ruby::Scope::Register.call(
         repository:,
         parent: root_scope,
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
@@ -56,7 +56,7 @@ describe ::Holistic::Ruby::Scope::Delete do
       )
 
       # register with the second source location
-      ::Holistic::Ruby::Scope::RegisterChildScope.call(
+      ::Holistic::Ruby::Scope::Register.call(
         repository:,
         parent: root_scope,
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
@@ -100,7 +100,7 @@ describe ::Holistic::Ruby::Scope::Delete do
     end
 
     let(:scope) do
-      ::Holistic::Ruby::Scope::RegisterChildScope.call(
+      ::Holistic::Ruby::Scope::Register.call(
         repository:,
         parent: root_scope,
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,

@@ -9,7 +9,7 @@ module Holistic::Ruby::Parser
 
       nesting.each do |name|
         Current.scope =
-          ::Holistic::Ruby::Scope::RegisterChildScope.call(
+          ::Holistic::Ruby::Scope::Register.call(
             repository: Current.application.scopes,
             parent: Current.scope,
             kind: ::Holistic::Ruby::Scope::Kind::MODULE,
@@ -33,7 +33,7 @@ module Holistic::Ruby::Parser
 
       nesting.each do |name|
         Current.scope =
-          ::Holistic::Ruby::Scope::RegisterChildScope.call(
+          ::Holistic::Ruby::Scope::Register.call(
             repository: Current.application.scopes,
             parent: Current.scope,
             kind: ::Holistic::Ruby::Scope::Kind::CLASS,
