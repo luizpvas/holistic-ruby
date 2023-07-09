@@ -20,6 +20,14 @@ module Holistic::Ruby::Scope
       table.find(fully_qualified_name).try(:dig, :scope)
     end
 
+    def delete_by_fully_qualified_name(fully_qualified_name)
+      table.delete(fully_qualified_name)
+    end
+
+    def list_scopes_in_file(file_path)
+      table.filter(:locations, file_path).map { _1[:scope] }
+    end
+
     def delete_scopes_in_file(file_path)
       raise "todo"
     end
