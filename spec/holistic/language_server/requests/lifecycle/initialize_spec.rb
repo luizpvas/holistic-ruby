@@ -27,7 +27,8 @@ describe ::Holistic::LanguageServer::Requests::Lifecycle::Initialize do
       result: {
         capabilities: {
           textDocumentSync: 2,
-          definitionProvider: true
+          definitionProvider: true,
+          referencesProvider: true
         },
         serverInfo: {
           name: "Holistic Ruby",

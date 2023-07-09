@@ -47,7 +47,10 @@ module Holistic::LanguageServer
           textDocumentSync: Protocol::INCREMENTAL_TEXT_DOCUMENT_SYNCHRONIZATION,
 
           # The server provides goto definition support.
-          definitionProvider: true
+          definitionProvider: true,
+
+          # The server provides find references support.
+          referencesProvider: true
         },
         serverInfo: {
           name: "Holistic Ruby",
