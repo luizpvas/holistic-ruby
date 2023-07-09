@@ -6,6 +6,6 @@ require "active_support/current_attributes"
 
 module Holistic::Ruby::Parser
   class Current < ::ActiveSupport::CurrentAttributes
-    attribute :application, :scope, :constant_resolution_possibilities, :file, :registration_queue
+    attribute :application, :scope, :constant_resolution_possibilities, :file
   end
 end

@@ -9,9 +9,6 @@ module Holistic::Ruby::Reference
 
       reference = ::Holistic::Ruby::TypeInference::Reference.new(scope:, clues:, location:, conclusion:)
 
-      # TODO: change the registration queue to some other abstraction
-      ::Holistic::Ruby::Parser::Current.registration_queue.register(reference)
-
       repository.register_reference(reference)
     end
   end

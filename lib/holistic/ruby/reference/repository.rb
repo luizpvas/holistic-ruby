@@ -52,7 +52,7 @@ module Holistic::Ruby::Reference
     end
 
     def list_references_pending_type_inference_conclusion
-      table.filter(:type_inference_status, ::Holistic::Ruby::TypeInference::Conclusion::STATUS_PENDING).map { _1[:reference] }
+      table.filter(:type_inference_status, ::Holistic::Ruby::TypeInference::STATUS_PENDING).map { _1[:reference] }
     end
 
     def find_reference_to(scope_name)

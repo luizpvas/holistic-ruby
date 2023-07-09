@@ -28,10 +28,10 @@ module Holistic::Ruby::Parser
 
   # TODO: find a better name or a better abstraction
   WrapParsingUnitWithProcessAtTheEnd = ->(application:, &block) do
-    registration_queue = Current::RegistrationQueue.new(application:)
+    block.call
 
-    Current.set(registration_queue:, &block)
-
-    registration_queue.process
+    application.references.list_references_pending_type_inference_conclusion.each do |reference|
+      ::Holistic::Ruby::TypeInference::Solve.call(application:, reference:)
+    end
   end
 end
