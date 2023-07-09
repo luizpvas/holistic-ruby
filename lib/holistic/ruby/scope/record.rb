@@ -49,6 +49,7 @@ module Holistic::Ruby::Scope
       self
     end
 
+    # TODO: remove this
     def delete(file_path)
       Delete.call(scope: self, file_path: file_path)
     end

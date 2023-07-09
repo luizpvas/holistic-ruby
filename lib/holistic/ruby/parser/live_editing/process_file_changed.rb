@@ -7,7 +7,8 @@ module Holistic::Ruby::Parser
     def call(application:, file:)
       references = application.dependencies.delete_references(dependency_file_path: file.path)
 
-      delete_symbols_in_file(application:, file:)
+      delete_symbols_in_file(application:, file:) # TODO: remove
+      unregister_scopes_in_file(application:, file:)
 
       parse_again(application:, file:)
 
@@ -18,6 +19,16 @@ module Holistic::Ruby::Parser
 
     def delete_symbols_in_file(application:, file:)
       application.symbols.delete_symbols_in_file(file.path)
+    end
+
+    def unregister_scopes_in_file(application:, file:)
+      application.scopes.list_scopes_in_file(file.path).each do |scope|
+        ::Holistic::Ruby::Scope::Unregister.call(
+          repository: application.scopes,
+          fully_qualified_name: scope.fully_qualified_name,
+          file_path: file.path
+        )
+      end
     end
 
     def parse_again(application:, file:)
