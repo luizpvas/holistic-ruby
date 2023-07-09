@@ -66,25 +66,4 @@ describe ::Holistic::Ruby::Scope::Record do
       expect(root.descendant?(child_1)).to be(false)
     end
   end
-
-  describe "#to_symbol" do
-    it "builds a symbol with the scope attributes" do
-      location = ::Holistic::Document::Location.beginning_of_file("app.rb")
-
-      scope = ::Holistic::Ruby::Scope::Record.new(
-        kind: ::Holistic::Ruby::Scope::Kind::MODULE,
-        name: "MyApp",
-        parent: ::Holistic::Ruby::Scope::Record.new(kind: ::Holistic::Ruby::Scope::Kind::ROOT, name: "::", parent: nil),
-        location: location
-      )
-
-      expect(scope.to_symbol).to have_attributes(
-        itself: be_a(::Holistic::Ruby::Symbol::Record),
-        identifier: scope.fully_qualified_name,
-        kind: :scope,
-        record: scope,
-        locations: [location]
-      )
-    end
-  end
 end

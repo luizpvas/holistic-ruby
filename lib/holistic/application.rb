@@ -10,11 +10,6 @@ module Holistic
       @root_scope = Ruby::Scope::CreateRootScope.call
     end
 
-    # TODO: deprecated
-    def symbols
-      @symbols ||= Ruby::Symbol::Collection.new
-    end
-
     def scopes
       @scopes ||= Ruby::Scope::Repository.new
     end

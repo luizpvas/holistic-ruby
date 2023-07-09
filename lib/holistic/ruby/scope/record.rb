@@ -44,23 +44,5 @@ module Holistic::Ruby::Scope
     def descendant?(other)
       parent.present? && (parent == other || parent.descendant?(other))
     end
-
-    def scope
-      self
-    end
-
-    # TODO: remove this
-    def delete(file_path)
-      Delete.call(scope: self, file_path: file_path)
-    end
-
-    def to_symbol
-      ::Holistic::Ruby::Symbol::Record.new(
-        identifier: fully_qualified_name,
-        kind: ::Holistic::Ruby::Symbol::Kind::SCOPE,
-        record: self,
-        locations:
-      )
-    end
   end
 end
