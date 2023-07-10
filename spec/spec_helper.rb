@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "debug"
 require "holistic"
 
 require_relative "support/snippet_parser"
