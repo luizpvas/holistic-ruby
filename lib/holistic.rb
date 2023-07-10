@@ -17,7 +17,7 @@ loader.setup
 module Holistic
   extend self
 
-  @logger = ::Logger.new("/home/luiz.vasconcellos/holistic.log")
+  @logger = ::Logger.new(ENV["HOLISTIC_LOG_OUTPUT"] || STDOUT)
   attr_reader :logger
 end
 
