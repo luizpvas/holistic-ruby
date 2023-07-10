@@ -17,7 +17,17 @@ module Holistic::Document
     def contains?(cursor)
       same_file = cursor.file_path == file_path
       contains_line = cursor.line >= start_line && cursor.line <= end_line
-      contains_column = cursor.column > start_column && cursor.column <= end_column
+      
+      contains_column =
+        if start_line == end_line
+          cursor.column > start_column && cursor.column <= end_column
+        elsif start_line == cursor.line
+          cursor.column > start_column
+        elsif end_line == cursor.line
+          cursor.column <= end_column
+        else
+          true
+        end
 
       same_file && contains_line && contains_column
     end
