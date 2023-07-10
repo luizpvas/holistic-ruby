@@ -42,7 +42,7 @@ module Holistic::Ruby::Parser
           declaration, statements = node.child_nodes
 
           nesting = Node::BuildNestingSyntax[declaration]
-          location = Node::BuildLocation[node]
+          location = Node::BuildLocation[declaration]
 
           Current::Scope.register_child_module(nesting:, location:) do
             visit(statements)
@@ -70,7 +70,7 @@ module Holistic::Ruby::Parser
           end
 
           nesting = Node::BuildNestingSyntax[declaration]
-          location = Node::BuildLocation[node]
+          location = Node::BuildLocation[declaration]
 
           Current::Scope.register_child_class(nesting:, location:) do
             visit(statements)

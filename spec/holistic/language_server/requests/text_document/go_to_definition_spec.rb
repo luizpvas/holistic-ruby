@@ -84,12 +84,12 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::GoToDefinition do
           },
           "targetUri" => "file:///snippet.rb",
           "targetRange" => {
-            "start" => { "line" => 1, "character" => 2 },
-            "end" => { "line" => 1, "character" => 21 }
+            "start" => { "line" => 1, "character" => 9 },
+            "end" => { "line" => 1, "character" => 16 }
           },
           "targetSelectionRange" => {
-            "start" => { "line" => 1, "character" => 2 },
-            "end" => { "line" => 1, "character" => 21 }
+            "start" => { "line" => 1, "character" => 9 },
+            "end" => { "line" => 1, "character" => 16 }
           }
         }]
       )
@@ -118,12 +118,12 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::GoToDefinition do
           },
           "targetUri" => "file:///snippet.rb",
           "targetRange" => {
-            "start" => { "line" => 1, "character" => 2 },
-            "end" => { "line" => 1, "character" => 21 }
+            "start" => { "line" => 1, "character" => 9 },
+            "end" => { "line" => 1, "character" => 16 }
           },
           "targetSelectionRange" => {
-            "start" => { "line" => 1, "character" => 2 },
-            "end" => { "line" => 1, "character" => 21 }
+            "start" => { "line" => 1, "character" => 9 },
+            "end" => { "line" => 1, "character" => 16 }
           }
         }]
       )
