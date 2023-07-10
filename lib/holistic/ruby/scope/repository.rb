@@ -5,14 +5,13 @@ module Holistic::Ruby::Scope
     attr_reader :table
 
     def initialize
-      # TODO: rename `locations` to `file_paths`.
-      @table = ::Holistic::Database::Table.new(indices: [:locations])
+      @table = ::Holistic::Database::Table.new(indices: [:file_paths])
     end
 
     def register_scope(scope)
       table.update({
         identifier: scope.fully_qualified_name,
-        locations: scope.locations.map(&:file_path),
+        file_paths: scope.locations.map(&:file_path),
         scope:
       })
     end
@@ -21,12 +20,20 @@ module Holistic::Ruby::Scope
       table.find(fully_qualified_name).try(:dig, :scope)
     end
 
+    def find_by_cursor(cursor)
+      table.filter(:file_paths, cursor.file_path).map { _1[:scope] }.each do |scope|
+        return scope if scope.locations.any? { _1.contains?(cursor) }
+      end
+
+      nil
+    end
+
     def delete_by_fully_qualified_name(fully_qualified_name)
       table.delete(fully_qualified_name)
     end
 
     def list_scopes_in_file(file_path)
-      table.filter(:locations, file_path).map { _1[:scope] }
+      table.filter(:file_paths, file_path).map { _1[:scope] }
     end
   end
 end
