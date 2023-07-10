@@ -9,7 +9,15 @@ module Holistic::Ruby::Scope
 
       return :not_found if scope.nil?
 
-      references = application.references.list_references_to(scope.fully_qualified_name)
+      query_references_to_scope_recursively = ->(scope) do
+        references = application.references.list_references_to(scope.fully_qualified_name)
+
+        references_to_child_scopes = scope.children.flat_map { query_references_to_scope_recursively.call(_1) }
+
+        references + references_to_child_scopes
+      end
+
+      references = query_references_to_scope_recursively.call(scope)
 
       [:references_listed, {references:}]
     end

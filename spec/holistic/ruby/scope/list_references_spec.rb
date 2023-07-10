@@ -45,6 +45,21 @@ describe ::Holistic::Ruby::Scope::ListReferences do
       result, data = described_class.call(application:, cursor:)
 
       expect(result).to be(:references_listed)
+
+      expect(data[:references]).to match_array([
+        application.references.find_reference_to("Example::Perform")
+      ])
+    end
+  end
+
+  context "when scope the children of scope under cursor has references" do
+    it "returns the references" do
+      cursor = ::Holistic::Document::Cursor.new(file_path: "/snippet.rb", line: 1, column: 10)
+
+      result, data = described_class.call(application:, cursor:)
+
+      expect(result).to be(:references_listed)
+
       expect(data[:references]).to match_array([
         application.references.find_reference_to("Example::Perform")
       ])
