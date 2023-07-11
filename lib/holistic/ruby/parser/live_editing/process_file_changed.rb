@@ -5,17 +5,26 @@ module Holistic::Ruby::Parser
     extend self
 
     def call(application:, file:)
-      references = application.references.list_references_to_scopes_in_file(scopes: application.scopes, file_path: file.path)
+      references_to_recalculate = identify_references_to_recalculate_type_inference(application:, file:)
 
       unregister_scopes_in_file(application:, file:)
       unregsiter_references_in_file(application:, file:)
 
       parse_again(application:, file:)
 
-      recalculate_type_inference_for_references(application:, references:)
+      recalculate_type_inference_for_references(application:, references: references_to_recalculate)
     end
 
     private
+
+    def identify_references_to_recalculate_type_inference(application:, file:)
+      # we need to reject references declared in the same because they're already going to be
+      # unregistered and reparsed. If we don't do that, we'll end up with duplicated reference records. 
+
+      application.references
+        .list_references_to_scopes_in_file(scopes: application.scopes, file_path: file.path)
+        .reject { _1.location.file_path == file.path }
+    end
 
     def unregister_scopes_in_file(application:, file:)
       application.scopes.list_scopes_in_file(file.path).each do |scope|

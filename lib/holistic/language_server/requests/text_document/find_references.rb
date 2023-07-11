@@ -36,9 +36,6 @@ module Holistic::LanguageServer
     end
 
     def respond_with_locations(request, references)
-      origin_location = reference.location
-      target_location = referenced_scope.locations.first
-
       locations = references.map do |reference|
         {
           "uri" => Format::FileUri.from_path(reference.location.file_path),
