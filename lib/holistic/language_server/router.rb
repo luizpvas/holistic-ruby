@@ -13,7 +13,8 @@ module Holistic::LanguageServer
       "textDocument/didChange"  => Requests::TextDocument::DidChange,
       "textDocument/didSave"    => Requests::TextDocument::DidSave,
       "textDocument/didClose"   => Requests::TextDocument::DidClose,
-      "textDocument/definition" => Requests::TextDocument::GoToDefinition
+      "textDocument/definition" => Requests::TextDocument::GoToDefinition,
+      "textDocument/references" => Requests::TextDocument::FindReferences
     }.freeze
 
     def dispatch(message)

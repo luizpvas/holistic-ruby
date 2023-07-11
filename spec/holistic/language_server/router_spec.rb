@@ -154,6 +154,37 @@ describe ::Holistic::LanguageServer::Router do
     end
   end
 
+  context "when routing 'textDocument/references' messages" do
+    let(:find_references_message) do
+      ::Holistic::LanguageServer::Message.new({
+        "jsonrpc" => "2.0",
+        "method" => "textDocument/references",
+        "params" => {}
+      })
+    end
+
+    around(:each) do |each|
+      lifecycle = ::Holistic::LanguageServer::Lifecycle.new
+      lifecycle.waiting_initialized_event!
+      lifecycle.initialized!
+
+      ::Holistic::LanguageServer::Current.set(lifecycle:, &each)
+    end
+
+    it "calls the handler" do
+      expect(::Holistic::LanguageServer::Requests::TextDocument::FindReferences)
+        .to receive(:call)
+        .with(
+          have_attributes(
+            itself: ::Holistic::LanguageServer::Request,
+            message: find_references_message
+          )
+        )
+
+      described_class.dispatch(find_references_message)
+    end
+  end
+
   context "when routing 'textDocument/didOpen' messages" do
     let(:did_open_message) do
       ::Holistic::LanguageServer::Message.new({
