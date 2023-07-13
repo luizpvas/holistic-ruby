@@ -12,11 +12,11 @@ module Holistic::Ruby::Scope
       keyword_init: true
     )
 
-    CrawlDeclarationsRecursively = ->(application, scope) do
-      scope.children + scope.children.flat_map { CrawlDeclarationsRecursively[application, _1] }
+    QueryChildScopesRecursively = ->(application, scope) do
+      scope.children + scope.children.flat_map { QueryChildScopesRecursively[application, _1] }
     end
 
-    CrawlDependenciesRecursively = ->(application, outlined_scope, scope) do
+    QueryDependenciesRecursively = ->(application, outlined_scope, scope) do
       is_local_dependency = ->(reference) do
         scope = application.scopes.find_by_fully_qualified_name(reference.conclusion.dependency_identifier)
 
@@ -33,13 +33,13 @@ module Holistic::Ruby::Scope
           .tap { dependencies.concat(_1) }
       end
 
-      scope.children.map(&CrawlDependenciesRecursively.curry[application, outlined_scope]).flatten.concat(dependencies)
+      scope.children.map(&QueryDependenciesRecursively.curry[application, outlined_scope]).flatten.concat(dependencies)
     end
 
     def call(application:, scope:)
-      declarations = CrawlDeclarationsRecursively.call(application, scope).sort_by { _1.fully_qualified_name }
+      declarations = QueryChildScopesRecursively.call(application, scope).sort_by { _1.fully_qualified_name }
 
-      dependencies = CrawlDependenciesRecursively.call(application, scope, scope)
+      dependencies = QueryDependenciesRecursively.call(application, scope, scope)
 
       references = application.references.list_references_to(scope.fully_qualified_name)
 
