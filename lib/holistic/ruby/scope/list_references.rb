@@ -12,12 +12,19 @@ module Holistic::Ruby::Scope
       references_to_scope + references_to_child_scopes
     end
 
+    Relevance = ->(reference) do
+      # TODO: should the location answer the kind of file it is? application code, config, spec, etc. Not sure.
+      looks_like_a_spec = reference.location.file_path.include?("_spec.rb") || reference.location.file_path.include?("_test.rb")
+
+      looks_like_a_spec ? 1 : 0
+    end
+
     def call(application:, cursor:)
       scope = application.scopes.find_by_cursor(cursor)
 
       return :not_found if scope.nil?
 
-      references = QueryReferencesRecursively.call(application, scope)
+      references = QueryReferencesRecursively.call(application, scope).sort_by(&Relevance)
 
       [:references_listed, {references:}]
     end
