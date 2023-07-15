@@ -24,11 +24,6 @@ module Holistic::Ruby::Reference
       })
     end
 
-    # TODO: maybe this won't be needed after full refactoring.
-    def find(identifier)
-      table.find(identifier).try(:dig, :reference)
-    end
-
     def find_by_cursor(cursor)
       table.filter(:file_path, cursor.file_path).map { _1[:reference] }.each do |reference|
         return reference if reference.location.contains?(cursor)
