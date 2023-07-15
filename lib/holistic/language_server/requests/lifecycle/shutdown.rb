@@ -6,6 +6,8 @@ module Holistic::LanguageServer
     extend self
 
     def call(request)
+      Current.lifecycle.shutdown!
+
       request.respond_with(nil)
     end
   end

@@ -12,6 +12,14 @@ describe ::Holistic::LanguageServer::Requests::Lifecycle::Shutdown do
     ::Holistic::LanguageServer::Request.new(message:, application: nil)
   end
 
+  around(:each) do |each|
+    lifecycle = ::Holistic::LanguageServer::Lifecycle.new
+    lifecycle.waiting_initialized_event!
+    lifecycle.initialized!
+
+    ::Holistic::LanguageServer::Current.set(lifecycle:, &each)
+  end
+
   it "responds with null" do
     response = described_class.call(request)
 
@@ -19,5 +27,13 @@ describe ::Holistic::LanguageServer::Requests::Lifecycle::Shutdown do
       itself: ::Holistic::LanguageServer::Response::Success,
       result: nil
     )
+  end
+
+  it "updates lifecycle state" do
+    expect(::Holistic::LanguageServer::Current.lifecycle.state).to be(:initialized)
+
+    described_class.call(request)
+
+    expect(::Holistic::LanguageServer::Current.lifecycle.state).to be(:shutdown)
   end
 end
