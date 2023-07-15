@@ -5,8 +5,6 @@ module Holistic::LanguageServer
   module Requests::Lifecycle::Exit
     extend self
 
-    # TODO: The server should exit with success code 0 if the shutdown request has been received before; otherwise with error code 1
-
     def call(_request) = Response::Exit.new
   end
 end
