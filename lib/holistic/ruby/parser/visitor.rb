@@ -4,6 +4,7 @@ module Holistic::Ruby::Parser
   module Visitor
     module Node
       BuildNestingSyntax = ->(node) do
+        original_node = node
         nesting_syntax = NestingSyntax.new
 
         append = ->(node) do
@@ -11,11 +12,13 @@ module Holistic::Ruby::Parser
           when ::SyntaxTree::ConstRef     then nesting_syntax << node.child_nodes[0].value
           when ::SyntaxTree::Const        then nesting_syntax << node.value
           when ::SyntaxTree::VCall        then nesting_syntax << node.value # not sure what to do here e.g. `described_class::Error`
+          when ::SyntaxTree::Ident        then nesting_syntax << node.value # not sure what to do here e.g. `dashboard::SEARCH_SQL_COLUMNS`
+          when ::SyntaxTree::ARef         then append.(node.child_nodes.first) # not sure what to do here e.g. `ActiveRecord::Migration[7.0]`
           when ::SyntaxTree::CallNode     then nesting_syntax << "[dynamic_call]" # not sure what to do here e.g. `::Account.const_get(account.type.classify)::Subscription`
           when ::SyntaxTree::VarRef       then node.child_nodes.each(&append)
           when ::SyntaxTree::ConstPathRef then node.child_nodes.each(&append)
           when ::SyntaxTree::TopConstRef  then nesting_syntax.mark_as_root_scope! and node.child_nodes.each(&append)
-          else raise "Unexpected node type: #{node.class}"
+          else pp(original_node) and raise "Unexpected node type: #{node.class}"
           end
         end
 
