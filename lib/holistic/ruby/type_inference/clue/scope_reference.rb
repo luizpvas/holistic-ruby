@@ -5,5 +5,9 @@ module Holistic::Ruby::TypeInference::Clue
     :name,
     :resolution_possibilities,
     keyword_init: true
-  )
+  ) do
+    def to_s
+      name
+    end
+  end
 end

@@ -50,14 +50,22 @@ module Holistic::Ruby::Reference
       table.filter(:type_inference_status, ::Holistic::Ruby::TypeInference::STATUS_PENDING).map { _1[:reference] }
     end
 
-    def find_reference_to(scope_name)
-      table.all.map { _1[:reference] }.find do |reference|
-        reference.conclusion.dependency_identifier == scope_name || reference.clues.find { _1.name == scope_name }
-      end
-    end
-
     def delete(identifier)
       table.delete(identifier)
+    end
+
+    concerning :TestHelpers do
+      def find_reference_to(scope_name)
+        table.all.map { _1[:reference] }.find do |reference|
+          reference.conclusion.dependency_identifier == scope_name || reference.clues.find { _1.name == scope_name }
+        end
+      end
+
+      def find_by_code_content(code_content)
+        table.all.map { _1[:reference] }.find do |reference|
+          reference.clues.find { _1.to_s == code_content }
+        end
+      end
     end
   end
 end
