@@ -105,6 +105,25 @@ module Holistic::Ruby::Parser
           visit(body_statement)
         end
 
+        def visit_call(node)
+          instance, period, method_name = node.child_nodes
+          
+          method_call_clue = ::Holistic::Ruby::TypeInference::Clue::MethodCall.new(
+            nesting: Node::BuildNestingSyntax.call(instance),
+            method_name: method_name.value,
+            resolution_possibilities: Current.constant_resolution_possibilities.dup
+          )
+
+          ::Holistic::Ruby::Reference::Register.call(
+            repository: Current.application.references,
+            scope: Current.scope,
+            clues: [method_call_clue],
+            location: Node::BuildLocation.call(method_name)
+          )
+
+          visit(instance) # so that we maybe register the scope reference
+        end
+
         def visit_assign(node)
           assign, statement = node.child_nodes
 

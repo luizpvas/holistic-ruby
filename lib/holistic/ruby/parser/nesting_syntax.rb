@@ -5,13 +5,19 @@ module Holistic::Ruby::Parser
     attr_reader :value, :is_root_scope
 
     def initialize(value = [])
-      @value = value
+      @value = Array(value)
       @is_root_scope = false
     end
 
     def mark_as_root_scope!
       @is_root_scope = true
     end
+
+    def eql?(other)
+      other.class == self.class && other.to_s == to_s
+    end
+
+    alias == eql?
 
     def to_s
       @value.join("::")

@@ -28,7 +28,8 @@ module Holistic::Ruby::Scope
       scope.locations.each do |location|
         application.references
           .list_references_in_file(location.file_path)
-          .filter { _1.scope == scope }
+          .filter { |reference| reference.scope == scope }
+          .filter { |reference| reference.conclusion.dependency_identifier.present? }
           .reject(&is_local_dependency)
           .tap { dependencies.concat(_1) }
       end
