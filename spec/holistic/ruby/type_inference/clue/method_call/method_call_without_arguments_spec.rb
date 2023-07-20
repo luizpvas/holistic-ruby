@@ -3,7 +3,7 @@
 describe ::Holistic::Ruby::TypeInference::Clue::MethodCall do
   include ::Support::SnippetParser
 
-  context "call to method without arguments" do
+  context "when calling methods without arguments" do
     let(:application) do
       parse_snippet <<~RUBY
       class Example; end
@@ -36,7 +36,7 @@ describe ::Holistic::Ruby::TypeInference::Clue::MethodCall do
     end
   end
 
-  context "call to method chaining" do
+  context "when chaining methods without arguments" do
     let(:application) do
       parse_snippet <<~RUBY
       example.do_something.do_something_else

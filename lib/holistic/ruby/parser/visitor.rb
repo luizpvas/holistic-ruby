@@ -105,7 +105,7 @@ module Holistic::Ruby::Parser
         end
 
         def visit_call(node)
-          instance, period, method_name = node.child_nodes
+          instance, period, method_name, args = node.child_nodes
 
           # NOTE: I have a feeling this is incomplete. Need to add more specs.
           nesting =
@@ -129,6 +129,7 @@ module Holistic::Ruby::Parser
           )
 
           visit(instance)
+          visit(args)
         end
 
         def visit_assign(node)
