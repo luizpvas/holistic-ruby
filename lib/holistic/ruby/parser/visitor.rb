@@ -4,14 +4,13 @@ module Holistic::Ruby::Parser
   module Visitor
     module Node
       BuildNestingSyntax = ->(node) do
-        original_node = node
         nesting_syntax = NestingSyntax.new
 
         append = ->(node) do
           case node
           when ::SyntaxTree::ConstRef     then nesting_syntax << node.child_nodes[0].value
           when ::SyntaxTree::Const        then nesting_syntax << node.value
-          when ::SyntaxTree::VCall        then nesting_syntax << node.value
+          when ::SyntaxTree::VCall        then append.(node.child_nodes.first)
           when ::SyntaxTree::Ident        then nesting_syntax << node.value
           when ::SyntaxTree::IVar         then nesting_syntax << node.value
           when ::SyntaxTree::Paren        then append.(node.child_nodes[1])       # node.child_nodes[0] is ::SyntaxTree::LParen
@@ -107,9 +106,17 @@ module Holistic::Ruby::Parser
 
         def visit_call(node)
           instance, period, method_name = node.child_nodes
+
+          # NOTE: I have a feeling this is incomplete. Need to add more specs.
+          nesting =
+            if instance.is_a?(::SyntaxTree::CallNode)
+              Node::BuildNestingSyntax.call(instance.child_nodes[2])
+            else
+              Node::BuildNestingSyntax.call(instance)
+            end
           
           method_call_clue = ::Holistic::Ruby::TypeInference::Clue::MethodCall.new(
-            nesting: Node::BuildNestingSyntax.call(instance),
+            nesting:,
             method_name: method_name.value,
             resolution_possibilities: Current.constant_resolution_possibilities.dup
           )
@@ -121,7 +128,7 @@ module Holistic::Ruby::Parser
             location: Node::BuildLocation.call(method_name)
           )
 
-          visit(instance) # so that we maybe register the scope reference
+          visit(instance)
         end
 
         def visit_assign(node)
