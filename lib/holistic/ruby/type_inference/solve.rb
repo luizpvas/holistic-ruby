@@ -5,9 +5,10 @@ module Holistic::Ruby::TypeInference
     extend self
 
     def call(application:, reference:)
-      conclusion = solve_scope_reference(application:, reference:) || solve_method_call(application:, reference:)
-
-      reference.conclusion = conclusion || Conclusion.unresolved
+      reference.conclusion =
+        solve_scope_reference(application:, reference:) ||
+        solve_method_call(application:, reference:) ||
+        Conclusion.unresolved
 
       application.references.register_reference(reference)
     end
