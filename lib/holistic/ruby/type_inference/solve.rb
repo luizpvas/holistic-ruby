@@ -8,9 +8,9 @@ module Holistic::Ruby::TypeInference
     # and the mutation + call to the repository happen in one place.
 
     def call(application:, reference:)
-      solved = solve_scope_reference(application:, reference:)
+      conclusion = solve_scope_reference(application:, reference:)
 
-      reference.conclusion.status = STATUS_DONE
+      reference.conclusion = conclusion || Conclusion.unresolved
 
       application.references.register_reference(reference)
     end
@@ -36,11 +36,11 @@ module Holistic::Ruby::TypeInference
         referenced_scope = application.scopes.find_by_fully_qualified_name(fully_qualified_scope_name)
 
         if referenced_scope.present?
-          reference.conclusion.dependency_identifier = fully_qualified_scope_name
-
-          return true
+          return Conclusion.done(fully_qualified_scope_name)
         end
       end
+
+      nil
     end
   end
 end

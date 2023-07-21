@@ -12,5 +12,13 @@ module Holistic::Ruby::TypeInference
     def self.pending
       new(status: STATUS_PENDING, dependency_identifier: nil)
     end
+
+    def self.unresolved
+      new(status: STATUS_DONE, dependency_identifier: nil)
+    end
+
+    def self.done(dependency_identifier)
+      new(status: STATUS_DONE, dependency_identifier:)
+    end
   end
 end

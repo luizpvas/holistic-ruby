@@ -13,17 +13,17 @@ describe ::Holistic::Ruby::Parser do
     end
 
     it "parses the code" do
-      expect(application.references.find_reference_to("Foo")).to have_attributes(
-        clues: [
-          have_attributes(
-            itself: be_a(::Holistic::Ruby::TypeInference::Clue::ScopeReference),
-            resolution_possibilities: ["::MyClass", "::"]
-          )
-        ],
-        conclusion: have_attributes(
-          status: :done,
-          dependency_identifier: nil
-        )
+      reference = application.references.find_reference_to("Foo")
+
+      expect(reference.clues.size).to be(1)
+      expect(reference.clues.first).to have_attributes(
+        itself: be_a(::Holistic::Ruby::TypeInference::Clue::ScopeReference),
+        resolution_possibilities: ["::MyClass", "::"]
+      )
+
+      expect(reference.conclusion).to have_attributes(
+        status: :done,
+        dependency_identifier: nil
       )
 
       expect(application.root_scope.serialize).to eql({
