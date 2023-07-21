@@ -59,6 +59,8 @@ module Holistic::Ruby::TypeInference
           return Conclusion.done(referenced_method.fully_qualified_name)
         end
       end
+
+      nil
     end
 
     def resolve_scope(application:, nesting:, resolution_possibilities:)
