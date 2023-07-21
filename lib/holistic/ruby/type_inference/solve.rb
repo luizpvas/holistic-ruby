@@ -4,9 +4,6 @@ module Holistic::Ruby::TypeInference
   module Solve
     extend self
 
-    # TODO: I don't like that `solve_scope_reference` mutates the reference. It should return a conclusion instead,
-    # and the mutation + call to the repository happen in one place.
-
     def call(application:, reference:)
       conclusion = solve_scope_reference(application:, reference:)
 
