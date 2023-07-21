@@ -13,17 +13,27 @@ module Holistic::Ruby::Parser
       @is_root_scope = true
     end
 
-    def eql?(other)
-      other.class == self.class && other.to_s == to_s
+    def supported?
+      @value.any?
     end
 
-    alias == eql?
+    def unsupported?
+      !supported?
+    end
+
+    def root_scope_resolution?
+      is_root_scope
+    end
 
     def to_s
       @value.join("::")
     end
 
-    def root_scope_resolution? = is_root_scope
+    def eql?(other)
+      other.class == self.class && other.to_s == to_s
+    end
+
+    alias == eql?
 
     delegate :each, to: :value
     delegate :<<,   to: :value

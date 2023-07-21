@@ -21,11 +21,13 @@ module Holistic::Ruby::Parser
           when ::SyntaxTree::ConstPathRef then node.child_nodes.each(&append)
           when ::SyntaxTree::Statements   then node.child_nodes.each(&append)
           when ::SyntaxTree::TopConstRef  then nesting_syntax.mark_as_root_scope! and node.child_nodes.each(&append)
-          else pp(original_node) and raise "Unexpected node type: #{node.class}"
+          # else pp(original_node) and pp(Current.file.path) and raise "Unexpected node type: #{node.class}"
           end
         end
 
-        append.(node) and return nesting_syntax
+        append.(node)
+
+        nesting_syntax
       end
 
       BuildLocation = ->(node) do
@@ -107,6 +109,9 @@ module Holistic::Ruby::Parser
         def visit_call(node)
           instance, period, method_name, args = node.child_nodes
 
+          visit(instance)
+          visit(args)
+
           # NOTE: I have a feeling this is incomplete. Need to add more specs.
           nesting =
             if instance.is_a?(::SyntaxTree::CallNode)
@@ -114,6 +119,8 @@ module Holistic::Ruby::Parser
             else
               Node::BuildNestingSyntax.call(instance)
             end
+
+          return if nesting.unsupported?
           
           method_call_clue = ::Holistic::Ruby::TypeInference::Clue::MethodCall.new(
             nesting:,
@@ -127,9 +134,6 @@ module Holistic::Ruby::Parser
             clues: [method_call_clue],
             location: Node::BuildLocation.call(method_name)
           )
-
-          visit(instance)
-          visit(args)
         end
 
         def visit_assign(node)
