@@ -25,6 +25,12 @@ module Holistic::Ruby::Parser
       is_root_scope
     end
 
+    def constant?
+      return false if unsupported?
+
+      @value.last[0].then { _1 == _1.upcase }
+    end
+
     def to_s
       @value.join("::")
     end

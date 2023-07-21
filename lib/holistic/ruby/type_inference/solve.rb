@@ -5,7 +5,7 @@ module Holistic::Ruby::TypeInference
     extend self
 
     def call(application:, reference:)
-      conclusion = solve_scope_reference(application:, reference:)
+      conclusion = solve_scope_reference(application:, reference:) || solve_method_call(application:, reference:)
 
       reference.conclusion = conclusion || Conclusion.unresolved
 
@@ -20,28 +20,61 @@ module Holistic::Ruby::TypeInference
 
       return unless has_scope_reference_clue
 
-      scope_reference = reference.clues.first
+      scope_reference_clue = reference.clues.first
 
-      resolution_possibilities =
-        if scope_reference.nesting.root_scope_resolution?
-          ["::"]
-        else
-          scope_reference.resolution_possibilities
+      referenced_scope = resolve_scope(
+        application:,
+        nesting: scope_reference_clue.nesting,
+        resolution_possibilities: scope_reference_clue.resolution_possibilities
+      )
+
+      if referenced_scope.present?
+        return Conclusion.done(referenced_scope.fully_qualified_name)
+      end
+
+      nil
+    end
+
+    def solve_method_call(application:, reference:)
+      has_method_call_clue = reference.clues.one? && reference.clues.first.is_a?(Clue::MethodCall)
+
+      return unless has_method_call_clue
+
+      method_call_clue = reference.clues.first
+
+      if method_call_clue.nesting.constant?
+        referenced_scope = resolve_scope(
+          application:,
+          nesting: method_call_clue.nesting,
+          resolution_possibilities: method_call_clue.resolution_possibilities
+        )
+
+        return if referenced_scope.nil?
+
+        method_fully_qualified_name = "#{referenced_scope.fully_qualified_name}##{method_call_clue.method_name}"
+
+        referenced_method = application.scopes.find_by_fully_qualified_name(method_fully_qualified_name)
+
+        if referenced_method.present?
+          return Conclusion.done(referenced_method.fully_qualified_name)
         end
+      end
+    end
+
+    def resolve_scope(application:, nesting:, resolution_possibilities:)
+      resolution_possibilities = ["::"] if nesting.root_scope_resolution?
 
       resolution_possibilities.each do |resolution_candidate|
         fully_qualified_scope_name =
           if resolution_candidate == "::"
-            "::#{scope_reference.nesting.to_s}"
+            "::#{nesting.to_s}"
           else
-            "#{resolution_candidate}::#{scope_reference.nesting.to_s}"
+            "#{resolution_candidate}::#{nesting.to_s}"
           end
 
-        referenced_scope = application.scopes.find_by_fully_qualified_name(fully_qualified_scope_name)
+        scope = application.scopes.find_by_fully_qualified_name(fully_qualified_scope_name)
 
-        if referenced_scope.present?
-          return Conclusion.done(fully_qualified_scope_name)
-        end
+        return scope if scope.present?
       end
 
       nil
