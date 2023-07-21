@@ -17,7 +17,7 @@ describe ::Holistic::Ruby::TypeInference::Clue::ScopeReference do
         clues: [
           have_attributes(
             itself: be_a(::Holistic::Ruby::TypeInference::Clue::ScopeReference),
-            name: "Example",
+            nesting: ::Holistic::Ruby::Parser::NestingSyntax.new("Example"),
             resolution_possibilities: ["::MyApp", "::"]
           )
         ]

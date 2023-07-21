@@ -61,20 +61,7 @@ module Holistic::Ruby::Parser
           declaration, superclass, statements = node.child_nodes
 
           if superclass
-            superclass_nesting = Node::BuildNestingSyntax[superclass]
-
-            if superclass_nesting.root_scope_resolution?
-              register_reference(
-                name: superclass_nesting.to_s,
-                location: Node::BuildLocation[superclass],
-                resolution_possibilities: ConstantResolutionPossibilities.root_scope
-              )
-            else
-              register_reference(
-                name: superclass_nesting.to_s,
-                location: Node::BuildLocation[superclass]
-              )
-            end
+            register_reference(nesting: Node::BuildNestingSyntax[superclass], location: Node::BuildLocation[superclass])
           end
 
           nesting = Node::BuildNestingSyntax[declaration]
@@ -157,39 +144,25 @@ module Holistic::Ruby::Parser
         end
 
         def visit_const_path_ref(node)
-          nesting = Node::BuildNestingSyntax.call(node)
-
-          if nesting.root_scope_resolution?
-            register_reference(
-              name: nesting.to_s,
-              location: Node::BuildLocation.call(node),
-              resolution_possibilities: ConstantResolutionPossibilities.root_scope
-            )
-          else
-            register_reference(
-              name: nesting.to_s,
-              location: Node::BuildLocation.call(node)
-            )
-          end
+          register_reference(nesting: Node::BuildNestingSyntax[node], location: Node::BuildLocation[node])
         end
 
         def visit_top_const_ref(node)
-          register_reference(
-            name: node.child_nodes.first.value,
-            location: Node::BuildLocation[node],
-            resolution_possibilities: ConstantResolutionPossibilities.root_scope
-          )
+          register_reference(nesting: Node::BuildNestingSyntax[node], location: Node::BuildLocation[node])
         end
 
         def visit_const(node)
-          register_reference(name: node.value, location: Node::BuildLocation[node])
+          register_reference(nesting: Node::BuildNestingSyntax[node], location: Node::BuildLocation[node])
         end
       end
 
       private
 
-      def register_reference(name:, location:, resolution_possibilities: Current.constant_resolution_possibilities.dup)
-        clue = ::Holistic::Ruby::TypeInference::Clue::ScopeReference.new(name:, resolution_possibilities:)
+      def register_reference(nesting:, location:)
+        clue = ::Holistic::Ruby::TypeInference::Clue::ScopeReference.new(
+          nesting:,
+          resolution_possibilities: Current.constant_resolution_possibilities.dup
+        )
 
         ::Holistic::Ruby::Reference::Register.call(
           repository: Current.application.references,
