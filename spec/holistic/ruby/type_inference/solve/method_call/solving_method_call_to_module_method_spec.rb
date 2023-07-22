@@ -28,7 +28,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
     end
   end
 
-  context "when calling a module metho defined with `self.method_name`" do
+  context "when calling a module method defined with `self.method_name`" do
     let(:application) do
       parse_snippet <<~RUBY
       module Calculator

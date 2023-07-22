@@ -62,6 +62,8 @@ module Holistic::Ruby::TypeInference
           if method_call_clue.method_name == "new" && referenced_scope.class?
             ["initialize"]
           elsif referenced_scope.module?
+            # TODO: I don't like this being in here. This looks too much like brute-forcing.
+            # I think things we'll become clear once I implement reference to methods from mixins.
             ["self.#{method_call_clue.method_name}"]
           else
             []
