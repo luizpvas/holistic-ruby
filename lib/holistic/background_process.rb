@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 module Holistic::BackgroundProcess
-  def self.run(&block)
+  extend self
+
+  def run(&block)
     ::Thread.new(&block).tap do |thread|
       thread.abort_on_exception = true
     end
