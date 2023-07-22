@@ -104,8 +104,10 @@ describe ::Holistic::Ruby::TypeInference::Solve do
     it "tries its best to guess the source location" do
       references = application.references.list_references_to_scopes_in_file(scopes: application.scopes, file_path: "/my_app/example_1.rb")
 
-      expect(references.size).to eql(1)
-      expect(references.first).to eql(application.references.find_reference_to("MyApp"))
+      expect(references).to match_array([
+        application.references.find_by_code_content("MyApp"),
+        application.references.find_by_code_content("MyApp.call")
+      ])
     end
   end
 

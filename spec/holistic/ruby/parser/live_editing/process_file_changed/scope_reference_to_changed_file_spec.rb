@@ -34,7 +34,7 @@ describe ::Holistic::Ruby::Parser::LiveEditing::ProcessFileChanged do
     it "ends up in the same state" do
       references_before = application.references.list_references_to_scopes_in_file(scopes: application.scopes, file_path: "/my_app/example_1.rb")
 
-      expect(references_before.size).to eql(1)
+      expect(references_before.size).to eql(2)
       expect(references_before.first.conclusion).to have_attributes(dependency_identifier: "::MyApp::Example1")
 
       file = ::Holistic::Document::File::Fake.new(path: "my_app/example_1.rb", content: example_1_source_code)
@@ -42,7 +42,7 @@ describe ::Holistic::Ruby::Parser::LiveEditing::ProcessFileChanged do
 
       references_after = application.references.list_references_to_scopes_in_file(scopes: application.scopes, file_path: "/my_app/example_1.rb")
 
-      expect(references_after.size).to eql(1)
+      expect(references_after.size).to eql(2)
       expect(references_after.first.conclusion).to have_attributes(dependency_identifier: "::MyApp::Example1")
     end
   end

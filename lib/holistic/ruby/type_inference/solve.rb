@@ -61,21 +61,17 @@ module Holistic::Ruby::TypeInference
         alternative_method_names =
           if method_call_clue.method_name == "new" && referenced_scope.class?
             ["initialize"]
+          elsif referenced_scope.module?
+            ["self.#{method_call_clue.method_name}"]
           else
             []
           end
 
-        solve_for_method = ->(method_name) do
-          method_fully_qualified_name = "#{referenced_scope.fully_qualified_name}##{method_name}"
+        referenced_method =
+          resolve_method(application:, scope: referenced_scope, method_name: method_call_clue.method_name) ||
+          alternative_method_names.lazy.filter_map { resolve_method(application:, scope: referenced_scope, method_name: _1) }.first
 
-          referenced_method = application.scopes.find_by_fully_qualified_name(method_fully_qualified_name)
-
-          if referenced_method.present?
-            return Conclusion.done(referenced_method.fully_qualified_name)
-          end
-        end
-
-        return solve_for_method.(method_call_clue.method_name) || alternative_method_names.lazy.filter_map(&solve_for_method).first
+        return Conclusion.done(referenced_method.fully_qualified_name) if referenced_method.present?
       end
 
       nil
@@ -98,6 +94,12 @@ module Holistic::Ruby::TypeInference
       end
 
       nil
+    end
+
+    def resolve_method(application:, scope:, method_name:)
+      method_fully_qualified_name = "#{scope.fully_qualified_name}##{method_name}"
+
+      application.scopes.find_by_fully_qualified_name(method_fully_qualified_name)
     end
   end
 end
