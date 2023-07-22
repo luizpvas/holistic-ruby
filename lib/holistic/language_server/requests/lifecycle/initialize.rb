@@ -31,7 +31,7 @@ module Holistic::LanguageServer
     end
 
     def parse_application_in_background(application)
-      ::Thread.new do
+      ::Holistic::BackgroundProcess.run do
         ::Holistic::Ruby::Parser::WrapParsingUnitWithProcessAtTheEnd.call(application:) do
           ::Holistic::Ruby::Parser::ParseDirectory.call(application:, directory_path: application.root_directory)
         end

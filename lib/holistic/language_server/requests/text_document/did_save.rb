@@ -25,7 +25,7 @@ module Holistic::LanguageServer
     private
 
     def process_in_background(application:, file:)
-      ::Thread.new do
+      ::Holistic::BackgroundProcess.run do
         ::Holistic::Ruby::Parser::LiveEditing::ProcessFileChanged.call(application:, file:)
       end
     end
