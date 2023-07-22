@@ -45,6 +45,10 @@ module Holistic::Ruby::Scope
       kind == Kind::LAMBDA
     end
 
+    def class?
+      kind == Kind::CLASS
+    end
+
     def descendant?(other)
       parent.present? && (parent == other || parent.descendant?(other))
     end

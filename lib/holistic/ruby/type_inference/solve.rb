@@ -52,18 +52,30 @@ module Holistic::Ruby::TypeInference
 
         return if referenced_scope.nil?
 
-        # NOTE: specific / quirk / extensions
+        # NOTE: stdlib extension
         if method_call_clue.method_name == "call" && referenced_scope.lambda?
           return Conclusion.done(referenced_scope.fully_qualified_name)
         end
 
-        method_fully_qualified_name = "#{referenced_scope.fully_qualified_name}##{method_call_clue.method_name}"
+        # NOTE: stdlib extension
+        alternative_method_names =
+          if method_call_clue.method_name == "new" && referenced_scope.class?
+            ["initialize"]
+          else
+            []
+          end
 
-        referenced_method = application.scopes.find_by_fully_qualified_name(method_fully_qualified_name)
+        solve_for_method = ->(method_name) do
+          method_fully_qualified_name = "#{referenced_scope.fully_qualified_name}##{method_name}"
 
-        if referenced_method.present?
-          return Conclusion.done(referenced_method.fully_qualified_name)
+          referenced_method = application.scopes.find_by_fully_qualified_name(method_fully_qualified_name)
+
+          if referenced_method.present?
+            return Conclusion.done(referenced_method.fully_qualified_name)
+          end
         end
+
+        return solve_for_method.(method_call_clue.method_name) || alternative_method_names.lazy.filter_map(&solve_for_method).first
       end
 
       nil
