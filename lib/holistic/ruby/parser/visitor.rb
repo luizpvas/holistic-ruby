@@ -94,7 +94,7 @@ module Holistic::Ruby::Parser
         end
 
         def visit_call(node)
-          instance, period, method_name, arguments = node.child_nodes
+          instance, period, method_name_node, arguments = node.child_nodes
 
           visit(instance)
           visit(arguments)
@@ -108,10 +108,17 @@ module Holistic::Ruby::Parser
             end
 
           return if nesting.unsupported?
+
+          method_name =
+            if method_name_node.nil? # support syntax `DoSomething.(value)`
+              "call"
+            else
+              method_name_node.value
+            end
           
           method_call_clue = ::Holistic::Ruby::TypeInference::Clue::MethodCall.new(
             nesting:,
-            method_name: method_name.value,
+            method_name: method_name,
             resolution_possibilities: Current.constant_resolution_possibilities.dup
           )
 
@@ -119,7 +126,7 @@ module Holistic::Ruby::Parser
             repository: Current.application.references,
             scope: Current.scope,
             clues: [method_call_clue],
-            location: Node::BuildLocation.call(method_name)
+            location: Node::BuildLocation.call(method_name_node || instance)
           )
         end
 

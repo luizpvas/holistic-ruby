@@ -13,6 +13,8 @@ module Holistic::Ruby::Parser
   end
 
   ParseFile = ->(application:, file:) do
+    ::Holistic.logger.info("Parsing: #{file.path}")
+
     Current.set(file:) do
       ParseCode[application:, code: file.read]
     end
@@ -31,6 +33,8 @@ module Holistic::Ruby::Parser
     block.call
 
     application.references.list_references_pending_type_inference_conclusion.each do |reference|
+      ::Holistic.logger.info("Solving: #{reference}")
+
       ::Holistic::Ruby::TypeInference::Solve.call(application:, reference:)
     end
   end
