@@ -47,39 +47,39 @@ module Holistic::Ruby::Parser
     class ProgramVisitor < ::SyntaxTree::Visitor
       visit_methods do
         def visit_module(node)
-          declaration, statements = node.child_nodes
+          declaration_node, statements_nodes = node.child_nodes
 
-          nesting = Node::BuildNestingSyntax[declaration]
-          location = Node::BuildLocation[declaration]
+          nesting = Node::BuildNestingSyntax[declaration_node]
+          location = Node::BuildLocation[declaration_node]
 
           Current::Scope.register_child_module(nesting:, location:) do
-            visit(statements)
+            visit(statements_nodes)
           end
         end
 
         def visit_class(node)
-          declaration, superclass, statements = node.child_nodes
+          declaration_node, superclass_node, statements_nodes = node.child_nodes
 
-          if superclass
-            register_reference(nesting: Node::BuildNestingSyntax[superclass], location: Node::BuildLocation[superclass])
+          if superclass_node
+            register_reference(nesting: Node::BuildNestingSyntax[superclass_node], location: Node::BuildLocation[superclass_node])
           end
 
-          nesting = Node::BuildNestingSyntax[declaration]
-          location = Node::BuildLocation[declaration]
+          nesting = Node::BuildNestingSyntax[declaration_node]
+          location = Node::BuildLocation[declaration_node]
 
           Current::Scope.register_child_class(nesting:, location:) do
-            visit(statements)
+            visit(statements_nodes)
           end
         end
 
         def visit_def(node)
-          instance, dot, method_name, _params, body_statement = node.child_nodes
+          instance_node, period_node, method_name_node, _params, statements_nodes = node.child_nodes
 
           method_name =
-            if instance.present? && dot.present?
-              instance.child_nodes.first.value + dot.value + method_name.value
+            if instance_node.present? && period_node.present?
+              instance_node.child_nodes.first.value + period_node.value + method_name_node.value
             else
-              method_name.value
+              method_name_node.value
             end
 
           ::Holistic::Ruby::Scope::Register.call(
@@ -90,21 +90,21 @@ module Holistic::Ruby::Parser
             location: Node::BuildLocation.call(node)
           )
 
-          visit(body_statement)
+          visit(statements_nodes)
         end
 
         def visit_call(node)
-          instance, period, method_name_node, arguments = node.child_nodes
+          instance_node, _period_node, method_name_node, arguments_nodes = node.child_nodes
 
-          visit(instance)
-          visit(arguments)
+          visit(instance_node)
+          visit(arguments_nodes)
 
           # NOTE: I have a feeling this is incomplete. Need to add more specs.
           nesting =
-            if instance.is_a?(::SyntaxTree::CallNode)
-              Node::BuildNestingSyntax.call(instance.child_nodes[2])
+            if instance_node.is_a?(::SyntaxTree::CallNode)
+              Node::BuildNestingSyntax.call(instance_node.child_nodes[2])
             else
-              Node::BuildNestingSyntax.call(instance)
+              Node::BuildNestingSyntax.call(instance_node)
             end
 
           return if nesting.unsupported?
@@ -126,15 +126,15 @@ module Holistic::Ruby::Parser
             repository: Current.application.references,
             scope: Current.scope,
             clues: [method_call_clue],
-            location: Node::BuildLocation.call(method_name_node || instance)
+            location: Node::BuildLocation.call(method_name_node || instance_node)
           )
         end
 
         def visit_assign(node)
-          assign, statement = node.child_nodes
+          assign_node, statement_node = node.child_nodes
 
-          if !assign.child_nodes.first.is_a?(::SyntaxTree::Const)
-            visit(statement)
+          if !assign_node.child_nodes.first.is_a?(::SyntaxTree::Const)
+            visit(statement_node)
 
             return # TODO
           end
@@ -143,11 +143,11 @@ module Holistic::Ruby::Parser
             repository: Current.application.scopes,
             parent: Current.scope,
             kind: ::Holistic::Ruby::Scope::Kind::LAMBDA,
-            name: assign.child_nodes.first.value,
+            name: assign_node.child_nodes.first.value,
             location: Node::BuildLocation.call(node)
           )
 
-          visit(statement)
+          visit(statement_node)
         end
 
         def visit_const_path_ref(node)
