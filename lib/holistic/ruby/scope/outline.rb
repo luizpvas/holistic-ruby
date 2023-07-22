@@ -40,7 +40,7 @@ module Holistic::Ruby::Scope
     def call(application:, scope:)
       declarations = QueryChildScopesRecursively.call(application, scope).sort_by { _1.fully_qualified_name }
 
-      dependencies = QueryDependenciesRecursively.call(application, scope, scope)
+      dependencies = QueryDependenciesRecursively.call(application, scope, scope).uniq { _1.conclusion.dependency_identifier }
 
       references = application.references.list_references_to(scope.fully_qualified_name)
 

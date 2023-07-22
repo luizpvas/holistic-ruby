@@ -22,7 +22,8 @@ describe ::Holistic::Ruby::Scope::Outline do
     expect(result.declarations).to be_empty
 
     expect(result.references).to match_array([
-      application.references.find_reference_to("PlusOne")
+      application.references.find_by_code_content("PlusOne"),
+      application.references.find_by_code_content("PlusOne.call")
     ])
 
     expect(result.dependants.map(&:fully_qualified_name)).to match_array([

@@ -52,6 +52,11 @@ module Holistic::Ruby::TypeInference
 
         return if referenced_scope.nil?
 
+        # NOTE: specific / quirk / extensions
+        if method_call_clue.method_name == "call" && referenced_scope.lambda?
+          return Conclusion.done(referenced_scope.fully_qualified_name)
+        end
+
         method_fully_qualified_name = "#{referenced_scope.fully_qualified_name}##{method_call_clue.method_name}"
 
         referenced_method = application.scopes.find_by_fully_qualified_name(method_fully_qualified_name)

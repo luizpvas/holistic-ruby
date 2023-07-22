@@ -22,7 +22,7 @@ describe ::Holistic::Ruby::Scope::Outline do
     expect(result.dependencies).to be_empty
     expect(result.declarations).to be_empty
 
-    expect(result.references.size).to eql(2)
+    expect(result.references.size).to be(2 + 2) # `PlusOne` + `PlusOne.call` twice
 
     expect(result.dependants).to match_array([
       application.scopes.find_by_fully_qualified_name("::MyApp::Example1")
