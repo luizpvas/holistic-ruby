@@ -145,7 +145,7 @@ module Holistic::Ruby::Parser
           if statement_node.is_a?(::SyntaxTree::MethodAddBlock)
             call_node, block_node = statement_node.child_nodes
 
-            if Node::BuildNestingSyntax[call_node].to_s == "Data::.::define"
+            if Node::BuildNestingSyntax[call_node].to_s == "Data::.::define" || Node::BuildNestingSyntax[call_node].to_s == "Struct::.::new"
               nesting = Node::BuildNestingSyntax[assign_node]
               location = Node::BuildLocation[assign_node]
 
