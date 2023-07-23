@@ -111,12 +111,8 @@ module Holistic::Ruby::Parser
 
           return if nesting.unsupported?
 
-          method_name =
-            if method_name_node.nil? # support syntax `DoSomething.(value)`
-              "call"
-            else
-              method_name_node.value
-            end
+          # This method_name_node is nil when using the syntax `DoSomething.(value)`
+          method_name = method_name_node.nil? ? "call" : method_name_node.value
           
           method_call_clue = ::Holistic::Ruby::TypeInference::Clue::MethodCall.new(
             nesting:,
