@@ -141,20 +141,17 @@ module Holistic::Ruby::Parser
             return # TODO
           end
 
-          # TODO: This if statement does not belong here. It should be a stdlib extension. 
           if statement_node.is_a?(::SyntaxTree::MethodAddBlock)
             call_node, block_node = statement_node.child_nodes
 
-            if Node::BuildNestingSyntax[call_node].to_s == "Data::.::define" || Node::BuildNestingSyntax[call_node].to_s == "Struct::.::new"
-              nesting = Node::BuildNestingSyntax[assign_node]
-              location = Node::BuildLocation[assign_node]
+            nesting = Node::BuildNestingSyntax[assign_node]
+            location = Node::BuildLocation[assign_node]
 
-              Current::Scope.register_child_class(nesting:, location:) do
-                visit(block_node)
-              end
-
-              return
+            Current::Scope.register_child_class(nesting:, location:) do
+              visit(block_node)
             end
+
+            return
           end
 
           ::Holistic::Ruby::Scope::Register.call(
