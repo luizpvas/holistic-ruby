@@ -7,9 +7,9 @@ module Support
 
       file = ::Holistic::Document::File::Fake.new(path: "/snippet.rb", content: code)
 
-      ::Holistic::Ruby::Parser::WrapParsingUnitWithProcessAtTheEnd.call(application:) do
-        ::Holistic::Ruby::Parser::ParseFile.call(application:, file:)
-      end
+      ::Holistic::Ruby::Parser::ParseFile.call(application:, file:)
+
+      ::Holistic::Ruby::TypeInference::SolvePendingReferences.call(application:)
 
       application
     end
@@ -25,9 +25,9 @@ module Support
         ::Holistic::Ruby::Parser::ParseFile[application:, file:]
       end
 
-      ::Holistic::Ruby::Parser::WrapParsingUnitWithProcessAtTheEnd.call(application:) do
-        block.call(files)
-      end
+      block.call(files)
+
+      ::Holistic::Ruby::TypeInference::SolvePendingReferences.call(application:)
 
       application
     end

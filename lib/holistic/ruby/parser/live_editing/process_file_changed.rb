@@ -46,9 +46,9 @@ module Holistic::Ruby::Parser
     end
 
     def parse_again(application:, file:)
-      WrapParsingUnitWithProcessAtTheEnd.call(application:) do
-        ParseFile.call(application:, file:)
-      end
+      ParseFile.call(application:, file:)
+
+      ::Holistic::Ruby::TypeInference::SolvePendingReferences.call(application:)
     end
 
     def recalculate_type_inference_for_references(application:, references:)

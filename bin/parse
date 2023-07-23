@@ -8,9 +8,9 @@ root_directory = ARGV.first
 name = ::File.basename(root_directory)
 application = ::Holistic::Application.new(name:, root_directory:)
 
-::Holistic::Ruby::Parser::WrapParsingUnitWithProcessAtTheEnd.call(application:) do
-  ::Holistic::Ruby::Parser::ParseDirectory.call(application:, directory_path: application.root_directory)
-end
+::Holistic::Ruby::Parser::ParseDirectory.call(application:, directory_path: application.root_directory)
+
+::Holistic::Ruby::TypeInference::SolvePendingReferences.call(application:)
 
 summary = {
   amount_of_scopes: application.scopes.table.size,

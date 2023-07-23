@@ -32,9 +32,9 @@ module Holistic::LanguageServer
 
     def parse_application_in_background(application)
       ::Holistic::BackgroundProcess.run do
-        ::Holistic::Ruby::Parser::WrapParsingUnitWithProcessAtTheEnd.call(application:) do
-          ::Holistic::Ruby::Parser::ParseDirectory.call(application:, directory_path: application.root_directory)
-        end
+        ::Holistic::Ruby::Parser::ParseDirectory.call(application:, directory_path: application.root_directory)
+
+        ::Holistic::Ruby::TypeInference::SolvePendingReferences.call(application:)
       end
     end
 

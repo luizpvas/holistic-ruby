@@ -25,13 +25,4 @@ module Holistic::Ruby::Parser
       ParseFile[application:, file:]
     end
   end
-
-  # TODO: find a better name or a better abstraction
-  WrapParsingUnitWithProcessAtTheEnd = ->(application:, &block) do
-    block.call
-
-    application.references.list_references_pending_type_inference_conclusion.each do |reference|
-      ::Holistic::Ruby::TypeInference::Solve.call(application:, reference:)
-    end
-  end
 end
