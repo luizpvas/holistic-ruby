@@ -9,13 +9,15 @@ module Holistic::Ruby::Parser
         append = ->(node) do
           case node
           when ::SyntaxTree::ConstRef     then nesting_syntax << node.child_nodes[0].value
+          when ::SyntaxTree::VarField     then nesting_syntax << node.child_nodes.first.value
           when ::SyntaxTree::Const        then nesting_syntax << node.value
           when ::SyntaxTree::VCall        then append.(node.child_nodes.first)
           when ::SyntaxTree::Ident        then nesting_syntax << node.value
           when ::SyntaxTree::IVar         then nesting_syntax << node.value
+          when ::SyntaxTree::Period       then nesting_syntax << "."
           when ::SyntaxTree::Paren        then append.(node.child_nodes[1])       # node.child_nodes[0] is ::SyntaxTree::LParen
           when ::SyntaxTree::ARef         then append.(node.child_nodes.first)    # not sure what to do here e.g. `ActiveRecord::Migration[7.0]`
-          when ::SyntaxTree::CallNode     then nesting_syntax << "[dynamic_call]" # not sure what to do here e.g. `::Account.const_get(account.type.classify)::Subscription`
+          when ::SyntaxTree::CallNode     then node.child_nodes.each(&append)
           when ::SyntaxTree::IfOp         then nesting_syntax << "[conditional]"  # not sure what tod o here
           when ::SyntaxTree::VarRef       then node.child_nodes.each(&append)
           when ::SyntaxTree::ConstPathRef then node.child_nodes.each(&append)
@@ -137,6 +139,22 @@ module Holistic::Ruby::Parser
             visit(statement_node)
 
             return # TODO
+          end
+
+          # TODO: This if statement does not belong here. It should be a stdlib extension. 
+          if statement_node.is_a?(::SyntaxTree::MethodAddBlock)
+            call_node, block_node = statement_node.child_nodes
+
+            if Node::BuildNestingSyntax[call_node].to_s == "Data::.::define"
+              nesting = Node::BuildNestingSyntax[assign_node]
+              location = Node::BuildLocation[assign_node]
+
+              Current::Scope.register_child_class(nesting:, location:) do
+                visit(block_node)
+              end
+
+              return
+            end
           end
 
           ::Holistic::Ruby::Scope::Register.call(
