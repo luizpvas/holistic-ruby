@@ -137,6 +137,8 @@ module Holistic::Ruby::Parser
             return # TODO
           end
 
+          # Are we assigning to something that opens a block? If so, we need to register the child scope
+          # and visit the statements. This is needed to support methods defined in `Data.define` and `Struct.new`.
           if statement_node.is_a?(::SyntaxTree::MethodAddBlock)
             call_node, block_node = statement_node.child_nodes
 
