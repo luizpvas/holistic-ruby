@@ -4,11 +4,9 @@ module Holistic::LanguageServer
   class Stdio::Parser
     MissingContentLengthHeaderError = ::Class.new(::StandardError)
 
-    # TODO: remove `left_over_from_previous_ingestion`. The same behaviour can be achieved with only the buffer.
-
     def initialize
       @buffer = ::String.new
-      @left_over_from_previous_ingestion = ::String.new
+      @overflow_from_previous_ingestion = ::String.new
       @in_header = true
       @content_length = 0
     end
@@ -18,7 +16,7 @@ module Holistic::LanguageServer
         if @in_header || !completed?
           @buffer.concat(char)
         else
-          @left_over_from_previous_ingestion.concat(char)
+          @overflow_from_previous_ingestion.concat(char)
         end
 
         if @in_header
@@ -31,17 +29,13 @@ module Holistic::LanguageServer
       !@in_header && @content_length == @buffer.length
     end
 
-    def has_left_over?
-      !@left_over_from_previous_ingestion.empty?
-    end
-
     def message
       Message.new(::JSON.parse(@buffer))
     end
 
     def clear
-      left_over = @left_over_from_previous_ingestion.dup
-      @left_over_from_previous_ingestion.clear
+      left_over = @overflow_from_previous_ingestion.dup
+      @overflow_from_previous_ingestion.clear
 
       @buffer.clear
       @in_header = true

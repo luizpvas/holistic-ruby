@@ -13,7 +13,6 @@ describe ::Holistic::LanguageServer::Stdio::Parser do
 
       expect(parser.completed?).to be(true)
       expect(parser.message.data).to eql({ "message" => "ok" })
-      expect(parser.has_left_over?).to be(false)
     end
   end
 
@@ -34,7 +33,6 @@ describe ::Holistic::LanguageServer::Stdio::Parser do
 
       expect(parser.completed?).to be(true)
       expect(parser.message.data).to eql({ "message" => "ok" })
-      expect(parser.has_left_over?).to be(false)
     end
   end
 
@@ -55,7 +53,6 @@ describe ::Holistic::LanguageServer::Stdio::Parser do
 
         expect(parser.completed?).to be(true)
         expect(parser.message.data).to eql(::JSON.parse(encoded_message))
-        expect(parser.has_left_over?).to be(false)
 
         parser.clear
       end
@@ -77,7 +74,6 @@ describe ::Holistic::LanguageServer::Stdio::Parser do
 
       expect(parser.completed?).to be(true)
       expect(parser.message.data).to eql({})
-      expect(parser.has_left_over?).to be(true)
 
       parser.clear
 
@@ -87,7 +83,6 @@ describe ::Holistic::LanguageServer::Stdio::Parser do
 
       expect(parser.completed?).to be(true)
       expect(parser.message.data).to eql({})
-      expect(parser.has_left_over?).to be(false)
     end
   end
 
@@ -101,13 +96,11 @@ describe ::Holistic::LanguageServer::Stdio::Parser do
 
       expect(parser.completed?).to be(true)
       expect(parser.message.data).to eql({})
-      expect(parser.has_left_over?).to be(true)
 
       parser.clear
 
       expect(parser.completed?).to be(true)
       expect(parser.message.data).to eql({})
-      expect(parser.has_left_over?).to be(false)
     end
   end
 
@@ -119,7 +112,6 @@ describe ::Holistic::LanguageServer::Stdio::Parser do
 
       expect(parser.completed?).to be(true)
       expect { parser.message }.to raise_error(::JSON::ParserError)
-      expect(parser.has_left_over?).to be(false)
     end
   end
 
