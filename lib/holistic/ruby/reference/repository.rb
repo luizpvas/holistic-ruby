@@ -11,7 +11,7 @@ module Holistic::Ruby::Reference
     ].freeze
 
     def initialize
-      @table = ::Holistic::Database::Table.new(indices: INDICES)
+      @table = ::Holistic::Database::Table.new(primary_attribute: :identifier, indices: INDICES)
     end
 
     def register_reference(reference)

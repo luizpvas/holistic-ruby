@@ -1,13 +1,11 @@
 # frozen_string_literal: true
 
 class Holistic::Database::Table
-  RecordNotUniqueError = ::Class.new(::StandardError)
+  attr_reader :primary_attribute, :primary_index, :secondary_indices
 
-  PRIMARY_ATTRIBUTE = :identifier
+  def initialize(primary_attribute:, indices: [])
+    @primary_attribute = primary_attribute
 
-  attr_reader :primary_index, :secondary_indices
-
-  def initialize(indices: [])
     @primary_index = ::Hash.new
 
     @secondary_indices = indices.map do |attribute_name|
@@ -15,8 +13,10 @@ class Holistic::Database::Table
     end.to_h
   end
 
+  RecordNotUniqueError = ::Class.new(::StandardError)
+
   def insert(record)
-    primary_key = record.fetch(PRIMARY_ATTRIBUTE)
+    primary_key = record.fetch(primary_attribute)
 
     if primary_index.key?(primary_key)
       raise RecordNotUniqueError, "record already inserted: #{record.inspect}"
@@ -42,7 +42,7 @@ class Holistic::Database::Table
   end
 
   def update(record)
-    primary_key = record.fetch(PRIMARY_ATTRIBUTE)
+    primary_key = record.fetch(primary_attribute)
 
     delete(primary_key)
 

@@ -2,7 +2,7 @@
 
 describe ::Holistic::Database::Table do
   let(:table) do
-    described_class.new(indices: [:color])
+    described_class.new(primary_attribute: :identifier, indices: [:color])
   end
 
   describe "#insert" do

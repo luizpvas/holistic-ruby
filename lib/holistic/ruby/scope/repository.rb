@@ -5,12 +5,12 @@ module Holistic::Ruby::Scope
     attr_reader :table
 
     def initialize
-      @table = ::Holistic::Database::Table.new(indices: [:file_paths])
+      @table = ::Holistic::Database::Table.new(primary_attribute: :fully_qualified_name, indices: [:file_paths])
     end
 
     def register_scope(scope)
       table.update({
-        identifier: scope.fully_qualified_name,
+        fully_qualified_name: scope.fully_qualified_name,
         file_paths: scope.locations.map(&:file_path),
         scope:
       })
