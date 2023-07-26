@@ -37,6 +37,10 @@ module Holistic::Ruby::Scope
       "#{parent.fully_qualified_name}#{separator}#{name}"
     end
 
+    def main_location
+      FindMainLocation.call(scope: self)
+    end
+
     def root?
       parent.nil?
     end

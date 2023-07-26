@@ -7,6 +7,7 @@ require "syntax_tree"
 require "active_support/concern"
 require "active_support/core_ext/module/concerning"
 require "active_support/notifications"
+require "active_support/inflector"
 require "json"
 
 require_relative "../config/logging"
