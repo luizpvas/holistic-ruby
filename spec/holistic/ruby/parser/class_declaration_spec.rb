@@ -2,6 +2,7 @@
 
 describe ::Holistic::Ruby::Parser do
   include ::Support::SnippetParser
+  include ::Support::Ruby::Serializer
 
   context "class declaration in the root scope" do
     let(:application) do
@@ -26,7 +27,7 @@ describe ::Holistic::Ruby::Parser do
         dependency_identifier: nil
       )
 
-      expect(application.root_scope.serialize).to eql({
+      expect(serialize_scope(application.root_scope)).to eql({
         "::" => {
           "MyClass" => {}
         }

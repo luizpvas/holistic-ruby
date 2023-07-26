@@ -12,18 +12,6 @@ module Holistic::Ruby::Scope
       @children = []
     end
 
-    # NOTE: I don't like having this serialize here. It feels weird.
-    def serialize
-      nested = {}
-      root = {name => nested}
-
-      children.each do |child|
-        nested.merge!(child.serialize)
-      end
-
-      root
-    end
-
     def fully_qualified_name
       return "" if root?
 

@@ -2,6 +2,7 @@
 
 describe ::Holistic::Ruby::Parser do
   include ::Support::SnippetParser
+  include ::Support::Ruby::Serializer
 
   context "nested class declaration with double colon syntax" do
     let(:application) do
@@ -22,7 +23,7 @@ describe ::Holistic::Ruby::Parser do
         ]
       )
 
-      expect(application.root_scope.serialize).to eql({
+      expect(serialize_scope(application.root_scope)).to eql({
         "::" => {
           "MyApp" => {
             "MyClass" => {}

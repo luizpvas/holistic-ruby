@@ -2,6 +2,7 @@
 
 describe Holistic::Ruby::Parser do
   include ::Support::SnippetParser
+  include ::Support::Ruby::Serializer
 
   let(:application) do
     parse_snippet_collection do |files|
@@ -24,7 +25,7 @@ describe Holistic::Ruby::Parser do
   end
 
   it "parses the code" do
-    expect(application.root_scope.serialize).to eql({
+    expect(serialize_scope(application.root_scope)).to eql({
       "::" => {
         "MyApp" => {
           "Example1" => {
