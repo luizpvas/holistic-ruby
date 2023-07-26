@@ -18,7 +18,7 @@ module Holistic::Ruby::Parser
           )
       end
 
-      Current.constant_resolution_possibilities.unshift(nesting.to_s)
+      Current.constant_resolution_possibilities.unshift(Current.scope.fully_qualified_name)
 
       block.call
 
@@ -40,7 +40,7 @@ module Holistic::Ruby::Parser
           )
       end
 
-      Current.constant_resolution_possibilities.unshift(nesting.to_s)
+      Current.constant_resolution_possibilities.unshift(Current.scope.fully_qualified_name)
 
       block.call
 

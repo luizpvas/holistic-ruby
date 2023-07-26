@@ -3,7 +3,7 @@
 module Holistic::Ruby::Parser
   ParseCode = ->(application:, code:) do
     scope = application.root_scope
-    constant_resolution_possibilities = ConstantResolutionPossibilities.root_scope
+    constant_resolution_possibilities = ["::"]
 
     Current.set(application:, scope:, constant_resolution_possibilities:) do
       program = ::SyntaxTree.parse(code)
