@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 describe ::Holistic::Ruby::Scope::Register do
+  concerning :TestHelpers do
+    def create_root_scope
+      ::Holistic::Ruby::Scope::Record.new(kind: ::Holistic::Ruby::Scope::Kind::ROOT, name: "::", parent: nil)
+    end
+  end
+
   context "when a scope with the same name DOES NOT EXIST in the parent scope" do
     let(:repository) { ::Holistic::Ruby::Scope::Repository.new }
 
@@ -8,7 +14,7 @@ describe ::Holistic::Ruby::Scope::Register do
       ::Holistic::Ruby::Scope::Record.new(
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
         name: "MyModule",
-        parent: ::Holistic::Ruby::Scope::CreateRootScope.call
+        parent: create_root_scope
       )
     end
 
@@ -67,7 +73,7 @@ describe ::Holistic::Ruby::Scope::Register do
       ::Holistic::Ruby::Scope::Record.new(
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
         name: "MyModule",
-        parent: ::Holistic::Ruby::Scope::CreateRootScope.call
+        parent: create_root_scope
       )
     end
 

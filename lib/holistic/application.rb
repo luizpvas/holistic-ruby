@@ -7,7 +7,7 @@ module Holistic
     def initialize(name:, root_directory:)
       @name = name
       @root_directory = root_directory
-      @root_scope = Ruby::Scope::CreateRootScope.call
+      @root_scope = Ruby::Scope::Record.new(kind: Ruby::Scope::Kind::ROOT, name: "::", parent: nil)
     end
 
     def scopes

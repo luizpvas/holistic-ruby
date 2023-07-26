@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 describe ::Holistic::Ruby::Scope::Unregister do
+  concerning :TestHelpers do
+    def create_root_scope
+      ::Holistic::Ruby::Scope::Record.new(kind: ::Holistic::Ruby::Scope::Kind::ROOT, name: "::", parent: nil)
+    end
+  end
+
   context "when scope does not exist" do
     let(:repository) { ::Holistic::Ruby::Scope::Repository.new }
 
@@ -17,7 +23,7 @@ describe ::Holistic::Ruby::Scope::Unregister do
     let!(:scope) do
       ::Holistic::Ruby::Scope::Register.call(
         repository:,
-        parent: ::Holistic::Ruby::Scope::CreateRootScope.call,
+        parent: create_root_scope,
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
         name: "MyModule",
         location: ::Holistic::Document::Location.beginning_of_file("/snippet.rb")
@@ -34,7 +40,7 @@ describe ::Holistic::Ruby::Scope::Unregister do
   context "when scope exists and the only definition of it is in the specified file" do
     let(:repository) { ::Holistic::Ruby::Scope::Repository.new }
 
-    let(:parent) { ::Holistic::Ruby::Scope::CreateRootScope.call }
+    let(:parent) { create_root_scope }
 
     let!(:scope) do
       ::Holistic::Ruby::Scope::Register.call(
@@ -59,7 +65,7 @@ describe ::Holistic::Ruby::Scope::Unregister do
   context "when scope exists and it is defined in multiple files" do
     let(:repository) { ::Holistic::Ruby::Scope::Repository.new }
 
-    let(:parent) { ::Holistic::Ruby::Scope::CreateRootScope.call }
+    let(:parent) { create_root_scope }
 
     let(:location_1) { ::Holistic::Document::Location.beginning_of_file("/snippet_1.rb") }
     let(:location_2) { ::Holistic::Document::Location.beginning_of_file("/snippet_2.rb") }
