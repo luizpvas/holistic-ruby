@@ -8,7 +8,7 @@ module Holistic::Ruby::Scope
       @kind = kind
       @name = name
       @parent = parent
-      @locations = location.nil? ? [] : [location]
+      @locations = Locations.new(self, location)
       @children = []
     end
 
@@ -35,10 +35,6 @@ module Holistic::Ruby::Scope
         end
 
       "#{parent.fully_qualified_name}#{separator}#{name}"
-    end
-
-    def main_location
-      FindMainLocation.call(scope: self)
     end
 
     def root?

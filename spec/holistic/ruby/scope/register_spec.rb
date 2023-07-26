@@ -34,16 +34,22 @@ describe ::Holistic::Ruby::Scope::Register do
       expect(child_1).to have_attributes(
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
         name: "MyChild1",
-        parent: parent,
-        locations: [child_1_location]
+        parent: parent
       )
+
+      expect(child_1.locations.items).to match_array([
+        child_1_location
+      ])
 
       expect(child_2).to have_attributes(
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
         name: "MyChild2",
-        parent: parent,
-        locations: [child_2_location]
+        parent: parent
       )
+
+      expect(child_2.locations.items).to match_array([
+        child_2_location
+      ])
     end
 
     it "inserts the scope in the repository" do
@@ -79,7 +85,7 @@ describe ::Holistic::Ruby::Scope::Register do
     it "appends the source location to the existing scope" do
       expect(child_1).to be(child_2)
 
-      expect(child_2.locations).to match_array([location_1, location_2])
+      expect(child_2.locations.items).to match_array([location_1, location_2])
     end
 
     it "updates the source locations in the repository" do

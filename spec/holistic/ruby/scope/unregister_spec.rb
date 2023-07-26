@@ -83,11 +83,11 @@ describe ::Holistic::Ruby::Scope::Unregister do
     end
 
     it "removes the location for the specified path" do
-      expect(scope.locations).to match_array([location_1, location_2])
+      expect(scope.locations.items).to match_array([location_1, location_2])
 
       described_class.call(repository:, fully_qualified_name: "::MyModule", file_path: "/snippet_1.rb")
 
-      expect(scope.locations).to match_array([location_2])
+      expect(scope.locations.items).to match_array([location_2])
     end
 
     it "updates the repository record" do

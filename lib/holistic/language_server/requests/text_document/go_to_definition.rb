@@ -39,7 +39,7 @@ module Holistic::LanguageServer
 
     def respond_with_location_link(request, reference, referenced_scope)
       origin_location = reference.location
-      target_location = referenced_scope.locations.first
+      target_location = referenced_scope.locations.main
 
       location_link = {
         "originSelectionRange" => {
