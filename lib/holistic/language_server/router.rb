@@ -4,7 +4,7 @@ module Holistic::LanguageServer
   module Router
     extend self
 
-    FROM_METHOD_TO_HANDLER = {
+    ROUTES = {
       "initialize"              => Requests::Lifecycle::Initialize,
       "initialized"             => Requests::Lifecycle::Initialized,
       "shutdown"                => Requests::Lifecycle::Shutdown,
@@ -23,7 +23,7 @@ module Holistic::LanguageServer
       ::ActiveSupport::Notifications.instrument("holistic.language_server.request", request:) do
         return respond_with_rejection(request) if Current.lifecycle.reject?(message.method)
 
-        handler = FROM_METHOD_TO_HANDLER[message.method]
+        handler = ROUTES[message.method]
 
         return Response::NotFound.new if handler.nil?
 
