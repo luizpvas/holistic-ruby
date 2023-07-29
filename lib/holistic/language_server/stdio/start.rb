@@ -21,7 +21,6 @@ module Holistic::LanguageServer
           in Response::Error    then server.write_to_output(response.encode)
           in Response::NotFound then nil
           in Response::Exit     then server.stop!
-          else raise "unexpected response: #{response}"
           end
           
           parser.clear
