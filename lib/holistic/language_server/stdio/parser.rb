@@ -2,8 +2,6 @@
 
 module Holistic::LanguageServer
   class Stdio::Parser
-    MissingContentLengthHeaderError = ::Class.new(::StandardError)
-
     def initialize
       @buffer = ::String.new
       @overflow_from_previous_ingestion = ::String.new
@@ -45,6 +43,8 @@ module Holistic::LanguageServer
     end
 
     private
+
+    MissingContentLengthHeaderError = ::Class.new(::StandardError)
 
     def prepare_to_parse_message!
       @buffer.each_line do |line|

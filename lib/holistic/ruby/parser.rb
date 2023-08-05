@@ -1,21 +1,17 @@
 # frozen_string_literal: true
 
 module Holistic::Ruby::Parser
-  ParseCode = ->(application:, code:) do
-    scope = application.root_scope
-    constant_resolution_possibilities = ["::"]
-
-    Current.set(application:, scope:, constant_resolution_possibilities:) do
-      program = ::SyntaxTree.parse(code)
-
-      Visitor::ProgramVisitor.new.visit(program)
-    end
-  end
-
   ParseFile = ->(application:, file:) do
-    Current.set(file:) do
-      ParseCode[application:, code: file.read]
-    end
+    program = ::SyntaxTree.parse(file.read)
+
+    constant_resolution = ConstantResolution.new(
+      scope_repository: application.scopes,
+      root_scope: application.root_scope
+    )
+
+    visitor = ProgramVisitor.new(application:, constant_resolution:, file:)
+
+    visitor.visit(program)
   end
 
   ParseDirectory = ->(application:, directory_path:) do
