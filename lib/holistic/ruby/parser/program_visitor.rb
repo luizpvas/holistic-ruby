@@ -16,7 +16,7 @@ module Holistic::Ruby::Parser
       def visit_module(node)
         declaration_node, statements_nodes = node.child_nodes
 
-        nesting = Node::BuildNestingSyntax[declaration_node]
+        nesting = NestingSyntax.build(declaration_node)
         location = build_location(declaration_node)
 
         @constant_resolution.register_child_module(nesting:, location:) do
@@ -28,10 +28,10 @@ module Holistic::Ruby::Parser
         declaration_node, superclass_node, statements_nodes = node.child_nodes
 
         if superclass_node
-          register_reference(nesting: Node::BuildNestingSyntax[superclass_node], location: build_location(superclass_node))
+          register_reference(nesting: NestingSyntax.build(superclass_node), location: build_location(superclass_node))
         end
 
-        nesting = Node::BuildNestingSyntax[declaration_node]
+        nesting = NestingSyntax.build(declaration_node)
         location = build_location(declaration_node)
 
         @constant_resolution.register_child_class(nesting:, location:) do
@@ -69,9 +69,9 @@ module Holistic::Ruby::Parser
         # NOTE: I have a feeling this is incomplete. Need to add more specs.
         nesting =
           if instance_node.is_a?(::SyntaxTree::CallNode)
-            Node::BuildNestingSyntax.call(instance_node.child_nodes[2])
+            NestingSyntax.build(instance_node.child_nodes[2])
           else
-            Node::BuildNestingSyntax.call(instance_node)
+            NestingSyntax.build(instance_node)
           end
 
         return if nesting.unsupported?
@@ -107,7 +107,7 @@ module Holistic::Ruby::Parser
         if statement_node.is_a?(::SyntaxTree::MethodAddBlock)
           call_node, block_node = statement_node.child_nodes
 
-          nesting = Node::BuildNestingSyntax[assign_node]
+          nesting = NestingSyntax.build(assign_node)
           location = build_location(assign_node)
 
           @constant_resolution.register_child_class(nesting:, location:) do
@@ -129,15 +129,15 @@ module Holistic::Ruby::Parser
       end
 
       def visit_const_path_ref(node)
-        register_reference(nesting: Node::BuildNestingSyntax[node], location: build_location(node))
+        register_reference(nesting: NestingSyntax.build(node), location: build_location(node))
       end
 
       def visit_top_const_ref(node)
-        register_reference(nesting: Node::BuildNestingSyntax[node], location: build_location(node))
+        register_reference(nesting: NestingSyntax.build(node), location: build_location(node))
       end
 
       def visit_const(node)
-        register_reference(nesting: Node::BuildNestingSyntax[node], location: build_location(node))
+        register_reference(nesting: NestingSyntax.build(node), location: build_location(node))
       end
     end
 
