@@ -11,7 +11,7 @@ module Holistic
     end
 
     def extensions
-      @extensions ||= Extensions::Events.new(self)
+      @extensions ||= Extensions::Events.new
     end
 
     def scopes

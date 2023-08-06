@@ -8,14 +8,13 @@ class Holistic::Extensions::Events
     }
   }.freeze
 
-  def initialize(application)
-    @application = application
-    @listeners = Hash.new { |hash, key| hash[key] = [] }
-  end
-
   UnknownEvent         = ::Class.new(::StandardError)
   MissingRequiredParam = ::Class.new(::StandardError)
   UnexpectedOutput     = ::Class.new(::StandardError)
+
+  def initialize
+    @listeners = Hash.new { |hash, key| hash[key] = [] }
+  end
 
   def bind(event, &callback)
     raise UnknownEvent, event unless TOPICS.key?(event)
@@ -23,15 +22,13 @@ class Holistic::Extensions::Events
     @listeners[event] << callback
   end
 
-  def dispatch(event, **args)
+  def dispatch(event, params)
     required_params = TOPICS.dig(event, :params)
     expected_output = TOPICS.dig(event, :output)
 
-    raise MissingRequiredParam, required_params if (required_params - args.keys).any?
+    raise MissingRequiredParam, required_params if (required_params - params.keys).any?
 
-    event_params = { application: @application }.merge(args)
-
-    result = @listeners[event].lazy.filter_map { |callback| callback.call(**event_params) }.first
+    result = @listeners[event].lazy.filter_map { |callback| callback.call(params) }.first
 
     raise UnexpectedOutput, result if result.present? && !result.is_a?(expected_output)
 

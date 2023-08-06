@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe ::Holistic::Extensions::Events do
-  let(:events) { described_class.new(nil) }
+  let(:events) { described_class.new }
 
   describe "#bind" do
     context "when event exists" do
@@ -22,12 +22,11 @@ describe ::Holistic::Extensions::Events do
   describe "#dispatch" do
     context "when event has no listeners" do
       it "returns nil" do
-        result = events.dispatch(
-          :resolve_method_call_known_scope,
+        result = events.dispatch(:resolve_method_call_known_scope, {
           reference: nil,
           referenced_scope: nil,
           method_call_clue: nil
-        )
+        })
 
         expect(result).to be_nil
       end
@@ -36,10 +35,7 @@ describe ::Holistic::Extensions::Events do
     context "when event params do not match expected format" do
       it "raises an error" do
         expect {
-          events.dispatch(
-            :resolve_method_call_known_scope,
-            unexpected_argument: nil
-          )
+          events.dispatch(:resolve_method_call_known_scope, {})
         }.to raise_error(described_class::MissingRequiredParam)
       end
     end
@@ -51,12 +47,11 @@ describe ::Holistic::Extensions::Events do
         end
 
         expect {
-          events.dispatch(
-            :resolve_method_call_known_scope,
+          events.dispatch(:resolve_method_call_known_scope, {
             reference: nil,
             referenced_scope: nil,
             method_call_clue: nil
-          )
+          })
         }.to raise_error(described_class::UnexpectedOutput)
       end
     end
@@ -66,30 +61,29 @@ describe ::Holistic::Extensions::Events do
         calls = []
         output = ::Holistic::Ruby::Scope::Record.new(kind: ::Holistic::Ruby::Scope::Kind::ROOT, name: "::", parent: nil)
 
-        events.bind(:resolve_method_call_known_scope) do |**args|
+        events.bind(:resolve_method_call_known_scope) do |_params|
           calls << "first"
 
           nil
         end
 
-        events.bind(:resolve_method_call_known_scope) do |**args|
+        events.bind(:resolve_method_call_known_scope) do |_params|
           calls << "second"
 
           output
         end
 
-        events.bind(:resolve_method_call_known_scope) do |**args|
+        events.bind(:resolve_method_call_known_scope) do |_params|
           calls << "third"
 
           nil
         end
 
-        result = events.dispatch(
-          :resolve_method_call_known_scope,
+        result = events.dispatch(:resolve_method_call_known_scope, {
           reference: nil,
           referenced_scope: nil,
           method_call_clue: nil
-        )
+        })
 
         expect(calls).to eql(["first", "second"])
         expect(result).to be(output)
