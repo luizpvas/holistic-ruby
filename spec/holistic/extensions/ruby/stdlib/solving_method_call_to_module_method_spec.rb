@@ -1,15 +1,13 @@
 # frozen_string_literal: true
 
-describe ::Holistic::Ruby::TypeInference::Solve do
+describe ::Holistic::Extensions::Ruby::Stdlib do
   include ::Support::SnippetParser
 
-  context "when calling a module method with `extend self`" do
+  context "when calling a module method defined with `self.method_name`" do
     let(:application) do
       parse_snippet <<~RUBY
       module Calculator
-        extend self
-
-        def sum(a, b)
+        def self.sum(a, b)
           a + b
         end
       end
@@ -23,7 +21,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
 
       expect(reference.conclusion).to have_attributes(
         status: :done,
-        dependency_identifier: "::Calculator#sum"
+        dependency_identifier: "::Calculator#self.sum"
       )
     end
   end

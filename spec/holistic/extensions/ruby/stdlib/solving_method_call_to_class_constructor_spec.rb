@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe ::Holistic::Ruby::TypeInference::Solve do
+describe ::Holistic::Extensions::Ruby::Stdlib do
   include ::Support::SnippetParser
 
   context "when instantiating a class" do
