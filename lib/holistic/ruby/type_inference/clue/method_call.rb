@@ -7,6 +7,8 @@ module Holistic::Ruby::TypeInference::Clue
     :resolution_possibilities
   ) do
     def to_s
+      return method_name if nesting.nil?
+
       "#{nesting}.#{method_name}"
     end
   end

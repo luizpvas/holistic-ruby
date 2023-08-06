@@ -66,15 +66,16 @@ module Holistic::Ruby::Parser
         visit(instance_node)
         visit(arguments_nodes)
 
-        # NOTE: I have a feeling this is incomplete. Need to add more specs.
         nesting =
           if instance_node.is_a?(::SyntaxTree::CallNode)
             NestingSyntax.build(instance_node.child_nodes[2])
-          else
+          elsif instance_node.present?
             NestingSyntax.build(instance_node)
+          else
+            nil
           end
 
-        return if nesting.unsupported?
+        return if nesting.present? && nesting.unsupported?
 
         # This method_name_node is nil when using the syntax `DoSomething.(value)`
         method_name = method_name_node.nil? ? "call" : method_name_node.value

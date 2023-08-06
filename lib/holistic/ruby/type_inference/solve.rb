@@ -43,17 +43,23 @@ module Holistic::Ruby::TypeInference
 
       method_call_clue = reference.clues.first
 
-      if method_call_clue.nesting.constant?
-        referenced_scope = resolve_scope(
-          application:,
-          nesting: method_call_clue.nesting,
-          resolution_possibilities: method_call_clue.resolution_possibilities
-        )
+      if method_call_clue.nesting.present?
+        if method_call_clue.nesting.constant?
+          referenced_scope = resolve_scope(
+            application:,
+            nesting: method_call_clue.nesting,
+            resolution_possibilities: method_call_clue.resolution_possibilities
+          )
 
-        return if referenced_scope.nil?
+          return if referenced_scope.nil?
 
-        referenced_method = resolve_method(application:, scope: referenced_scope, method_name: method_call_clue.method_name)
-        referenced_method ||= application.extensions.dispatch(:resolve_method_call_known_scope, { reference:, referenced_scope:, method_call_clue: })
+          referenced_method = resolve_method(application:, scope: referenced_scope, method_name: method_call_clue.method_name)
+          referenced_method ||= application.extensions.dispatch(:resolve_method_call_known_scope, { reference:, referenced_scope:, method_call_clue: })
+
+          return Conclusion.done(referenced_method.fully_qualified_name) if referenced_method.present?
+        end
+      else
+        referenced_method = resolve_method(application:, scope: reference.scope, method_name: method_call_clue.method_name)
 
         return Conclusion.done(referenced_method.fully_qualified_name) if referenced_method.present?
       end
