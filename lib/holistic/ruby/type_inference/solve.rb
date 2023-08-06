@@ -69,9 +69,8 @@ module Holistic::Ruby::TypeInference
             []
           end
 
-        referenced_method =
-          resolve_method(application:, scope: referenced_scope, method_name: method_call_clue.method_name) ||
-          alternative_method_names.lazy.filter_map { resolve_method(application:, scope: referenced_scope, method_name: _1) }.first
+        referenced_method = resolve_method(application:, scope: referenced_scope, method_name: method_call_clue.method_name)
+        referenced_method ||= application.events.dispatch(:resolve_method_call_known_scope, reference:, referenced_scope:, method_call_clue:)
 
         return Conclusion.done(referenced_method.fully_qualified_name) if referenced_method.present?
       end
