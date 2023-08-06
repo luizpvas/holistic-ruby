@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe ::Holistic::Extensions::Events do
-  let(:events) { described_class.new }
+  let(:events) { described_class.new(nil) }
 
   describe "#bind" do
     context "when event exists" do

@@ -8,8 +8,9 @@ class Holistic::Extensions::Events
     }
   }.freeze
 
-  def initialize
-    @listeners = Hash.new{ |hash, key| hash[key] = [] }
+  def initialize(application)
+    @application = application
+    @listeners = Hash.new { |hash, key| hash[key] = [] }
   end
 
   UnknownEvent         = ::Class.new(::StandardError)
@@ -28,7 +29,9 @@ class Holistic::Extensions::Events
 
     raise MissingRequiredParam, required_params if (required_params - args.keys).any?
 
-    result = @listeners[event].lazy.filter_map { |callback| callback.call(**args) }.first
+    event_params = { application: @application }.merge(args)
+
+    result = @listeners[event].lazy.filter_map { |callback| callback.call(**event_params) }.first
 
     raise UnexpectedOutput, result if result.present? && !result.is_a?(expected_output)
 

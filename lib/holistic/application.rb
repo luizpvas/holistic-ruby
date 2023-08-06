@@ -4,28 +4,14 @@ module Holistic
   class Application
     attr_reader :name, :root_directory, :root_scope
 
-    class Events
-      def initialize
-        @listeners = Hash.new{ |hash, key| hash[key] = [] }
-      end
-
-      def listen(event, &callback)
-        @listeners[event] << callback
-      end
-
-      def dispatch(event, **args)
-        @listeners[event].lazy.filter_map { |callback| callback.call(**args) }.first
-      end
-    end
-
     def initialize(name:, root_directory:)
       @name = name
       @root_directory = root_directory
       @root_scope = Ruby::Scope::Record.new(kind: Ruby::Scope::Kind::ROOT, name: "::", parent: nil)
     end
 
-    def events
-      @events ||= Events.new
+    def extensions
+      @extensions ||= Extensions::Events.new(self)
     end
 
     def scopes

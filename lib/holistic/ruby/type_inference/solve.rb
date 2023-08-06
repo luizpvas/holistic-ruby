@@ -57,20 +57,8 @@ module Holistic::Ruby::TypeInference
           return Conclusion.done(referenced_scope.fully_qualified_name)
         end
 
-        # NOTE: stdlib extension
-        alternative_method_names =
-          if method_call_clue.method_name == "new" && referenced_scope.class?
-            ["initialize"]
-          elsif referenced_scope.module? || referenced_scope.class?
-            # TODO: I don't like this being in here. This looks too much like brute-forcing.
-            # I think things we'll become clear once I implement reference to methods from mixins.
-            ["self.#{method_call_clue.method_name}"]
-          else
-            []
-          end
-
         referenced_method = resolve_method(application:, scope: referenced_scope, method_name: method_call_clue.method_name)
-        referenced_method ||= application.events.dispatch(:resolve_method_call_known_scope, reference:, referenced_scope:, method_call_clue:)
+        referenced_method ||= application.extensions.dispatch(:resolve_method_call_known_scope, reference:, referenced_scope:, method_call_clue:)
 
         return Conclusion.done(referenced_method.fully_qualified_name) if referenced_method.present?
       end
