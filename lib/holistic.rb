@@ -9,6 +9,7 @@ require "active_support/core_ext/module/concerning"
 require "active_support/notifications"
 require "active_support/inflector"
 require "json"
+require "uri"
 
 require_relative "../config/logging"
 
@@ -18,7 +19,7 @@ loader.setup
 module Holistic
   extend self
 
-  @logger = ::Logger.new(ENV["HOLISTIC_LOG_OUTPUT"] || STDOUT)
+  @logger = ::Logger.new(ENV["HOLISTIC_LOG_OUTPUT"])
   attr_reader :logger
 end
 

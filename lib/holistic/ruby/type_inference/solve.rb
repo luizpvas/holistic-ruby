@@ -41,7 +41,7 @@ module Holistic::Ruby::TypeInference
 
       return if referenced_method.nil?
 
-      return Conclusion.done(referenced_method.fully_qualified_name)
+      Conclusion.done(referenced_method.fully_qualified_name)
     end
 
     SolveMethodCallInConstant = ->(application:, reference:, method_call_clue:) do
@@ -56,7 +56,7 @@ module Holistic::Ruby::TypeInference
       referenced_method = resolve_method(application:, scope: referenced_scope, method_name: method_call_clue.method_name)
       referenced_method ||= application.extensions.dispatch(:resolve_method_call_known_scope, { reference:, referenced_scope:, method_call_clue: })
 
-      return Conclusion.done(referenced_method.fully_qualified_name) if referenced_method.present?
+      Conclusion.done(referenced_method.fully_qualified_name) if referenced_method.present?
     end
 
     def solve_method_call(application:, reference:)

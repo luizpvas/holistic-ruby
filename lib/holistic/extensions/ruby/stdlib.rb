@@ -24,10 +24,12 @@ module Holistic::Extensions::Ruby
       application.scopes.find_by_fully_qualified_name(self_method_name)
     end
 
+    LAMBDA_METHODS = ["call", "curry"]
+
     ResolveCallToLambda = ->(application, params) do
       method_call_clue, referenced_scope = params[:method_call_clue], params[:referenced_scope]
 
-      if method_call_clue.method_name == "call" && referenced_scope.lambda?
+      if LAMBDA_METHODS.include?(method_call_clue.method_name) && referenced_scope.lambda?
         return referenced_scope
       end
     end
