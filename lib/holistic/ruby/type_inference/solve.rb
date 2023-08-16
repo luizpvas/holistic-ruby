@@ -44,7 +44,7 @@ module Holistic::Ruby::TypeInference
       Conclusion.done(referenced_method.fully_qualified_name)
     end
 
-    SolveMethodCallInConstant = ->(application:, reference:, method_call_clue:) do
+    SolveMethodCallInSpecifiedScope = ->(application:, reference:, method_call_clue:) do
       referenced_scope = resolve_scope(
         application:,
         nesting: method_call_clue.nesting,
@@ -69,7 +69,7 @@ module Holistic::Ruby::TypeInference
       if method_call_clue.nesting.nil?
         SolveMethodCallInCurrentScope.call(application:, reference:, method_call_clue:)
       elsif method_call_clue.nesting.constant?
-        SolveMethodCallInConstant.call(application:, reference:, method_call_clue:)
+        SolveMethodCallInSpecifiedScope.call(application:, reference:, method_call_clue:)
       else
         nil
       end
