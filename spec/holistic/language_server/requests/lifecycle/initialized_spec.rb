@@ -18,13 +18,10 @@ describe ::Holistic::LanguageServer::Requests::Lifecycle::Initialized do
     ::Holistic::LanguageServer::Current.set(lifecycle:, &each)
   end
 
-  it "reponds with nil" do
+  it "reponds with drop" do
     response = described_class.call(request)
 
-    expect(response).to have_attributes(
-      itself: ::Holistic::LanguageServer::Response::Success,
-      result: nil
-    )
+    expect(response).to be_a(::Holistic::LanguageServer::Response::Drop)
   end
 
   it "updates the lifecycle state to :initialized" do

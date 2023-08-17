@@ -34,5 +34,6 @@ module Holistic::LanguageServer
 
     Exit = ::Data.define
     NotFound = ::Data.define
+    Drop = ::Data.define
   end
 end

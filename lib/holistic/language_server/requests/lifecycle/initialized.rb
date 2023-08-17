@@ -7,7 +7,7 @@ module Holistic::LanguageServer
     def call(request)
       Current.lifecycle.initialized!
 
-      request.respond_with(nil)
+      request.drop
     end
   end
 end

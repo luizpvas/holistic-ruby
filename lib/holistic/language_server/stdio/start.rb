@@ -22,6 +22,7 @@ module Holistic::LanguageServer
           in Response::Success  then server.write_to_output(response.encode)
           in Response::Error    then server.write_to_output(response.encode)
           in Response::NotFound then nil
+          in Response::Drop     then nil
           in Response::Exit     then server.stop!
           end
           

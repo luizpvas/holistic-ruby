@@ -10,6 +10,10 @@ module Holistic::LanguageServer
       self.response = Response::Error.new(message_id: message.id, code:, message: description, data:)
     end
 
+    def drop
+      self.response = Response::Drop.new
+    end
+
     def param(*keys)
       message.param(*keys)
     end
