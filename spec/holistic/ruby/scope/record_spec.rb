@@ -10,7 +10,7 @@ describe ::Holistic::Ruby::Scope::Record do
         name: "MyModule",
         parent: nil,
         children: [],
-        locations: be_a(::Holistic::Ruby::Scope::Locations)
+        locations: be_a(::Holistic::Ruby::Scope::Location::Collection)
       )
     end
   end

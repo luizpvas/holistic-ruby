@@ -8,7 +8,7 @@ module Holistic::Ruby::Scope
       @kind = kind
       @name = name
       @parent = parent
-      @locations = Locations.new(self, location)
+      @locations = Location::Collection.new(self, location)
       @children = []
     end
 
