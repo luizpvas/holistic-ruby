@@ -28,7 +28,10 @@ describe ::Holistic::LanguageServer::Requests::Lifecycle::Initialize do
         capabilities: {
           textDocumentSync: 2,
           definitionProvider: true,
-          referencesProvider: true
+          referencesProvider: true,
+          completionProvider: {
+            triggerCharacters: [":", "."]
+          }
         },
         serverInfo: {
           name: "Holistic Ruby",

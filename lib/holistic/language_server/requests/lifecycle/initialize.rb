@@ -58,6 +58,11 @@ module Holistic::LanguageServer
 
           # The server provides find references support.
           referencesProvider: true,
+
+          # The server provides completion support
+          completionProvider: {
+            triggerCharacters: [":", "."]
+          }
         },
         serverInfo: {
           name: "Holistic Ruby",
