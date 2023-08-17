@@ -57,7 +57,7 @@ module Holistic::LanguageServer
           definitionProvider: true,
 
           # The server provides find references support.
-          referencesProvider: true
+          referencesProvider: true,
         },
         serverInfo: {
           name: "Holistic Ruby",

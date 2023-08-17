@@ -60,6 +60,21 @@ module Holistic::Ruby::Parser
         visit(statements_nodes)
       end
 
+      def visit_vcall(node)
+        method_call_clue = ::Holistic::Ruby::TypeInference::Clue::MethodCall.new(
+          nesting: nil,
+          method_name: node.child_nodes.first.value,
+          resolution_possibilities: @constant_resolution.current
+        )
+
+        ::Holistic::Ruby::Reference::Register.call(
+          repository: @application.references,
+          scope: @constant_resolution.scope,
+          clues: [method_call_clue],
+          location: build_location(node)
+        )
+      end
+
       def visit_call(node)
         instance_node, _period_node, method_name_node, arguments_nodes = node.child_nodes
 
