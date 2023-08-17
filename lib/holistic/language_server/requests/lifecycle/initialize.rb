@@ -20,6 +20,9 @@ module Holistic::LanguageServer
     private
 
     def create_application(request)
+      ::Holistic.logger.info("===========")
+      ::Holistic.logger.info(request.message.inspect)
+      
       root_directory = request.param("rootPath")
       name = ::File.basename(root_directory)
 
