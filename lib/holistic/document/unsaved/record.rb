@@ -10,7 +10,7 @@ module Holistic::Document
       @original_content = content.dup
     end
 
-    def expand_token(cursor)
+    def expand_code(cursor)
       line = 0
       column = 0
 

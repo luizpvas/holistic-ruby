@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Holistic::Ruby::Parser
+  # TODO: move to an attibute of the scope
   class TableOfContents
     attr_reader :records
 

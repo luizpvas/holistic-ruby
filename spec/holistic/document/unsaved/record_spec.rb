@@ -19,7 +19,7 @@ describe ::Holistic::Document::Unsaved::Record do
     end
   end
 
-  describe "#expand_token" do
+  describe "#expand_code" do
     let(:content) do
       <<~RUBY
       module MyApp
@@ -37,7 +37,7 @@ describe ::Holistic::Document::Unsaved::Record do
     it "returns an empty string if there is no token under the cursor" do
       cursor = ::Holistic::Document::Cursor.new(file_path: "example.rb", line: 1, column: 0)
 
-      token = document.expand_token(cursor)
+      token = document.expand_code(cursor)
 
       expect(token).to eql("")
     end
@@ -46,7 +46,7 @@ describe ::Holistic::Document::Unsaved::Record do
       # the dot after "my_application"
       cursor = ::Holistic::Document::Cursor.new(file_path: "example.rb", line: 2, column: 31)
 
-      token = document.expand_token(cursor)
+      token = document.expand_code(cursor)
 
       expect(token).to eql("my_application.")
     end
@@ -55,7 +55,7 @@ describe ::Holistic::Document::Unsaved::Record do
       # the second double-colon after "my_application"
       cursor = ::Holistic::Document::Cursor.new(file_path: "example.rb", line: 3, column: 20)
 
-      token = document.expand_token(cursor)
+      token = document.expand_code(cursor)
 
       expect(token).to eql("MyLib::Payments::")
     end
@@ -64,7 +64,7 @@ describe ::Holistic::Document::Unsaved::Record do
       # the dot after "my_thing_2"
       cursor = ::Holistic::Document::Cursor.new(file_path: "example.rb", line: 4, column: 25)
 
-      token = document.expand_token(cursor)
+      token = document.expand_code(cursor)
 
       expect(token).to eql("my_thing_1.my_thing_2.")
     end
