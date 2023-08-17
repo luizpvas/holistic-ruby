@@ -59,6 +59,13 @@ module Holistic::Ruby::TypeInference
       Conclusion.done(referenced_method.fully_qualified_name) if referenced_method.present?
     end
 
+    SolveMethodCallInLocalVariable = ->(application:, reference:, method_call_clue:) do
+      # local_variable_name = method_call_clue.nesting.to_s
+      # referenced_scope = guess_scope_for_local_variable(scope: reference.scope, name: local_variable_name)
+
+      nil
+    end
+
     def solve_method_call(application:, reference:)
       has_method_call_clue = reference.clues.one? && reference.clues.first.is_a?(Clue::MethodCall)
 
@@ -71,7 +78,7 @@ module Holistic::Ruby::TypeInference
       elsif method_call_clue.nesting.constant?
         SolveMethodCallInSpecifiedScope.call(application:, reference:, method_call_clue:)
       else
-        nil
+        SolveMethodCallInLocalVariable.call(application:, reference:, method_call_clue:)
       end
     end
 
