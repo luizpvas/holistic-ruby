@@ -5,6 +5,8 @@ module Holistic::LanguageServer
     extend self
 
     def call
+      ::Holistic.logger.info("starting holistic-ruby server on dir: #{::Dir.getwd}")
+
       start_language_server_lifecycle!
 
       server = Stdio::Server.new
@@ -27,7 +29,7 @@ module Holistic::LanguageServer
         end
       end
 
-      ::Holistic.logger.info("all good, bye!")
+      ::Holistic.logger.info("closing holistic-ruby server on dir #{::Dir.getwd}")
     rescue ::StandardError => err
       ::Holistic.logger.info("crash from Stdio::Start")
       ::Holistic.logger.info(err.inspect)
