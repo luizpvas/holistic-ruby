@@ -23,9 +23,27 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::Completion do
 
   let(:application) { parse_snippet(source_code) }
 
-  context "when there is no unsaved document" do
+  context "when there is no document with for the given file path" do
     it "responds with nil" do
       message = build_completion_message(file_path: "/non_existing.rb", line: 0, column: 0)
+
+      request = ::Holistic::LanguageServer::Request.new(message:, application:)
+
+      response = described_class.call(request)
+
+      expect(response).to have_attributes(
+        itself: ::Holistic::LanguageServer::Response::Success,
+        message_id: message.id,
+        result: nil
+      )
+    end
+  end
+
+  context "when characters under cursor does not expand to valid code" do
+    it "responds with nil" do
+      application.unsaved_documents.add(path: "/snippet.rb", content: ::String.new(source_code))
+      
+      message = build_completion_message(file_path: "/snippet.rb", line: 2, column: 0)
 
       request = ::Holistic::LanguageServer::Request.new(message:, application:)
 

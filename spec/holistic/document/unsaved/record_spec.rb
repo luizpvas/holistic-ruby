@@ -35,7 +35,7 @@ describe ::Holistic::Document::Unsaved::Record do
     let(:document) { described_class.new(path: "example.rb", content: content) }
 
     it "returns an empty string if there is no token under the cursor" do
-      cursor = ::Holistic::Document::Cursor.new(file_path: "example.rb", line: 1, column: 0)
+      cursor = ::Holistic::Document::Cursor.new(file_path: "example.rb", line: 1, column: 1)
 
       token = document.expand_code(cursor)
 
@@ -44,7 +44,7 @@ describe ::Holistic::Document::Unsaved::Record do
 
     it "returns identifier name if token is under variable" do
       # the dot after "my_application"
-      cursor = ::Holistic::Document::Cursor.new(file_path: "example.rb", line: 2, column: 31)
+      cursor = ::Holistic::Document::Cursor.new(file_path: "example.rb", line: 2, column: 32)
 
       token = document.expand_code(cursor)
 
@@ -53,7 +53,7 @@ describe ::Holistic::Document::Unsaved::Record do
 
     it "returns namespace name if token is under namespace" do
       # the second double-colon after "my_application"
-      cursor = ::Holistic::Document::Cursor.new(file_path: "example.rb", line: 3, column: 20)
+      cursor = ::Holistic::Document::Cursor.new(file_path: "example.rb", line: 3, column: 21)
 
       token = document.expand_code(cursor)
 
@@ -62,7 +62,7 @@ describe ::Holistic::Document::Unsaved::Record do
 
     it "returns the chain call with identifeirs" do
       # the dot after "my_thing_2"
-      cursor = ::Holistic::Document::Cursor.new(file_path: "example.rb", line: 4, column: 25)
+      cursor = ::Holistic::Document::Cursor.new(file_path: "example.rb", line: 4, column: 26)
 
       token = document.expand_code(cursor)
 

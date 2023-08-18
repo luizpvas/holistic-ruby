@@ -32,6 +32,8 @@ module Holistic::Document
           column += 1
         end
       end
+
+      nil
     end
 
     def mark_as_saved!
