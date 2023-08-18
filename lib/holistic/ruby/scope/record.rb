@@ -41,6 +41,10 @@ module Holistic::Ruby::Scope
       kind == Kind::MODULE
     end
 
+    def method?
+      kind == Kind::METHOD
+    end
+
     def descendant?(other)
       parent.present? && (parent == other || parent.descendant?(other))
     end
