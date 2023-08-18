@@ -14,33 +14,33 @@ module Holistic::Ruby::Parser
 
     visit_methods do
       def visit_module(node)
-        declaration_node, statements_nodes = node.child_nodes
+        declaration_node, body_node = node.child_nodes
 
         nesting = NestingSyntax.build(declaration_node)
-        location = build_location(declaration_node)
+        location = build_scope_location(declaration_node:, body_node:)
 
         @constant_resolution.register_child_module(nesting:, location:) do
-          visit(statements_nodes)
+          visit(body_node)
         end
       end
 
       def visit_class(node)
-        declaration_node, superclass_node, statements_nodes = node.child_nodes
+        declaration_node, superclass_node, body_node = node.child_nodes
 
         if superclass_node
           register_reference(nesting: NestingSyntax.build(superclass_node), location: build_location(superclass_node))
         end
 
         nesting = NestingSyntax.build(declaration_node)
-        location = build_location(declaration_node)
+        location = build_scope_location(declaration_node:, body_node:)
 
         @constant_resolution.register_child_class(nesting:, location:) do
-          visit(statements_nodes)
+          visit(body_node)
         end
       end
 
       def visit_def(node)
-        instance_node, period_node, method_name_node, _params, statements_nodes = node.child_nodes
+        instance_node, period_node, method_name_node, _params, body_node = node.child_nodes
 
         method_name =
           if instance_node.present? && period_node.present?
@@ -49,15 +49,17 @@ module Holistic::Ruby::Parser
             method_name_node.value
           end
 
+        location = build_scope_location(declaration_node: method_name_node, body_node:)
+
         ::Holistic::Ruby::Scope::Register.call(
           repository: @application.scopes,
           parent: @constant_resolution.scope,
           kind: ::Holistic::Ruby::Scope::Kind::METHOD,
           name: method_name,
-          location: build_location(node)
+          location:
         )
 
-        visit(statements_nodes)
+        visit(body_node)
       end
 
       def visit_vcall(node)
@@ -110,21 +112,21 @@ module Holistic::Ruby::Parser
       end
 
       def visit_assign(node)
-        assign_node, statement_node = node.child_nodes
+        assign_node, body_node = node.child_nodes
 
         if !assign_node.child_nodes.first.is_a?(::SyntaxTree::Const)
-          visit(statement_node)
+          visit(body_node)
 
           return # TODO
         end
 
         # Are we assigning to something that opens a block? If so, we need to register the child scope
         # and visit the statements. This is needed to support methods defined in `Data.define` and `Struct.new`.
-        if statement_node.is_a?(::SyntaxTree::MethodAddBlock)
-          call_node, block_node = statement_node.child_nodes
+        if body_node.is_a?(::SyntaxTree::MethodAddBlock)
+          call_node, block_node = body_node.child_nodes
 
           nesting = NestingSyntax.build(assign_node)
-          location = build_location(assign_node)
+          location = build_scope_location(declaration_node: assign_node, body_node: block_node)
 
           @constant_resolution.register_child_class(nesting:, location:) do
             visit(block_node)
@@ -133,15 +135,17 @@ module Holistic::Ruby::Parser
           return
         end
 
+        location = build_scope_location(declaration_node: assign_node, body_node:)
+
         ::Holistic::Ruby::Scope::Register.call(
           repository: @application.scopes,
           parent: @constant_resolution.scope,
           kind: ::Holistic::Ruby::Scope::Kind::LAMBDA,
           name: assign_node.child_nodes.first.value,
-          location: build_location(node)
+          location:
         )
 
-        visit(statement_node)
+        visit(body_node)
       end
 
       def visit_const_path_ref(node)
@@ -173,17 +177,29 @@ module Holistic::Ruby::Parser
       )
     end
 
+    def build_scope_location(declaration_node:, body_node:)
+      ::Holistic::Ruby::Scope::Location.new(
+        declaration: build_location(declaration_node),
+        body: build_location(body_node)
+      )
+    end
+
     def build_location(node)
       # https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#position
       offset_to_match_language_server_zero_based_position = 1
 
-      ::Holistic::Document::Location.new(
-        file_path: file.path,
-        start_line: node.location.start_line - offset_to_match_language_server_zero_based_position,
-        start_column: node.location.start_column,
-        end_line: node.location.end_line - offset_to_match_language_server_zero_based_position,
-        end_column: node.location.end_column
-      )
+      start_line   = node.location.start_line - offset_to_match_language_server_zero_based_position
+      end_line     = node.location.end_line - offset_to_match_language_server_zero_based_position
+      start_column = node.location.start_column
+      end_column   = node.location.end_column
+
+      # syntax_tree seems to have a bug with the bodystmt node.
+      # It sets the end_column lower than the start_column.
+      if start_line == end_line && start_column > end_column
+        start_column, end_column = end_column, start_column
+      end
+
+      ::Holistic::Document::Location.new(file_path: file.path, start_line:, start_column:, end_line:, end_column:)
     end
   end
 end

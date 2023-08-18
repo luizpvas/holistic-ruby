@@ -6,6 +6,8 @@ module Holistic::Ruby::Scope
       attr_reader :scope, :items
 
       def initialize(scope, location)
+        raise ::ArgumentError if location.present? && !location.is_a?(Location)
+
         @scope = scope
         @items = location.nil? ? [] : [location]
       end
@@ -26,7 +28,7 @@ module Holistic::Ruby::Scope
         scope_name_in_snake_case = scope.name.underscore
 
         items.find do |location|
-          ::File.basename(location.file_path) == "#{scope_name_in_snake_case}.rb"
+          ::File.basename(location.declaration.file_path) == "#{scope_name_in_snake_case}.rb"
         end
       end
     end

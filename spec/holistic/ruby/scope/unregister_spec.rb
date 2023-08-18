@@ -5,6 +5,14 @@ describe ::Holistic::Ruby::Scope::Unregister do
     def create_root_scope
       ::Holistic::Ruby::Scope::Record.new(kind: ::Holistic::Ruby::Scope::Kind::ROOT, name: "::", parent: nil)
     end
+
+    def build_scope_location(file_name)
+      ::Holistic::Ruby::Scope::Location.new(declaration: build_document_location(file_name), body: build_document_location(file_name))
+    end
+
+    def build_document_location(file_name)
+      ::Holistic::Document::Location.beginning_of_file(file_name)
+    end
   end
 
   context "when scope does not exist" do
@@ -26,7 +34,7 @@ describe ::Holistic::Ruby::Scope::Unregister do
         parent: create_root_scope,
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
         name: "MyModule",
-        location: ::Holistic::Document::Location.beginning_of_file("/snippet.rb")
+        location: build_scope_location("/snippet.rb")
       )
     end
 
@@ -48,7 +56,7 @@ describe ::Holistic::Ruby::Scope::Unregister do
         parent:,
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
         name: "MyModule",
-        location: ::Holistic::Document::Location.beginning_of_file("/snippet.rb")
+        location: build_scope_location("/snippet.rb")
       )
     end
 
@@ -67,8 +75,8 @@ describe ::Holistic::Ruby::Scope::Unregister do
 
     let(:parent) { create_root_scope }
 
-    let(:location_1) { ::Holistic::Document::Location.beginning_of_file("/snippet_1.rb") }
-    let(:location_2) { ::Holistic::Document::Location.beginning_of_file("/snippet_2.rb") }
+    let(:location_1) { build_scope_location("/snippet_1.rb") }
+    let(:location_2) { build_scope_location("/snippet_2.rb") }
 
     let!(:scope) do
       ::Holistic::Ruby::Scope::Register.call(

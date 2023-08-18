@@ -5,6 +5,10 @@ describe ::Holistic::Ruby::Scope::Register do
     def create_root_scope
       ::Holistic::Ruby::Scope::Record.new(kind: ::Holistic::Ruby::Scope::Kind::ROOT, name: "::", parent: nil)
     end
+
+    def build_document_location
+      ::Holistic::Document::Location.beginning_of_file("app.rb")
+    end
   end
 
   context "when a scope with the same name DOES NOT EXIST in the parent scope" do
@@ -19,7 +23,7 @@ describe ::Holistic::Ruby::Scope::Register do
     end
 
     let(:child_1_location) do
-      ::Holistic::Document::Location.beginning_of_file("app.rb")
+      ::Holistic::Ruby::Scope::Location.new(declaration: build_document_location, body: build_document_location)
     end
 
     let!(:child_1) do
@@ -27,7 +31,7 @@ describe ::Holistic::Ruby::Scope::Register do
     end
 
     let(:child_2_location) do
-      ::Holistic::Document::Location.beginning_of_file("app.rb")
+      ::Holistic::Ruby::Scope::Location.new(declaration: build_document_location, body: build_document_location)
     end
 
     let!(:child_2) do
@@ -77,8 +81,8 @@ describe ::Holistic::Ruby::Scope::Register do
       )
     end
 
-    let(:location_1) { ::Holistic::Document::Location.beginning_of_file("app.rb") }
-    let(:location_2) { ::Holistic::Document::Location.beginning_of_file("app.rb") }
+    let(:location_1) { ::Holistic::Ruby::Scope::Location.new(declaration: build_document_location, body: build_document_location) }
+    let(:location_2) { ::Holistic::Ruby::Scope::Location.new(declaration: build_document_location, body: build_document_location) }
 
     let!(:child_1) do
       described_class.call(repository:, parent:, kind: ::Holistic::Ruby::Scope::Kind::MODULE, name: "MyChild", location: location_1)

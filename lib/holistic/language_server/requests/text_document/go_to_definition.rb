@@ -39,22 +39,22 @@ module Holistic::LanguageServer
 
     def respond_with_location_link(request, reference, referenced_scope)
       origin_location = reference.location
-      target_location = referenced_scope.locations.main
+      target_declaration_location = referenced_scope.locations.main.declaration
 
       location_link = {
         "originSelectionRange" => {
           "start" => { "line" => origin_location.start_line, "character" => origin_location.start_column },
           "end" => { "line" => origin_location.end_line, "character" => origin_location.end_column }
         },
-        "targetUri" => Format::FileUri.from_path(target_location.file_path),
+        "targetUri" => Format::FileUri.from_path(target_declaration_location.file_path),
         "targetRange" => {
-          "start" => { "line" => target_location.start_line, "character" => target_location.start_column },
-          "end" => { "line" => target_location.end_line, "character" => target_location.end_column }
+          "start" => { "line" => target_declaration_location.start_line, "character" => target_declaration_location.start_column },
+          "end" => { "line" => target_declaration_location.end_line, "character" => target_declaration_location.end_column }
         },
         # TODO: store the location of the declaration name
         "targetSelectionRange" => {
-          "start" => { "line" => target_location.start_line, "character" => target_location.start_column },
-          "end" => { "line" => target_location.end_line, "character" => target_location.end_column }
+          "start" => { "line" => target_declaration_location.start_line, "character" => target_declaration_location.start_column },
+          "end" => { "line" => target_declaration_location.end_line, "character" => target_declaration_location.end_column }
         }
       }
 
