@@ -7,8 +7,6 @@ module Holistic::LanguageServer
     def call(request)
       cursor = build_cursor_from_request_params(request)
 
-      scope = request.application.scopes.find_inner_most_scope_by_cursor(cursor) || request.application.root_scope
-
       document = request.application.unsaved_documents.find(cursor.file_path)
 
       return request.respond_with(nil) if document.nil?
@@ -21,10 +19,7 @@ module Holistic::LanguageServer
       end
 
       code = document.expand_code(cursor)
-
-      puts "root object_id: #{request.application.root_scope.object_id}"
-      puts "myapp: #{request.application.root_scope.children.first.fully_qualified_name}"
-      puts "myapp object_id: #{request.application.root_scope.children.first.object_id}"
+      scope = request.application.scopes.find_inner_most_scope_by_cursor(cursor) || request.application.root_scope
 
       suggestions = ::Holistic::Ruby::Autocompletion::Suggest.call(code:, scope:)
 

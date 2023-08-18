@@ -61,8 +61,6 @@ module Holistic::Ruby::Autocompletion
           end
         end
 
-        puts "scope: #{scope.fully_qualified_name} (#{scope.object_id})"
-
         search.(scope.parent) if scope.parent.present? && should_search_upwards
       end
 
