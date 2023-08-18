@@ -12,6 +12,8 @@ module Holistic::Ruby::Parser
     visitor = ProgramVisitor.new(application:, constant_resolution:, file:)
 
     visitor.visit(program)
+  rescue ::SyntaxTree::Parser::ParseError
+    ::Holistic.logger.info("syntax error on file #{file.path}")
   end
 
   ParseDirectory = ->(application:, directory_path:) do
