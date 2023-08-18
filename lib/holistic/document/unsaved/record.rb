@@ -15,7 +15,7 @@ module Holistic::Document
       column = 0
 
       @content.each_char.with_index do |char, index|
-        if cursor.line == line && cursor.column == column
+        if cursor.line == line && cursor.column == column + 1
           token_index = index
 
           while @content[token_index].match?(/[a-zA-Z0-9_\.:]/)

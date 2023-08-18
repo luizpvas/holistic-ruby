@@ -61,7 +61,7 @@ module Holistic::LanguageServer
 
           # The server provides completion support
           completionProvider: {
-            triggerCharacters: [":", "."]
+            triggerCharacters: ["::", "."]
           }
         },
         serverInfo: {
