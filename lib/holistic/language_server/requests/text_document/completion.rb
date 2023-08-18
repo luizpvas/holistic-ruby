@@ -38,12 +38,16 @@ module Holistic::LanguageServer
       ::Holistic::Document::Cursor.new(file_path:, line:, column:)
     end
 
+    BuildLanguageCompletionItem = ->(suggestion) do
+      {
+        label: suggestion.code.gsub("::", ""),
+        insertText: suggestion.code,
+        kind: 9
+      }
+    end
+
     def respond_with_suggestions(request, suggestions)
-      formatted_suggestions = suggestions.map do |suggestion|
-        {
-          label: suggestion.code
-        }
-      end
+      formatted_suggestions = suggestions.map(&BuildLanguageCompletionItem)
 
       request.respond_with(formatted_suggestions)
     end
