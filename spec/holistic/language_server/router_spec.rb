@@ -309,6 +309,37 @@ describe ::Holistic::LanguageServer::Router do
     end
   end
 
+  context "when routing 'textDocument/completion' messages" do
+    let(:competion_message) do
+      ::Holistic::LanguageServer::Message.new({
+        "jsonrpc" => "2.0",
+        "method" => "textDocument/completion",
+        "params" => {}
+      })
+    end
+
+    around(:each) do |each|
+      lifecycle = ::Holistic::LanguageServer::Lifecycle.new
+      lifecycle.waiting_initialized_event!
+      lifecycle.initialized!
+
+      ::Holistic::LanguageServer::Current.set(lifecycle:, &each)
+    end
+
+    it "calls the handler" do
+      expect(::Holistic::LanguageServer::Requests::TextDocument::Completion)
+        .to receive(:call)
+        .with(
+          have_attributes(
+            itself: ::Holistic::LanguageServer::Request,
+            message: competion_message
+          )
+        )
+
+      described_class.dispatch(competion_message)
+    end
+  end
+
   context "when routing unknown messages" do
     let(:unknown_message) do
       ::Holistic::LanguageServer::Message.new({
