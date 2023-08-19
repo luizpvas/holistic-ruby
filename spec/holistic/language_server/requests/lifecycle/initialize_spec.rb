@@ -30,7 +30,7 @@ describe ::Holistic::LanguageServer::Requests::Lifecycle::Initialize do
           definitionProvider: true,
           referencesProvider: true,
           completionProvider: {
-            triggerCharacters: [":", ".", "@"],
+            triggerCharacters: [".", "@"],
             resolveProvider: true
           }
         },

@@ -38,16 +38,29 @@ module Holistic::LanguageServer
       ::Holistic::Document::Cursor.new(file_path:, line:, column:)
     end
 
-    BuildLanguageCompletionItem = ->(suggestion) do
-      {
-        label: suggestion.code.gsub("::", ""),
-        insertText: suggestion.code,
-        kind: 9
-      }
+    module CompletionKind
+      FROM_SCOPE_TO_COMPLETION = {
+        ::Holistic::Ruby::Scope::Kind::CLASS  => Protocol::COMPLETION_ITEM_KIND_CLASS,
+        ::Holistic::Ruby::Scope::Kind::LAMBDA => Protocol::COMPLETION_ITEM_KIND_FUNCTION,
+        ::Holistic::Ruby::Scope::Kind::METHOD => Protocol::COMPLETION_ITEM_KIND_METHOD,
+        ::Holistic::Ruby::Scope::Kind::MODULE => Protocol::COMPLETION_ITEM_KIND_MODULE,
+        ::Holistic::Ruby::Scope::Kind::ROOT   => Protocol::COMPLETION_ITEM_KIND_MODULE
+      }.freeze
+
+      DEFAULT = Protocol::COMPLETION_ITEM_KIND_MODULE
+
+      def self.fetch(scope_kind)
+        FROM_SCOPE_TO_COMPLETION.fetch(scope_kind, DEFAULT)
+      end
     end
 
     def respond_with_suggestions(request, suggestions)
-      formatted_suggestions = suggestions.map(&BuildLanguageCompletionItem)
+      formatted_suggestions = suggestions.map do |suggestion|
+        {
+          label: suggestion.code,
+          kind: CompletionKind.fetch(suggestion.kind)
+        }
+      end
 
       request.respond_with(formatted_suggestions)
     end

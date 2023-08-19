@@ -72,7 +72,8 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::Completion do
         message_id: message.id,
         result: [
           {
-            label: "MyApp"
+            label: "MyApp",
+            kind: ::Holistic::LanguageServer::Protocol::COMPLETION_ITEM_KIND_MODULE
           }
         ]
       )
@@ -94,7 +95,8 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::Completion do
         message_id: message.id,
         result: [
           {
-            label: "Payment"
+            label: "Payment",
+            kind: ::Holistic::LanguageServer::Protocol::COMPLETION_ITEM_KIND_MODULE
           }
         ]
       )
@@ -118,7 +120,8 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::Completion do
         message_id: message.id,
         result: [
           {
-            label: "Payments"
+            label: "Payments",
+            kind: ::Holistic::LanguageServer::Protocol::COMPLETION_ITEM_KIND_MODULE
           }
         ]
       )

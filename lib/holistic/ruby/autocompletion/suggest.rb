@@ -4,7 +4,7 @@ module Holistic::Ruby::Autocompletion
   module Suggest
     extend self
 
-    Suggestion = ::Data.define(:code)
+    Suggestion = ::Data.define(:code, :kind)
 
     def call(code:, scope:)
       lookup_scope = scope
@@ -23,11 +23,8 @@ module Holistic::Ruby::Autocompletion
     def suggest_namespaces_from_scope(code:, scope:)
       suggestions = []
 
-      code_to_autocomplete_ends_in_double_colon = code.end_with?("::")
-
       partial_namespaces = code.split(/(::)/).compact_blank
       namespace_to_autocomplete = partial_namespaces.pop.then { _1 == "::" ? "" : _1 }
-      namespace_to_autocomplete_ends_in_double_colon = namespace_to_autocomplete.end_with?("::")
       namespaces_to_resolve = partial_namespaces.reject { _1 == "::" }
 
       namespaces_to_resolve.each do |namespace_name|
@@ -53,11 +50,7 @@ module Holistic::Ruby::Autocompletion
       search = ->(scope) do
         scope.children.filter(&NonMethods).each do |child_scope|
           if child_scope.name.start_with?(namespace_to_autocomplete)
-            if code_to_autocomplete_ends_in_double_colon || !namespace_to_autocomplete.empty?
-              suggestions << Suggestion.new(code: child_scope.name)
-            else
-              suggestions << Suggestion.new(code: "::#{child_scope.name}")
-            end
+            suggestions << Suggestion.new(code: child_scope.name, kind: child_scope.kind)
           end
         end
 
