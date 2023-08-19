@@ -16,14 +16,6 @@ module Holistic::Extensions::Ruby
       nil
     end
 
-    ResolveStaticMethods = ->(application, params) do
-      method_call_clue, referenced_scope = params[:method_call_clue], params[:referenced_scope]
-
-      self_method_name = "#{referenced_scope.fully_qualified_name}#self.#{method_call_clue.method_name}"
-
-      application.scopes.find_by_fully_qualified_name(self_method_name)
-    end
-
     LAMBDA_METHODS = ["call", "curry"]
 
     ResolveCallToLambda = ->(application, params) do
@@ -36,7 +28,6 @@ module Holistic::Extensions::Ruby
 
     def register(application)
       application.extensions.bind(:resolve_method_call_known_scope, &ResolveClassConstructor.curry[application])
-      application.extensions.bind(:resolve_method_call_known_scope, &ResolveStaticMethods.curry[application])
       application.extensions.bind(:resolve_method_call_known_scope, &ResolveCallToLambda.curry[application])
     end
   end
