@@ -5,7 +5,10 @@ module Holistic::Ruby::Parser
     extend self
 
     def call(application:, file:)
-      references_to_recalculate = identify_references_to_recalculate_type_inference(application:, file:)
+      # TODO: do not build the AST twice
+      return unless HasValidSyntax[file:]
+
+      references_to_recalculate = identify_references_to_recalculate(application:, file:)
 
       unregister_scopes_in_file(application:, file:)
       unregsiter_references_in_file(application:, file:)
@@ -17,9 +20,9 @@ module Holistic::Ruby::Parser
 
     private
 
-    def identify_references_to_recalculate_type_inference(application:, file:)
+    def identify_references_to_recalculate(application:, file:)
       # we need to reject references declared in the same because they're already going to be
-      # unregistered and reparsed. If we don't do that, we'll end up with duplicated reference records. 
+      # reparsed. If we don't do that, we'll end up with duplicated reference records. 
 
       application.references
         .list_references_to_scopes_in_file(scopes: application.scopes, file_path: file.path)

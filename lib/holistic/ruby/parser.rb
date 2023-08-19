@@ -1,6 +1,14 @@
 # frozen_string_literal: true
 
 module Holistic::Ruby::Parser
+  HasValidSyntax = ->(file:) do
+    ::SyntaxTree.parse(file.read)
+
+    true
+  rescue ::SyntaxTree::Parser::ParseError
+    false
+  end
+
   ParseFile = ->(application:, file:) do
     program = ::SyntaxTree.parse(file.read)
 
