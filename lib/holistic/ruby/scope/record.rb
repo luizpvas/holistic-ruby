@@ -16,10 +16,10 @@ module Holistic::Ruby::Scope
       return "" if root?
 
       separator =
-        if kind == Kind::METHOD
-          "#"
-        else
-          "::"
+        case kind
+        when Kind::INSTANCE_METHOD then "#"
+        when Kind::CLASS_METHOD    then "."
+        else "::"
         end
 
       "#{parent.fully_qualified_name}#{separator}#{name}"
@@ -41,8 +41,12 @@ module Holistic::Ruby::Scope
       kind == Kind::MODULE
     end
 
-    def method?
-      kind == Kind::METHOD
+    def instance_method?
+      kind == Kind::INSTANCE_METHOD
+    end
+
+    def class_method?
+      kind == Kind::CLASS_METHOD
     end
 
     def descendant?(other)

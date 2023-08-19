@@ -22,9 +22,9 @@ describe ::Holistic::Ruby::Parser do
       itself: be_a(::Holistic::Ruby::Scope::Record)
     )
 
-    expect(application.scopes.find_by_fully_qualified_name("::MyClass#self.my_class_method")).to have_attributes(
+    expect(application.scopes.find_by_fully_qualified_name("::MyClass.my_class_method")).to have_attributes(
       itself: be_a(::Holistic::Ruby::Scope::Record),
-      name: "self.my_class_method"
+      name: "my_class_method"
     )
 
     expect(application.scopes.find_by_fully_qualified_name("::MyClass#my_method")).to have_attributes(

@@ -21,7 +21,7 @@ describe ::Holistic::Extensions::Ruby::Stdlib do
 
       expect(reference.conclusion).to have_attributes(
         status: :done,
-        dependency_identifier: "::Calculator#self.sum"
+        dependency_identifier: "::Calculator.sum"
       )
     end
   end

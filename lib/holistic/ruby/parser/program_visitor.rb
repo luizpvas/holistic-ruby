@@ -39,14 +39,30 @@ module Holistic::Ruby::Parser
         end
       end
 
+      def visit_command(node)
+        command_name_node, args_node = node.child_nodes
+
+        if command_name_node.value == "extend"
+          if args_node.child_nodes.size == 1 && args_node.child_nodes.first.child_nodes.first.value == "self"
+            @constant_resolution.change_method_registration_mode_to_class_methods!
+          end
+        end
+
+        visit(args_node)
+      end
+
       def visit_def(node)
         instance_node, period_node, method_name_node, _params, body_node = node.child_nodes
 
-        method_name =
-          if instance_node.present? && period_node.present?
-            instance_node.child_nodes.first.value + period_node.value + method_name_node.value
+        method_name = method_name_node.value
+
+        kind =
+          if instance_node.present? && instance_node.child_nodes.first.value == "self"
+            ::Holistic::Ruby::Scope::Kind::CLASS_METHOD
+          elsif @constant_resolution.method_registration_class_methods?
+            ::Holistic::Ruby::Scope::Kind::CLASS_METHOD
           else
-            method_name_node.value
+            ::Holistic::Ruby::Scope::Kind::INSTANCE_METHOD
           end
 
         location = build_scope_location(declaration_node: method_name_node, body_node:)
@@ -54,7 +70,7 @@ module Holistic::Ruby::Parser
         ::Holistic::Ruby::Scope::Register.call(
           repository: @application.scopes,
           parent: @constant_resolution.scope,
-          kind: ::Holistic::Ruby::Scope::Kind::METHOD,
+          kind:,
           name: method_name,
           location:
         )

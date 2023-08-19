@@ -47,6 +47,6 @@ describe ::Holistic::Ruby::Autocompletion::Suggest do
   end
 
   it "suggests Payment." do
-    assert_suggestions("Payment.", [{ code: "this_is_a_class_method", kind: :method }])
+    assert_suggestions("Payment.", [{ code: "this_is_a_class_method", kind: :class_method }])
   end
 end

@@ -22,8 +22,8 @@ module Holistic::Ruby::Autocompletion
 
     private
 
-    NonMethods = ->(scope) { !scope.method? }
-    Methods    = ->(scope) { scope.method? }
+    NonMethods = ->(scope) { !Methods[scope] }
+    Methods    = ->(scope) { scope.instance_method? || scope.class_method? }
 
     # Payment. <--
     # Payment::Notifications. <--
@@ -43,7 +43,7 @@ module Holistic::Ruby::Autocompletion
         return suggestions if scope.nil?
       end
 
-      scope.children.filter(&Methods).each do |method_scope|
+      scope.children.filter(&:class_method?).each do |method_scope|
         if method_scope.name.start_with?(method_to_autocomplete)
           suggestions << Suggestion.new(code: method_scope.name, kind: method_scope.kind)
         end

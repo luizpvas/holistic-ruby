@@ -29,7 +29,7 @@ describe Holistic::Ruby::Parser do
       "::" => {
         "MyApp" => {
           "Example1" => {
-            "self.call" => {}
+            "call" => {}
           },
           "Example2" => {}
         }
@@ -41,7 +41,7 @@ describe Holistic::Ruby::Parser do
     ).to match_array([
       "::MyApp",
       "::MyApp::Example1",
-      "::MyApp::Example1#self.call"
+      "::MyApp::Example1.call"
     ])
 
     expect(

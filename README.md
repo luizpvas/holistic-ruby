@@ -32,4 +32,4 @@
 
 ## Why is it a toy language server?
 
-I use `holistic-ruby` on a daily basis in a faily large Ruby codebase. It seems stable and speedy. But... I built it for myself and I'm the only one using it :smile:
+I use `holistic-ruby` on a daily basis while working in a fairly large Ruby codebase. It seems stable and speedy. But... I built it for myself and I'm the only one using it :smile:

@@ -37,7 +37,7 @@ module Holistic::Ruby::TypeInference
     end
 
     SolveMethodCallInCurrentScope = ->(application:, reference:, method_call_clue:) do
-      referenced_method = resolve_method(application:, scope: reference.scope, method_name: method_call_clue.method_name)
+      referenced_method = resolve_instance_method(application:, scope: reference.scope, method_name: method_call_clue.method_name)
 
       return if referenced_method.nil?
 
@@ -53,7 +53,7 @@ module Holistic::Ruby::TypeInference
 
       return if referenced_scope.nil?
 
-      referenced_method = resolve_method(application:, scope: referenced_scope, method_name: method_call_clue.method_name)
+      referenced_method = resolve_class_method(application:, scope: referenced_scope, method_name: method_call_clue.method_name)
       referenced_method ||= application.extensions.dispatch(:resolve_method_call_known_scope, { reference:, referenced_scope:, method_call_clue: })
 
       Conclusion.done(referenced_method.fully_qualified_name) if referenced_method.present?
@@ -101,8 +101,14 @@ module Holistic::Ruby::TypeInference
       nil
     end
 
-    def resolve_method(application:, scope:, method_name:)
+    def resolve_instance_method(application:, scope:, method_name:)
       method_fully_qualified_name = "#{scope.fully_qualified_name}##{method_name}"
+
+      application.scopes.find_by_fully_qualified_name(method_fully_qualified_name)
+    end
+
+    def resolve_class_method(application:, scope:, method_name:)
+      method_fully_qualified_name = "#{scope.fully_qualified_name}.#{method_name}"
 
       application.scopes.find_by_fully_qualified_name(method_fully_qualified_name)
     end

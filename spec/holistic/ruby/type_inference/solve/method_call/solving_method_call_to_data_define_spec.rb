@@ -21,7 +21,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
 
       expect(reference.conclusion).to have_attributes(
         status: :done,
-        dependency_identifier: "::Status#self.ready"
+        dependency_identifier: "::Status.ready"
       )
     end
   end
