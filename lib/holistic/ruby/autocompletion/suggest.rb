@@ -13,12 +13,44 @@ module Holistic::Ruby::Autocompletion
         lookup_scope = lookup_scope.parent until lookup_scope.root?
       end
 
-      suggest_namespaces_from_scope(code:, scope: lookup_scope)
+      if code.include?(".")
+        suggest_methods_from_scope(code:, scope: lookup_scope)
+      else
+        suggest_namespaces_from_scope(code:, scope: lookup_scope)
+      end
     end
 
     private
 
     NonMethods = ->(scope) { !scope.method? }
+    Methods    = ->(scope) { scope.method? }
+
+    # Payment. <--
+    # Payment::Notifications. <--
+    # current_user.a
+    def suggest_methods_from_scope(code:, scope:)
+      suggestions = []
+
+      partial_namespaces = code.split(/(::)/).compact_blank
+      namespace_to_resolve, method_to_autocomplete = partial_namespaces.pop.split(".")
+      method_to_autocomplete ||= ""
+
+      namespaces_to_resolve = [namespace_to_resolve]
+
+      namespaces_to_resolve.each do |namespace_name|
+        scope = resolve_scope(name: namespace_name, from_scope: scope)
+
+        return suggestions if scope.nil?
+      end
+
+      scope.children.filter(&Methods).each do |method_scope|
+        if method_scope.name.start_with?(method_to_autocomplete)
+          suggestions << Suggestion.new(code: method_scope.name, kind: method_scope.kind)
+        end
+      end
+
+      suggestions
+    end
 
     def suggest_namespaces_from_scope(code:, scope:)
       suggestions = []
