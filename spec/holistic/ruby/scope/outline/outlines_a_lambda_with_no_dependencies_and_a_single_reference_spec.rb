@@ -19,11 +19,11 @@ describe ::Holistic::Ruby::Scope::Outline do
     result = described_class.call(application:, scope: application.scopes.find_by_fully_qualified_name("::MyApp::PlusOne"))
 
     expect(result.dependencies).to be_empty
-    expect(result.declarations).to be_empty
+
+    expect(result.declarations.map(&:name)).to match_array(["call", "curry"])
 
     expect(result.references).to match_array([
-      application.references.find_by_code_content("PlusOne"),
-      application.references.find_by_code_content("PlusOne.call")
+      application.references.find_by_code_content("PlusOne")
     ])
 
     expect(result.dependants.map(&:fully_qualified_name)).to match_array([

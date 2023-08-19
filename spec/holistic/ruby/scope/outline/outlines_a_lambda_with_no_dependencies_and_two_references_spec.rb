@@ -20,9 +20,12 @@ describe ::Holistic::Ruby::Scope::Outline do
     result = described_class.call(application:, scope: application.scopes.find_by_fully_qualified_name("::MyApp::PlusOne"))
 
     expect(result.dependencies).to be_empty
-    expect(result.declarations).to be_empty
+    expect(result.declarations.map(&:fully_qualified_name)).to match_array([
+      "::MyApp::PlusOne.call",
+      "::MyApp::PlusOne.curry",
+    ])
 
-    expect(result.references.size).to be(2 + 2) # `PlusOne` + `PlusOne.call` twice
+    expect(result.references.size).to be(2)
 
     expect(result.dependants).to match_array([
       application.scopes.find_by_fully_qualified_name("::MyApp::Example1")

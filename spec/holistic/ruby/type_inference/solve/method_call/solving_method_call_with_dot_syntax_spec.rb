@@ -17,7 +17,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
 
       expect(reference.conclusion).to have_attributes(
         status: :done,
-        dependency_identifier: "::Sum"
+        dependency_identifier: "::Sum.call"
       )
     end
   end

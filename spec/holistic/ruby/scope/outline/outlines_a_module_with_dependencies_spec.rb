@@ -27,14 +27,18 @@ describe ::Holistic::Ruby::Scope::Outline do
     expect(result.dependants).to be_empty
 
     expect(result.declarations.map(&:fully_qualified_name)).to match_array([
-      "::MyApp::Example::PlusThree"
+      "::MyApp::Example::PlusThree",
+      "::MyApp::Example::PlusThree.call",
+      "::MyApp::Example::PlusThree.curry"
     ])
 
     dependencies = result.dependencies.map { _1.conclusion.dependency_identifier }
 
     expect(dependencies).to match_array([
       "::MyApp::PlusOne",
-      "::MyApp::PlusTwo"
+      "::MyApp::PlusOne.call",
+      "::MyApp::PlusTwo",
+      "::MyApp::PlusTwo.call"
     ])
   end
 end

@@ -153,13 +153,16 @@ module Holistic::Ruby::Parser
 
         location = build_scope_location(declaration_node: assign_node, body_node:)
 
-        ::Holistic::Ruby::Scope::Register.call(
-          repository: @application.scopes,
-          parent: @constant_resolution.scope,
-          kind: ::Holistic::Ruby::Scope::Kind::LAMBDA,
-          name: assign_node.child_nodes.first.value,
-          location:
-        )
+        lambda_scope =
+          ::Holistic::Ruby::Scope::Register.call(
+            repository: @application.scopes,
+            parent: @constant_resolution.scope,
+            kind: ::Holistic::Ruby::Scope::Kind::LAMBDA,
+            name: assign_node.child_nodes.first.value,
+            location:
+          )
+
+        @application.extensions.dispatch(:lambda_scope_registered, { lambda_scope: })
 
         visit(body_node)
       end

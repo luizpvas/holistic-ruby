@@ -26,6 +26,8 @@ describe ::Holistic::Ruby::Scope::Outline do
 
     expect(result.declarations.map(&:fully_qualified_name)).to match_array([
       "::MyApp::PlusOne",
+      "::MyApp::PlusOne.call",
+      "::MyApp::PlusOne.curry",
       "::MyApp::Example1",
       "::MyApp::Example2",
       "::MyApp::Example2#do_something"

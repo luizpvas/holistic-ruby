@@ -17,7 +17,7 @@ describe ::Holistic::Extensions::Ruby::Stdlib do
 
       expect(reference.conclusion).to have_attributes(
         status: :done,
-        dependency_identifier: "::Sum"
+        dependency_identifier: "::Sum.call"
       )
     end
   end
@@ -36,7 +36,7 @@ describe ::Holistic::Extensions::Ruby::Stdlib do
 
       expect(reference.conclusion).to have_attributes(
         status: :done,
-        dependency_identifier: "::Sum"
+        dependency_identifier: "::Sum.curry"
       )
     end
   end

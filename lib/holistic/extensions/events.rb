@@ -5,6 +5,10 @@ class Holistic::Extensions::Events
     resolve_method_call_known_scope: {
       params: [:reference, :referenced_scope, :method_call_clue],
       output: ::Holistic::Ruby::Scope::Record
+    },
+    lambda_scope_registered: {
+      params: [:lambda_scope],
+      output: nil
     }
   }.freeze
 
@@ -30,7 +34,7 @@ class Holistic::Extensions::Events
 
     result = @listeners[event].lazy.filter_map { |callback| callback.call(params) }.first
 
-    raise UnexpectedOutput, result if result.present? && !result.is_a?(expected_output)
+    raise UnexpectedOutput, result if expected_output.present? && result.present? && !result.is_a?(expected_output)
 
     result
   end
