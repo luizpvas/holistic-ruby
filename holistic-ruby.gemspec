@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.authors = ["Luiz Vasconcellos"]
   spec.email = ["luizpvasc@gmail.com"]
 
-  spec.summary = "Static analysis for Ruby"
-  spec.description = "Static analysis for Ruby"
+  spec.summary = "holistic-ruby is a toy language server for the Ruby programming language"
+  spec.description = "holistic-ruby is a toy language server for the Ruby programming language"
   spec.homepage = "https://github.com/luizpvas/holistic-ruby"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 3.2.0"
