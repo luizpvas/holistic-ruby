@@ -3,14 +3,14 @@
 require_relative "lib/holistic/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "holistic"
+  spec.name = "holistic-ruby"
   spec.version = Holistic::VERSION
   spec.authors = ["Luiz Vasconcellos"]
   spec.email = ["luizpvasc@gmail.com"]
 
   spec.summary = "Static analysis for Ruby"
   spec.description = "Static analysis for Ruby"
-  spec.homepage = "https://github.com/luizpvas/holistic"
+  spec.homepage = "https://github.com/luizpvas/holistic-ruby"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 3.2.0"
 

@@ -5,7 +5,7 @@
 ## Installation for Sublime Text
 
 1. Make sure you have the [LSP package installed](https://github.com/sublimelsp/LSP).
-2. `$ gem install holistic-ruby`
+2. Install the gem `$ gem install holistic-ruby`
 3. Go to `Preferences > Package Settings > LSP > Settings` and add:
 
 ```json
@@ -23,11 +23,13 @@
 
 ## Features
 
-* Go to definition
-* Find references
-* Autocompletion
-* Package boundaries syntax highlighting, based on packwerk.
+* Go to definition.
+* Find references.
+* Autocompletion for namespaces, methods and local variables.
+* Syntax highlighting boundaries based on packwerk.
+* Outline dependencies.
+* Glossary.
 
-## Why did I build "toy" language server?
+## Why is it a toy language server?
 
-I built it for myself and I'm the only one using it.
+I use `holistic-ruby` on a daily basis in a faily large Ruby codebase. It seems stable and speedy. But... I built it for myself and I'm the only one using it :smile:
