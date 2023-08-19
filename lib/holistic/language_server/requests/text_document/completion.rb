@@ -40,11 +40,12 @@ module Holistic::LanguageServer
 
     module CompletionKind
       FROM_SCOPE_TO_COMPLETION = {
-        ::Holistic::Ruby::Scope::Kind::CLASS  => Protocol::COMPLETION_ITEM_KIND_CLASS,
-        ::Holistic::Ruby::Scope::Kind::LAMBDA => Protocol::COMPLETION_ITEM_KIND_FUNCTION,
-        ::Holistic::Ruby::Scope::Kind::METHOD => Protocol::COMPLETION_ITEM_KIND_METHOD,
-        ::Holistic::Ruby::Scope::Kind::MODULE => Protocol::COMPLETION_ITEM_KIND_MODULE,
-        ::Holistic::Ruby::Scope::Kind::ROOT   => Protocol::COMPLETION_ITEM_KIND_MODULE
+        ::Holistic::Ruby::Scope::Kind::CLASS           => Protocol::COMPLETION_ITEM_KIND_CLASS,
+        ::Holistic::Ruby::Scope::Kind::LAMBDA          => Protocol::COMPLETION_ITEM_KIND_FUNCTION,
+        ::Holistic::Ruby::Scope::Kind::CLASS_METHOD    => Protocol::COMPLETION_ITEM_KIND_METHOD,
+        ::Holistic::Ruby::Scope::Kind::INSTANCE_METHOD => Protocol::COMPLETION_ITEM_KIND_METHOD,
+        ::Holistic::Ruby::Scope::Kind::MODULE          => Protocol::COMPLETION_ITEM_KIND_MODULE,
+        ::Holistic::Ruby::Scope::Kind::ROOT            => Protocol::COMPLETION_ITEM_KIND_MODULE
       }.freeze
 
       DEFAULT = Protocol::COMPLETION_ITEM_KIND_MODULE

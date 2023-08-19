@@ -5,7 +5,6 @@ module Holistic::Ruby::Scope
     ROOT            = :root
     MODULE          = :module
     CLASS           = :class
-    METHOD          = :method
     INSTANCE_METHOD = :instance_method
     CLASS_METHOD    = :class_method
     LAMBDA          = :lambda
