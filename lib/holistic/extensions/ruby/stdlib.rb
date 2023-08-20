@@ -35,7 +35,7 @@ module Holistic::Extensions::Ruby
     LAMBDA_METHODS = ["call", "curry"].freeze
 
     RegisterLambdaMethods = ->(application, params) do
-      lambda_scope = params[:lambda_scope]
+      lambda_scope, location = params[:lambda_scope], params[:location]
 
       LAMBDA_METHODS.each do |method_name|
         ::Holistic::Ruby::Scope::Register.call(
@@ -43,7 +43,7 @@ module Holistic::Extensions::Ruby
           parent: lambda_scope,
           kind: ::Holistic::Ruby::Scope::Kind::CLASS_METHOD,
           name: method_name,
-          location: lambda_scope.locations.items.first
+          location:
         )
       end
     end

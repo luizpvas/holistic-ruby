@@ -11,7 +11,7 @@ class Holistic::Extensions::Events
       output: nil
     },
     lambda_scope_registered: {
-      params: [:lambda_scope],
+      params: [:lambda_scope, :location],
       output: nil
     }
   }.freeze

@@ -166,7 +166,7 @@ module Holistic::Ruby::Parser
             location:
           )
 
-        @application.extensions.dispatch(:lambda_scope_registered, { lambda_scope: })
+        @application.extensions.dispatch(:lambda_scope_registered, { lambda_scope:, location: })
 
         visit(body_node)
       end
