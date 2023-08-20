@@ -30,6 +30,7 @@ describe ::Holistic::Ruby::Scope::Outline do
       "::MyApp::PlusOne.curry",
       "::MyApp::Example1",
       "::MyApp::Example2",
+      "::MyApp::Example2.new",
       "::MyApp::Example2#do_something"
     ])
   end

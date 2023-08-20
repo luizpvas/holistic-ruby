@@ -16,7 +16,23 @@ module Holistic::Extensions::Ruby
       nil
     end
 
-    LAMBDA_METHODS = ["call", "curry"]
+    RegisterClassConstructor = ->(application, params) do
+      class_scope, location = params[:class_scope], params[:location]
+
+      has_overridden_new_method = class_scope.children.find { _1.class_method? && _1.name == "new" }
+
+      unless has_overridden_new_method
+        ::Holistic::Ruby::Scope::Register.call(
+          repository: application.scopes,
+          parent: class_scope,
+          kind: ::Holistic::Ruby::Scope::Kind::CLASS_METHOD,
+          name: "new",
+          location:
+        )
+      end
+    end
+
+    LAMBDA_METHODS = ["call", "curry"].freeze
 
     RegisterLambdaMethods = ->(application, params) do
       lambda_scope = params[:lambda_scope]
@@ -34,7 +50,8 @@ module Holistic::Extensions::Ruby
 
     def register(application)
       application.extensions.bind(:resolve_method_call_known_scope, &ResolveClassConstructor.curry[application])
-      application.extensions.bind(:lambda_scope_registered, &RegisterLambdaMethods.curry[application])
+      application.extensions.bind(:class_scope_registered,          &RegisterClassConstructor.curry[application])
+      application.extensions.bind(:lambda_scope_registered,         &RegisterLambdaMethods.curry[application])
     end
   end
 end

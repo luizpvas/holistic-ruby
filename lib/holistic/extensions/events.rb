@@ -6,6 +6,10 @@ class Holistic::Extensions::Events
       params: [:reference, :referenced_scope, :method_call_clue],
       output: ::Holistic::Ruby::Scope::Record
     },
+    class_scope_registered: {
+      params: [:class_scope, :location],
+      output: nil
+    },
     lambda_scope_registered: {
       params: [:lambda_scope],
       output: nil

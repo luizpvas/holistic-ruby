@@ -29,7 +29,9 @@ describe ::Holistic::Ruby::Parser do
 
       expect(serialize_scope(application.root_scope)).to eql({
         "::" => {
-          "MyClass" => {}
+          "MyClass" => {
+            "new" => {}
+          }
         }
       })
     end

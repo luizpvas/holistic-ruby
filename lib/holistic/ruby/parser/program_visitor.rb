@@ -34,9 +34,11 @@ module Holistic::Ruby::Parser
         nesting = NestingSyntax.build(declaration_node)
         location = build_scope_location(declaration_node:, body_node:)
 
-        @constant_resolution.register_child_class(nesting:, location:) do
+        class_scope = @constant_resolution.register_child_class(nesting:, location:) do
           visit(body_node)
         end
+
+        @application.extensions.dispatch(:class_scope_registered, { class_scope:, location: })
       end
 
       def visit_command(node)
@@ -144,9 +146,11 @@ module Holistic::Ruby::Parser
           nesting = NestingSyntax.build(assign_node)
           location = build_scope_location(declaration_node: assign_node, body_node: block_node)
 
-          @constant_resolution.register_child_class(nesting:, location:) do
+          class_scope = @constant_resolution.register_child_class(nesting:, location:) do
             visit(block_node)
           end
+
+          @application.extensions.dispatch(:class_scope_registered, { class_scope:, location: })
 
           return
         end

@@ -34,6 +34,7 @@ module Holistic::Ruby::Parser
           )
       end
 
+      registered_module_scope = @scope
       @constant_resolution_possibilities.unshift(@scope.fully_qualified_name)
 
       block.call
@@ -41,6 +42,8 @@ module Holistic::Ruby::Parser
       @scope = starting_scope
       @constant_resolution_possibilities.shift
       change_method_registration_mode_to_instance_methods!
+
+      registered_module_scope
     end
 
     def register_child_class(nesting:, location:, &block)
@@ -57,6 +60,7 @@ module Holistic::Ruby::Parser
           )
       end
 
+      registered_class_scope = @scope
       @constant_resolution_possibilities.unshift(@scope.fully_qualified_name)
 
       block.call
@@ -64,6 +68,8 @@ module Holistic::Ruby::Parser
       @scope = starting_scope
       @constant_resolution_possibilities.shift
       change_method_registration_mode_to_instance_methods!
+
+      registered_class_scope
     end
 
     def method_registration_class_methods?
