@@ -45,9 +45,9 @@ module Holistic::Ruby::Parser
         command_name_node, args_node = node.child_nodes
 
         if command_name_node.value == "extend"
-          if args_node.child_nodes.size == 1 && args_node.child_nodes.first.child_nodes.first.value == "self"
-            @constant_resolution.change_method_registration_mode_to_class_methods!
-          end
+          is_extending_self = args_node.child_nodes.size == 1 && NestingSyntax.build(args_node.child_nodes.first).to_s == "self"
+
+          @constant_resolution.change_method_registration_mode_to_class_methods! if is_extending_self
         end
 
         visit(args_node)

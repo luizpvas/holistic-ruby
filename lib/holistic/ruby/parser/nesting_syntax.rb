@@ -14,6 +14,7 @@ module Holistic::Ruby::Parser
         when ::SyntaxTree::Const        then nesting_syntax << node.value
         when ::SyntaxTree::VCall        then append.(node.child_nodes.first)
         when ::SyntaxTree::Ident        then nesting_syntax << node.value
+        when ::SyntaxTree::Kw           then nesting_syntax << node.value
         when ::SyntaxTree::IVar         then nesting_syntax << node.value
         when ::SyntaxTree::Period       then nesting_syntax << "."
         when ::SyntaxTree::Paren        then append.(node.child_nodes[1])       # node.child_nodes[0] is ::SyntaxTree::LParen
