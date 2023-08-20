@@ -31,11 +31,9 @@ module Holistic::Ruby::Autocompletion
     def suggest_methods_from_scope(code:, scope:)
       suggestions = []
 
-      partial_namespaces = code.split(/(::)/).compact_blank
-      namespace_to_resolve, method_to_autocomplete = partial_namespaces.pop.split(".")
-      method_to_autocomplete ||= ""
-
-      namespaces_to_resolve = [namespace_to_resolve]
+      partial_namespaces = code.split(/(::|\.)/).compact_blank
+      method_to_autocomplete = partial_namespaces.pop.then { _1 == "." ? "" : _1 }
+      namespaces_to_resolve = partial_namespaces.reject { _1 == "::" || _1 == "." }
 
       namespaces_to_resolve.each do |namespace_name|
         scope = resolve_scope(name: namespace_name, from_scope: scope)
