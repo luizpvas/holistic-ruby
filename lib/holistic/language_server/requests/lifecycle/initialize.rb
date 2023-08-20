@@ -20,17 +20,12 @@ module Holistic::LanguageServer
     private
 
     def create_application(request)
-      ::Holistic.logger.info("===========")
-      ::Holistic.logger.info(request.message.inspect)
-      
       root_directory = request.param("rootPath")
       name = ::File.basename(root_directory)
 
-      Current.application = ::Holistic::Application.new(name:, root_directory:)
-
-      ::Holistic::Extensions::Ruby::Stdlib.register(Current.application)
-
-      Current.application
+      Current.application = ::Holistic::Application.new(name:, root_directory:).tap do |application|
+        ::Holistic::Extensions::Ruby::Stdlib.register(application)
+      end
     end
 
     def advance_lifecycle_state
