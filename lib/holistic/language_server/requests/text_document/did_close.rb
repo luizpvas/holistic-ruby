@@ -7,9 +7,7 @@ module Holistic::LanguageServer
     def call(request)
       path = Format::FileUri.extract_path(request.message.param("textDocument", "uri"))
 
-      unsaved_document = request.application.unsaved_documents.find(path)
-
-      if unsaved_document.present?
+      request.application.unsaved_documents.find(path)&.then do |unsaved_document|
         request.application.unsaved_documents.delete(path)
         
         if unsaved_document.has_unsaved_changes?

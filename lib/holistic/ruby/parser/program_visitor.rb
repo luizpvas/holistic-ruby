@@ -56,7 +56,8 @@ module Holistic::Ruby::Parser
       def visit_def(node)
         instance_node, period_node, method_name_node, _params, body_node = node.child_nodes
 
-        method_name = method_name_node.value
+        nesting = NestingSyntax.new(method_name_node.value)
+        location = build_scope_location(declaration_node: method_name_node, body_node:)
 
         kind =
           if instance_node.present? && instance_node.child_nodes.first.value == "self"
@@ -67,17 +68,9 @@ module Holistic::Ruby::Parser
             ::Holistic::Ruby::Scope::Kind::INSTANCE_METHOD
           end
 
-        location = build_scope_location(declaration_node: method_name_node, body_node:)
-
-        ::Holistic::Ruby::Scope::Register.call(
-          repository: @application.scopes,
-          parent: @constant_resolution.scope,
-          kind:,
-          name: method_name,
-          location:
-        )
-
-        visit(body_node)
+        @constant_resolution.register_child_method(nesting:, location:, kind:) do
+          visit(body_node)
+        end
       end
 
       def visit_vcall(node)
