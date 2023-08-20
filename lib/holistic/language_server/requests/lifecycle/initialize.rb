@@ -14,7 +14,7 @@ module Holistic::LanguageServer
 
       parse_application_in_background(application)
 
-      respond_with_holistic_capabilities(request)
+      respond_with_language_server_capabilities(request)
     end
 
     private
@@ -40,7 +40,7 @@ module Holistic::LanguageServer
       end
     end
 
-    def respond_with_holistic_capabilities(request)
+    def respond_with_language_server_capabilities(request)
       request.respond_with({
         capabilities: {
           # Defines how the host (editor) should sync document changes to the language server.
