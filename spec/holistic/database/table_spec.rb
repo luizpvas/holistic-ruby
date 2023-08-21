@@ -54,7 +54,7 @@ describe ::Holistic::Database::Table do
       end
     end
 
-    context "when record with the same primary key already exists" do
+    context "when a record with the same primary key already exists" do
       it "raises an error" do
         table.insert({ identifier: "example" })
 

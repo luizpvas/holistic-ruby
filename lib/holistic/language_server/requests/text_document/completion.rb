@@ -9,7 +9,14 @@ module Holistic::LanguageServer
 
       document = request.application.unsaved_documents.find(cursor.file_path)
 
-      return request.respond_with(nil) if document.nil?
+      if document.nil?
+        ::Holistic.logger.info({
+          message: "could not find document in unsaved_documents list",
+          params: request.message
+        })
+
+        return request.respond_with(nil)
+      end
 
       if document.has_unsaved_changes?
         ::Holistic::Ruby::Parser::LiveEditing::ProcessFileChanged.call(
@@ -20,7 +27,15 @@ module Holistic::LanguageServer
 
       code = document.expand_code(cursor)
       
-      return request.respond_with(nil) if code.blank?
+      if code.blank?
+        ::Holistic.logger.info({
+          message: "code was blank",
+          content: document.content,
+          params: request.message
+        })
+
+        return request.respond_with(nil)
+      end
 
       scope = request.application.scopes.find_inner_most_scope_by_cursor(cursor) || request.application.root_scope
 
