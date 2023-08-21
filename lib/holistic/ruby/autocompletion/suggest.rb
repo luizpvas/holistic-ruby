@@ -41,7 +41,7 @@ module Holistic::Ruby::Autocompletion
             suggestions << Suggestion.new(code: method_scope.name, kind: method_scope.kind)
           end
         end
-      else
+      elsif scope.class_method?
         scope.parent.children.filter(&:class_method?).each do |method_scope|
           if method_scope.name.start_with?(method_to_autocomplete)
             suggestions << Suggestion.new(code: method_scope.name, kind: method_scope.kind)
