@@ -6,6 +6,12 @@ module Holistic::Ruby::Autocompletion
 
     Suggestion = ::Data.define(:code, :kind)
 
+    StartsWithLowerCaseLetter = ->(code) do
+      return false if [".", ":", "@"].include?(code[0])
+
+      code[0] == code[0].downcase
+    end
+
     def call(code:, scope:)
       lookup_scope = scope
 
@@ -13,7 +19,9 @@ module Holistic::Ruby::Autocompletion
         lookup_scope = lookup_scope.parent until lookup_scope.root?
       end
 
-      if code.include?(".")
+      if StartsWithLowerCaseLetter[code]
+        suggest_local_methods_from_current_scope(code:, scope: lookup_scope)
+      elsif code.include?(".")
         suggest_methods_from_scope(code:, scope: lookup_scope)
       else
         suggest_namespaces_from_scope(code:, scope: lookup_scope)
@@ -22,12 +30,28 @@ module Holistic::Ruby::Autocompletion
 
     private
 
-    NonMethods = ->(scope) { !Methods[scope] }
-    Methods    = ->(scope) { scope.instance_method? || scope.class_method? }
+    def suggest_local_methods_from_current_scope(code:, scope:)
+      suggestions = []
 
-    # Payment. <--
-    # Payment::Notifications. <--
-    # current_user.a
+      method_to_autocomplete = code
+
+      if scope.instance_method?
+        scope.parent.children.filter(&:instance_method?).each do |method_scope|
+          if method_scope.name.start_with?(method_to_autocomplete)
+            suggestions << Suggestion.new(code: method_scope.name, kind: method_scope.kind)
+          end
+        end
+      else
+        scope.parent.children.filter(&:class_method?).each do |method_scope|
+          if method_scope.name.start_with?(method_to_autocomplete)
+            suggestions << Suggestion.new(code: method_scope.name, kind: method_scope.kind)
+          end
+        end
+      end
+
+      suggestions
+    end
+
     def suggest_methods_from_scope(code:, scope:)
       suggestions = []
 
@@ -63,22 +87,12 @@ module Holistic::Ruby::Autocompletion
         return suggestions if scope.nil?
       end
 
-      # special case when user did not type :: at the end but the current word
-      # is matches an existing namespace. In this case, suggestions will start with ::.
-      # For example:
-      #
-      #                          \/ cursor here
-      # typing: "::MyApp::Payments"
-      # suggestions: ["::Record", "::SendReminder"]
-      resolve_scope(name: namespace_to_autocomplete, from_scope: scope)&.then do |fully_typed_scope|
-        scope = fully_typed_scope
-        namespace_to_autocomplete = ""
-      end
-
       should_search_upwards = namespaces_to_resolve.empty?
 
       search = ->(scope) do
-        scope.children.filter(&NonMethods).each do |child_scope|
+        scope.children.each do |child_scope|
+          next if child_scope.method?
+
           if child_scope.name.start_with?(namespace_to_autocomplete)
             suggestions << Suggestion.new(code: child_scope.name, kind: child_scope.kind)
           end

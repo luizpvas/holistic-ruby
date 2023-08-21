@@ -41,6 +41,10 @@ module Holistic::Ruby::Scope
       kind == Kind::MODULE
     end
 
+    def method?
+      instance_method? || class_method?
+    end
+
     def instance_method?
       kind == Kind::INSTANCE_METHOD
     end
