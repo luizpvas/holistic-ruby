@@ -4,33 +4,17 @@ module Holistic::Document
   class File
     attr_reader :path
 
-    def initialize(path:)
+    def initialize(path:, adapter: File::Disk)
       @path = path
+      @adapter = adapter
     end
 
     def read
-      ::File.read(path)
+      @adapter.read(self)
     end
 
     def write(content)
-      ::File.write(path, content)
-    end
-
-    class Fake
-      attr_reader :path
-
-      def initialize(path:, content:)
-        @path = path
-        @content = content
-      end
-
-      def read
-        @content
-      end
-
-      def write(content) 
-        @content = content
-      end
+      @adapter.write(self, content)
     end
   end
 end

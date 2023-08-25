@@ -6,7 +6,8 @@ module Support
       application = ::Holistic::Application.new(name: "Snippet", root_directory: "snippet_parser")
       ::Holistic::Extensions::Ruby::Stdlib.register(application)
 
-      file = ::Holistic::Document::File::Fake.new(path: "/snippet.rb", content: code)
+      file = ::Holistic::Document::File.new(path: "/snippet.rb", adapter: ::Holistic::Document::File::Memory)
+      file.write(code)
 
       ::Holistic::Ruby::Parser::ParseFile.call(application:, file:)
 
@@ -22,7 +23,8 @@ module Support
 
       files = ::Object.new
       files.define_singleton_method(:add) do |file_path, code|
-        file = ::Holistic::Document::File::Fake.new(path: file_path, content: code)
+        file = ::Holistic::Document::File.new(path: file_path, adapter: ::Holistic::Document::File::Memory)
+        file.write(code)
 
         ::Holistic::Ruby::Parser::ParseFile[application:, file:]
       end

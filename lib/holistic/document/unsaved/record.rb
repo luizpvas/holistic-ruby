@@ -77,7 +77,9 @@ module Holistic::Document
     end
 
     def to_file
-      File::Fake.new(path:, content:)
+      File.new(path:, adapter: File::Memory).tap do |file|
+        file.write(content)
+      end
     end
   end
 end
