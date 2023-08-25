@@ -15,7 +15,7 @@ module Holistic::Ruby::Reference
     end
 
     def register_reference(reference)
-      table.update({
+      table.store({
         reference:,
         identifier: reference.identifier,
         file_path: reference.location.file_path,

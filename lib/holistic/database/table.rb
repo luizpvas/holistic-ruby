@@ -13,14 +13,10 @@ class Holistic::Database::Table
     end.to_h
   end
 
-  RecordNotUniqueError = ::Class.new(::StandardError)
-
-  def insert(record)
+  def store(record)
     primary_key = record.fetch(primary_attribute)
 
-    if primary_index.key?(primary_key)
-      raise RecordNotUniqueError, "record already inserted: #{record.inspect}"
-    end
+    delete(primary_key) if primary_index.key?(primary_key)
 
     primary_index[primary_key] = record
 
@@ -39,14 +35,6 @@ class Holistic::Database::Table
     return [] unless secondary_indices[name].key?(value)
 
     secondary_indices.dig(name, value).to_a.map { find(_1) }
-  end
-
-  def update(record)
-    primary_key = record.fetch(primary_attribute)
-
-    delete(primary_key)
-
-    insert(record)
   end
 
   def delete(primary_key)
