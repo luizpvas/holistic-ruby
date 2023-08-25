@@ -11,13 +11,12 @@ module Holistic::Ruby::Reference
     ].freeze
 
     def initialize
-      @table = ::Holistic::Database::Table.new(primary_attribute: :identifier, indices: INDICES)
+      @table = ::Holistic::Database::Table.new(indices: INDICES)
     end
 
     def register_reference(reference)
-      table.store({
+      table.store(reference.identifier, {
         reference:,
-        identifier: reference.identifier,
         file_path: reference.location.file_path,
         type_inference_status: reference.conclusion.status,
         referenced_scope_fully_qualified_name: reference.conclusion.dependency_identifier

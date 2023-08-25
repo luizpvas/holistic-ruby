@@ -1,52 +1,48 @@
 # frozen_string_literal: true
 
 class Holistic::Database::Table
-  attr_reader :primary_attribute, :primary_index, :secondary_indices
+  attr_reader :records, :indices
 
-  def initialize(primary_attribute:, indices: [])
-    @primary_attribute = primary_attribute
+  def initialize(indices: [])
+    @records = ::Hash.new
 
-    @primary_index = ::Hash.new
-
-    @secondary_indices = indices.map do |attribute_name|
+    @indices = indices.map do |attribute_name|
       [attribute_name, ::Hash.new { |hash, key| hash[key] = ::Set.new }]
     end.to_h
   end
 
-  def store(record)
-    primary_key = record.fetch(primary_attribute)
+  def store(id, record)
+    delete(id) if records.key?(id)
 
-    delete(primary_key) if primary_index.key?(primary_key)
+    @records[id] = record
 
-    primary_index[primary_key] = record
-
-    secondary_indices.each do |attribute_name, secondary_index|
+    @indices.each do |attribute_name, index_data|
       Array(record[attribute_name]).each do |value|
-        secondary_index[value].add(primary_key)
+        index_data[value].add(id)
       end
     end
   end
 
-  def find(identifier)
-    primary_index[identifier]
+  def find(id)
+    @records[id]
   end
 
   def filter(name, value)
-    return [] unless secondary_indices[name].key?(value)
+    return [] unless indices[name].key?(value)
 
-    secondary_indices.dig(name, value).to_a.map { find(_1) }
+    indices.dig(name, value).to_a.map { find(_1) }
   end
 
-  def delete(primary_key)
-    record = find(primary_key)
+  def delete(id)
+    record = find(id)
 
     return if record.nil?
 
-    primary_index.delete(primary_key)
+    records.delete(id)
 
-    secondary_indices.each do |attribute_name, index_data|
+    indices.each do |attribute_name, index_data|
       Array(record[attribute_name]).each do |value|
-        index_data[value].delete(primary_key)
+        index_data[value].delete(id)
         index_data.delete(value) if index_data[value].empty?
       end
     end
@@ -56,11 +52,11 @@ class Holistic::Database::Table
 
   concerning :TestHelpers do
     def all
-      primary_index.values
+      records.values
     end
 
     def size
-      primary_index.size
+      records.size
     end
   end
 end
