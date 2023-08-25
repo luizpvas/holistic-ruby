@@ -41,7 +41,7 @@ module Holistic::Ruby::Reference
 
     def list_references_to_scopes_in_file(scopes:, file_path:)
       scopes.list_scopes_in_file(file_path).flat_map do |scope|
-        table.filter(:referenced_scope_fully_qualified_name, scope.fully_qualified_name).map { _1[:reference] }
+        list_references_to(scope.fully_qualified_name)
       end
     end
 
