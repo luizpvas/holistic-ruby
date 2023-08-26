@@ -58,15 +58,9 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::DidClose do
     it "calls the parser with the original content" do
       insert_text_on_document(document: unsaved_document, text: "a", line: 0, column: 0)
 
-      expect(described_class)
-        .to receive(:process_in_background)
-        .with(
-          application:,
-          file: have_attributes(
-            itself: ::Holistic::Document::File::Record,
-            read: "CONTENT"
-          )
-        )
+      expect(::Holistic::Ruby::Parser::LiveEditing::ProcessFileChanged)
+        .to receive(:call)
+        .with(application:, file_path:, content: "CONTENT")
 
       request = ::Holistic::LanguageServer::Request.new(application:, message:)
       described_class.call(request)

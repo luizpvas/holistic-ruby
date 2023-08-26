@@ -6,17 +6,20 @@ describe ::Holistic::Ruby::Scope::Unregister do
       ::Holistic::Ruby::Scope::Record.new(kind: ::Holistic::Ruby::Scope::Kind::ROOT, name: "::", parent: nil)
     end
 
-    def build_scope_location(file_name)
-      ::Holistic::Ruby::Scope::Location.new(declaration: build_document_location(file_name), body: build_document_location(file_name))
+    def build_scope_location(files:, file_path:)
+      file = ::Holistic::Document::File::Register.call(repository: files, file_path:)
+
+      ::Holistic::Ruby::Scope::Location.new(declaration: build_document_location(file), body: build_document_location(file))
     end
 
-    def build_document_location(file_name)
-      ::Holistic::Document::Location.beginning_of_file(file_name)
+    def build_document_location(file)
+      ::Holistic::Document::Location.beginning_of_file(file)
     end
   end
 
   context "when scope does not exist" do
-    let(:repository) { ::Holistic::Ruby::Scope::Repository.new }
+    let(:files) { ::Holistic::Document::File::Repository.new }
+    let(:repository) { ::Holistic::Ruby::Scope::Repository.new(files:) }
 
     it "returns :scope_not_found" do
       result = described_class.call(repository:, fully_qualified_name: "NonExisting", file_path: "/snippet.rb")
@@ -26,7 +29,8 @@ describe ::Holistic::Ruby::Scope::Unregister do
   end
 
   context "when scope exists but is not defined in the specified file" do
-    let(:repository) { ::Holistic::Ruby::Scope::Repository.new }
+    let(:files) { ::Holistic::Document::File::Repository.new }
+    let(:repository) { ::Holistic::Ruby::Scope::Repository.new(files:) }
 
     let!(:scope) do
       ::Holistic::Ruby::Scope::Register.call(
@@ -34,7 +38,7 @@ describe ::Holistic::Ruby::Scope::Unregister do
         parent: create_root_scope,
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
         name: "MyModule",
-        location: build_scope_location("/snippet.rb")
+        location: build_scope_location(files:, file_path: "/snippet.rb")
       )
     end
 
@@ -46,9 +50,12 @@ describe ::Holistic::Ruby::Scope::Unregister do
   end
 
   context "when scope exists and the only definition of it is in the specified file" do
-    let(:repository) { ::Holistic::Ruby::Scope::Repository.new }
+    let(:files) { ::Holistic::Document::File::Repository.new }
+    let(:repository) { ::Holistic::Ruby::Scope::Repository.new(files:) }
 
     let(:parent) { create_root_scope }
+
+    let(:location) { build_scope_location(files:, file_path: "/snippet.rb") }
 
     let!(:scope) do
       ::Holistic::Ruby::Scope::Register.call(
@@ -56,7 +63,7 @@ describe ::Holistic::Ruby::Scope::Unregister do
         parent:,
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
         name: "MyModule",
-        location: build_scope_location("/snippet.rb")
+        location:
       )
     end
 
@@ -68,15 +75,22 @@ describe ::Holistic::Ruby::Scope::Unregister do
       expect(parent.children.size).to be(0)
       expect(repository.table.size).to be(0)
     end
+
+    it "disconnects the scope from the file" do
+      result = described_class.call(repository:, fully_qualified_name: "::MyModule", file_path: "/snippet.rb")
+
+      expect(location.declaration.file.scopes).to be_empty
+    end
   end
 
   context "when scope exists and it is defined in multiple files" do
-    let(:repository) { ::Holistic::Ruby::Scope::Repository.new }
+    let(:files) { ::Holistic::Document::File::Repository.new }
+    let(:repository) { ::Holistic::Ruby::Scope::Repository.new(files:) }
 
     let(:parent) { create_root_scope }
 
-    let(:location_1) { build_scope_location("/snippet_1.rb") }
-    let(:location_2) { build_scope_location("/snippet_2.rb") }
+    let(:location_1) { build_scope_location(files:, file_path: "/snippet_1.rb") }
+    let(:location_2) { build_scope_location(files:, file_path: "/snippet_2.rb") }
 
     let!(:scope) do
       ::Holistic::Ruby::Scope::Register.call(

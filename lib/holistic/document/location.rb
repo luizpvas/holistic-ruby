@@ -8,8 +8,15 @@ module Holistic::Document
     :end_line,
     :end_column
   ) do
-    def self.beginning_of_file(file_path)
-      new(File::Record.new(path: file_path), 0, 0, 0, 0)
+    def self.beginning_of_file(file)
+      file =
+        if file.is_a?(File::Record)
+          file
+        else
+          File::Record.new(path: file, adapter: File::Adapter::Memory)
+        end
+
+      new(file, 0, 0, 0, 0)
     end
 
     def identifier

@@ -9,11 +9,15 @@ module Holistic::Ruby::Scope
 
       return :scope_not_found if scope.nil?
 
-      updated_locations = scope.locations.reject! { |scope_location| scope_location.declaration.file.path == file_path }
+      location_to_remove = scope.locations.find { |scope_location| scope_location.declaration.file.path == file_path }
 
-      return :scope_not_defined_in_speciefied_file if updated_locations.nil?
+      return :scope_not_defined_in_speciefied_file if location_to_remove.nil?
 
-      if updated_locations.empty?
+      scope.locations.delete(location_to_remove)
+
+      location_to_remove.declaration.file.disconnect_scope(scope)
+
+      if scope.locations.empty?
         scope.parent.children.delete(scope)
 
         repository.delete_by_fully_qualified_name(fully_qualified_name)

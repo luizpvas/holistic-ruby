@@ -75,11 +75,5 @@ module Holistic::Document
         end
       end
     end
-
-    def to_file
-      File::Record.new(path:, adapter: File::Adapter::Memory).tap do |file|
-        file.write(content)
-      end
-    end
   end
 end

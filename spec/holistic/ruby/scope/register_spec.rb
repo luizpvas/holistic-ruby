@@ -12,7 +12,8 @@ describe ::Holistic::Ruby::Scope::Register do
   end
 
   context "when a scope with the same name DOES NOT EXIST in the parent scope" do
-    let(:repository) { ::Holistic::Ruby::Scope::Repository.new }
+    let(:files) { ::Holistic::Document::File::Repository.new }
+    let(:repository) { ::Holistic::Ruby::Scope::Repository.new(files:) }
 
     let(:parent) do
       ::Holistic::Ruby::Scope::Record.new(
@@ -79,7 +80,8 @@ describe ::Holistic::Ruby::Scope::Register do
   end
 
   context "when a scope with the same name EXISTS in the parent scope" do
-    let(:repository) { ::Holistic::Ruby::Scope::Repository.new }
+    let(:files) { ::Holistic::Document::File::Repository.new }
+    let(:repository) { ::Holistic::Ruby::Scope::Repository.new(files:) }
 
     let(:parent) do
       ::Holistic::Ruby::Scope::Record.new(

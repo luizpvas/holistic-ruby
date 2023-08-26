@@ -15,11 +15,11 @@ module Holistic
     end
 
     def scopes
-      @scopes ||= Ruby::Scope::Repository.new
+      @scopes ||= Ruby::Scope::Repository.new(files:)
     end
 
     def references
-      @references ||= Ruby::Reference::Repository.new
+      @references ||= Ruby::Reference::Repository.new(files:)
     end
 
     def files

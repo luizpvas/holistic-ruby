@@ -4,43 +4,43 @@ module Holistic::Ruby::Parser
   module LiveEditing::ProcessFileChanged
     extend self
 
-    def call(application:, file:)
+    def call(application:, file_path:, content:)
       # TODO: do not build the AST twice
-      return unless HasValidSyntax[file:]
+      return unless HasValidSyntax[content]
 
-      references_to_recalculate = identify_references_to_recalculate(application:, file:)
+      references_to_recalculate = identify_references_to_recalculate(application:, file_path:)
 
-      unregister_scopes_in_file(application:, file:)
-      unregsiter_references_in_file(application:, file:)
+      unregister_scopes_in_file(application:, file_path:)
+      unregsiter_references_in_file(application:, file_path:)
 
-      parse_again(application:, file:)
+      parse_again(application:, file_path:, content:)
 
       recalculate_type_inference_for_references(application:, references: references_to_recalculate)
     end
 
     private
 
-    def identify_references_to_recalculate(application:, file:)
+    def identify_references_to_recalculate(application:, file_path:)
       # we need to reject references declared in the same because they're already going to be
       # reparsed. If we don't do that, we'll end up with duplicated reference records. 
 
       application.references
-        .list_references_to_scopes_in_file(scopes: application.scopes, file_path: file.path)
-        .reject { _1.location.file.path == file.path }
+        .list_references_to_scopes_in_file(scopes: application.scopes, file_path: file_path)
+        .reject { _1.location.file.path == file_path }
     end
 
-    def unregister_scopes_in_file(application:, file:)
-      application.scopes.list_scopes_in_file(file.path).each do |scope|
+    def unregister_scopes_in_file(application:, file_path:)
+      application.scopes.list_scopes_in_file(file_path).each do |scope|
         ::Holistic::Ruby::Scope::Unregister.call(
           repository: application.scopes,
           fully_qualified_name: scope.fully_qualified_name,
-          file_path: file.path
+          file_path:
         )
       end
     end
 
-    def unregsiter_references_in_file(application:, file:)
-      application.references.list_references_in_file(file.path).each do |reference|
+    def unregsiter_references_in_file(application:, file_path:)
+      application.references.list_references_in_file(file_path).each do |reference|
         ::Holistic::Ruby::Reference::Unregister.call(
           repository: application.references,
           reference: reference
@@ -48,8 +48,8 @@ module Holistic::Ruby::Parser
       end
     end
 
-    def parse_again(application:, file:)
-      ParseFile.call(application:, file:)
+    def parse_again(application:, file_path:, content:)
+      ParseFile.call(application:, file_path:, content:)
 
       ::Holistic::Ruby::TypeInference::SolvePendingReferences.call(application:)
     end

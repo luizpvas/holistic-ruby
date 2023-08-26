@@ -4,7 +4,7 @@ module Holistic::Document::File
   class Record
     attr_reader :path, :adapter, :scopes
 
-    def initialize(path:, adapter: Adapter::Disk)
+    def initialize(path:, adapter:)
       @path = path
       @adapter = adapter
       @scopes = ::Set.new

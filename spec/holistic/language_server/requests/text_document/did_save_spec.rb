@@ -47,9 +47,9 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::DidSave do
     end
 
     it "parses unsaved changes in background" do
-      expect(described_class)
-        .to receive(:process_in_background)
-        .with(application:, file: be_a(::Holistic::Document::File::Record))
+      expect(::Holistic::Ruby::Parser::LiveEditing::ProcessFileChanged)
+        .to receive(:call)
+        .with(application:, file_path:, content: "content")
 
       request = ::Holistic::LanguageServer::Request.new(application:, message:)
       described_class.call(request)

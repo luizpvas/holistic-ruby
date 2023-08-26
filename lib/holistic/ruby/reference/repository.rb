@@ -10,7 +10,9 @@ module Holistic::Ruby::Reference
       :referenced_scope_fully_qualified_name
     ].freeze
 
-    def initialize
+    def initialize(files:)
+      @files = files
+      
       @table = ::Holistic::Database::Table.new(indices: INDICES)
     end
 

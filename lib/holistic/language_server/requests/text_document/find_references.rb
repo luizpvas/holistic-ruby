@@ -12,7 +12,8 @@ module Holistic::LanguageServer
         if unsaved_document.has_unsaved_changes?
           ::Holistic::Ruby::Parser::LiveEditing::ProcessFileChanged.call(
             application: request.application,
-            file: unsaved_document.to_file
+            file_path: unsaved_document.path,
+            content: unsaved_document.content
           )
         end
       end

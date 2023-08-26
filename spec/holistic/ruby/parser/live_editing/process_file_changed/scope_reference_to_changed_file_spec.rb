@@ -37,9 +37,7 @@ describe ::Holistic::Ruby::Parser::LiveEditing::ProcessFileChanged do
       expect(references_before.size).to eql(2)
       expect(references_before.first.conclusion).to have_attributes(dependency_identifier: "::MyApp::Example1")
 
-      file = ::Holistic::Document::File::Record.new(path: "my_app/example_1.rb", adapter: ::Holistic::Document::File::Adapter::Memory)
-      file.write(example_1_source_code)
-      described_class.call(application:, file:)
+      described_class.call(application:, file_path: "my_app/example_1.rb", content: example_1_source_code)
 
       references_after = application.references.list_references_to_scopes_in_file(scopes: application.scopes, file_path: "/my_app/example_1.rb")
 
@@ -91,9 +89,7 @@ describe ::Holistic::Ruby::Parser::LiveEditing::ProcessFileChanged do
         conclusion: have_attributes(dependency_identifier: "::MyApp::Example1")
       )
 
-      file = ::Holistic::Document::File::Record.new(path: "/my_app/example_1.rb", adapter: ::Holistic::Document::File::Adapter::Memory)
-      file.write(example_1_source_code_after)
-      described_class.call(application:, file:)
+      described_class.call(application:, file_path: "/my_app/example_1.rb", content: example_1_source_code_after)
 
       expect(application.references.find_reference_to("Example1")).to have_attributes(
         conclusion: have_attributes(dependency_identifier: nil)

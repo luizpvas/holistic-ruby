@@ -13,19 +13,15 @@ module Holistic::LanguageServer
         if unsaved_document.has_unsaved_changes?
           unsaved_document.restore_original_content!
 
-          process_in_background(application: request.application, file: unsaved_document.to_file)
+          ::Holistic::Ruby::Parser::LiveEditing::ProcessFileChanged.call(
+            application: request.application,
+            file_path: unsaved_document.path,
+            content: unsaved_document.content
+          )
         end
       end
 
       request.respond_with(nil)
-    end
-
-    private
-
-    def process_in_background(application:, file:)
-      ::Holistic::BackgroundProcess.run do
-        ::Holistic::Ruby::Parser::LiveEditing::ProcessFileChanged.call(application:, file:)
-      end
     end
   end
 end

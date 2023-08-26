@@ -18,9 +18,11 @@ module Holistic::Ruby::Scope
 
       delegate :<<,      to: :items
       delegate :each,    to: :items
+      delegate :find,    to: :items
       delegate :map,     to: :items
-      delegate :reject!, to: :items
+      delegate :delete,  to: :items
       delegate :any?,    to: :items
+      delegate :empty?,  to: :items
 
       private
 

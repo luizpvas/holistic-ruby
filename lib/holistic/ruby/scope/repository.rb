@@ -4,7 +4,9 @@ module Holistic::Ruby::Scope
   class Repository
     attr_reader :table
 
-    def initialize
+    def initialize(files:)
+      @files = files
+
       @table = ::Holistic::Database::Table.new(indices: [:file_paths])
     end
 
@@ -21,17 +23,21 @@ module Holistic::Ruby::Scope
     end
 
     def find_by_cursor(cursor)
-      table.filter(:file_paths, cursor.file_path).map { _1[:scope] }.each do |scope|
-        return scope if scope.locations.any? { _1.declaration.contains?(cursor) }
-      end
+      file = @files.find(cursor.file_path)
 
-      nil
+      return nil if file.nil?
+
+      file.scopes.find do |scope|
+        scope.locations.any? { _1.declaration.contains?(cursor) }
+      end
     end
 
     def find_inner_most_scope_by_cursor(cursor)
-      scopes = table.filter(:file_paths, cursor.file_path).map { _1[:scope] }
+      file = @files.find(cursor.file_path)
 
-      matching_scopes = scopes.filter do |scope|
+      return nil if file.nil?
+
+      matching_scopes = file.scopes.filter do |scope|
         scope.locations.any? { _1.body.contains?(cursor) }
       end
 
@@ -43,7 +49,7 @@ module Holistic::Ruby::Scope
     end
 
     def list_scopes_in_file(file_path)
-      table.filter(:file_paths, file_path).map { _1[:scope] }
+      @files.find(file_path)&.scopes&.to_a || []
     end
   end
 end
