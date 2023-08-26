@@ -3,14 +3,14 @@
 describe ::Holistic::Document::Location do
   concerning :Helpers do
     def build_file(path)
-      ::Holistic::Document::File.new(path:)
+      ::Holistic::Document::File::Record.new(path:)
     end
   end
 
   describe "#identifier" do
     it "formats the identifier based on the file path, lines and columns" do
       location = described_class.new(
-        file: ::Holistic::Document::File.new(path: "my_app/example.rb"),
+        file: build_file("my_app/example.rb"),
         start_line: 1,
         start_column: 2,
         end_line: 3,

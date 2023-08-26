@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Holistic::Document::File
+module Holistic::Document::File
   module Register
     extend self
 
@@ -15,7 +15,7 @@ class Holistic::Document::File
     end
 
     def store_new_file(repository:, file_path:)
-      ::Holistic::Document::File.new(path: file_path).tap do |file|
+      Record.new(path: file_path).tap do |file|
         repository.store(file)
       end
     end

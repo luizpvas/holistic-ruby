@@ -63,7 +63,7 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::DidClose do
         .with(
           application:,
           file: have_attributes(
-            itself: ::Holistic::Document::File,
+            itself: ::Holistic::Document::File::Record,
             read: "CONTENT"
           )
         )

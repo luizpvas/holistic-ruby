@@ -9,7 +9,7 @@ module Holistic::Document
     :end_column
   ) do
     def self.beginning_of_file(file_path)
-      new(File.new(path: file_path), 0, 0, 0, 0)
+      new(File::Record.new(path: file_path), 0, 0, 0, 0)
     end
 
     def identifier

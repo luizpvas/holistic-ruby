@@ -21,7 +21,7 @@ describe ::Holistic::Ruby::Parser::LiveEditing::ProcessFileChanged do
       my_app_example_before = application.scopes.find_by_fully_qualified_name("::MyApp::Example")
       foo_reference_before = application.references.find_reference_to("Foo")
 
-      file = ::Holistic::Document::File.new(path: "/snippet.rb", adapter: ::Holistic::Document::File::Memory)
+      file = ::Holistic::Document::File::Record.new(path: "/snippet.rb", adapter: ::Holistic::Document::File::Memory)
       file.write(source_code)
       described_class.call(application:, file:)
 
@@ -70,7 +70,7 @@ describe ::Holistic::Ruby::Parser::LiveEditing::ProcessFileChanged do
       foo_1_reference_before = application.references.find_reference_to("Foo1")
       foo_2_reference_before = application.references.find_reference_to("Foo2") rescue nil
 
-      file = ::Holistic::Document::File.new(path: "/snippet.rb", adapter: ::Holistic::Document::File::Memory)
+      file = ::Holistic::Document::File::Record.new(path: "/snippet.rb", adapter: ::Holistic::Document::File::Memory)
       file.write(source_code_after)
       described_class.call(application:, file:)
 

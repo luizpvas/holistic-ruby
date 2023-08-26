@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-module Holistic::Document
-  class File
+module Holistic::Document::File
+  class Record
     attr_reader :path
 
-    def initialize(path:, adapter: File::Disk)
+    def initialize(path:, adapter: Disk)
       @path = path
       @adapter = adapter
       @scopes = ::Set.new

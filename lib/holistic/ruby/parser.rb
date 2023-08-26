@@ -26,7 +26,7 @@ module Holistic::Ruby::Parser
 
   ParseDirectory = ->(application:, directory_path:) do
     ::Dir.glob("#{directory_path}/**/*.rb").map do |file_path|
-      file = ::Holistic::Document::File.new(path: file_path)
+      file = ::Holistic::Document::File::Register.call(repository: application.files, file_path:)
 
       ParseFile[application:, file:]
     end
