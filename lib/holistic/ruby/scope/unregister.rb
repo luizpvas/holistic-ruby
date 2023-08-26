@@ -22,7 +22,7 @@ module Holistic::Ruby::Scope
 
         repository.delete_by_fully_qualified_name(fully_qualified_name)
       else
-        repository.register_scope(scope)
+        repository.store(scope)
       end
 
       :definition_unregistered

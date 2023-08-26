@@ -10,8 +10,7 @@ module Holistic::Ruby::Scope
       @table = ::Holistic::Database::Table.new
     end
 
-    # TODO: rename to `store`
-    def register_scope(scope)
+    def store(scope)
       table.store(scope.fully_qualified_name, { scope: })
     end
 

@@ -7,7 +7,7 @@ module Holistic::Ruby::Scope
     def call(repository:, parent:, kind:, name:, location:)
       child_scope = append_location_to_existing_scope(scope: parent, name:, location:) || add_new_scope(parent:, kind:, name:, location:)
 
-      repository.register_scope(child_scope)
+      repository.store(child_scope)
 
       location.declaration.file.connect_scope(child_scope)
 
