@@ -2,7 +2,7 @@
 
 module Holistic::Document::File
   class Record
-    attr_reader :path
+    attr_reader :path, :adapter
 
     def initialize(path:, adapter: Adapter::Disk)
       @path = path

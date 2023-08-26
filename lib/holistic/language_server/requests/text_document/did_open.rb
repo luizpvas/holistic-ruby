@@ -9,6 +9,7 @@ module Holistic::LanguageServer
       content = request.message.param("textDocument", "text")
 
       request.application.unsaved_documents.add(path:, content:)
+      ::Holistic::Document::File::Register.call(repository: request.application.files, file_path: path)
 
       request.respond_with(nil)
     end

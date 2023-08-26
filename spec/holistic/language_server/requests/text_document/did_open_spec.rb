@@ -33,13 +33,18 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::DidOpen do
     )
   end
   
-  it "adds a document buffer to the application" do
+  it "registers a file and adds a document buffer to the application" do
     request = ::Holistic::LanguageServer::Request.new(application:, message:)
 
     described_class.call(request)
 
     document = application.unsaved_documents.find("/home/luiz.vasconcellos/Projects/holistic/lib/holistic/version.rb")
-
     expect(document.content).to eql(content)
+
+    file = application.files.find("/home/luiz.vasconcellos/Projects/holistic/lib/holistic/version.rb")
+    expect(file).to have_attributes(
+      itself: ::Holistic::Document::File::Record,
+      adapter: ::Holistic::Document::File::Adapter::Disk
+    )
   end
 end
