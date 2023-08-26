@@ -7,15 +7,12 @@ module Holistic::Ruby::Scope
     def initialize(files:)
       @files = files
 
-      @table = ::Holistic::Database::Table.new(indices: [:file_paths])
+      @table = ::Holistic::Database::Table.new
     end
 
     # TODO: rename to `store`
     def register_scope(scope)
-      table.store(scope.fully_qualified_name, {
-        file_paths: scope.locations.map { |scope_location| scope_location.declaration.file.path },
-        scope:
-      })
+      table.store(scope.fully_qualified_name, { scope: })
     end
 
     def find_by_fully_qualified_name(fully_qualified_name)
