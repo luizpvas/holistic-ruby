@@ -22,6 +22,10 @@ module Holistic
       @references ||= Ruby::Reference::Repository.new
     end
 
+    def files
+      @files ||= Document::File::Repository.new
+    end
+
     def unsaved_documents
       @unsaved_documents ||= Document::Unsaved::Collection.new
     end

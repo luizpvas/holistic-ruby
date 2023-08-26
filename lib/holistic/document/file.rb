@@ -7,6 +7,15 @@ module Holistic::Document
     def initialize(path:, adapter: File::Disk)
       @path = path
       @adapter = adapter
+      @scopes = ::Set.new
+    end
+
+    def connect_scope(scope)
+      @scopes.add(scope)
+    end
+
+    def disconnect_scope(scope)
+      @scopes.delete(scope)
     end
 
     def read
