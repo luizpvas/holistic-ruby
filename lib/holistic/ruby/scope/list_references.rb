@@ -14,7 +14,7 @@ module Holistic::Ruby::Scope
 
     Relevance = ->(reference) do
       # TODO: should the location answer the kind of file it is? application code, config, spec, etc. Not sure.
-      looks_like_a_spec = reference.location.file_path.include?("_spec.rb") || reference.location.file_path.include?("_test.rb")
+      looks_like_a_spec = reference.location.file.path.include?("_spec.rb") || reference.location.file.path.include?("_test.rb")
 
       looks_like_a_spec ? 1 : 0
     end

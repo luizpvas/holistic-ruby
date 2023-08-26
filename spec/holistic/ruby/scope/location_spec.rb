@@ -25,7 +25,7 @@ describe ::Holistic::Ruby::Scope::Location do
         end
 
         it "returns the location" do
-          expect(scope.locations.main.declaration.file_path).to eql("/my_app/my_class.rb")
+          expect(scope.locations.main.declaration.file.path).to eql("/my_app/my_class.rb")
         end
       end
 
@@ -42,7 +42,7 @@ describe ::Holistic::Ruby::Scope::Location do
         end
 
         it "returns the location matching the scope name" do
-          expect(scope.locations.main.declaration.file_path).to eql("/my_app/my_class.rb")
+          expect(scope.locations.main.declaration.file.path).to eql("/my_app/my_class.rb")
         end
       end
     end

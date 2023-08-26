@@ -46,7 +46,7 @@ module Holistic::LanguageServer
           "start" => { "line" => origin_location.start_line, "character" => origin_location.start_column },
           "end" => { "line" => origin_location.end_line, "character" => origin_location.end_column }
         },
-        "targetUri" => Format::FileUri.from_path(target_declaration_location.file_path),
+        "targetUri" => Format::FileUri.from_path(target_declaration_location.file.path),
         "targetRange" => {
           "start" => { "line" => target_declaration_location.start_line, "character" => target_declaration_location.start_column },
           "end" => { "line" => target_declaration_location.end_line, "character" => target_declaration_location.end_column }

@@ -215,7 +215,7 @@ module Holistic::Ruby::Parser
         start_column, end_column = end_column, start_column
       end
 
-      ::Holistic::Document::Location.new(file_path: file.path, start_line:, start_column:, end_line:, end_column:)
+      ::Holistic::Document::Location.new(file:, start_line:, start_column:, end_line:, end_column:)
     end
   end
 end

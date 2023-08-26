@@ -28,7 +28,7 @@ module Holistic::Ruby::Scope
         scope_name_in_snake_case = scope.name.underscore
 
         items.find do |location|
-          ::File.basename(location.declaration.file_path) == "#{scope_name_in_snake_case}.rb"
+          ::File.basename(location.declaration.file.path) == "#{scope_name_in_snake_case}.rb"
         end
       end
     end

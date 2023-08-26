@@ -17,7 +17,7 @@ module Holistic::Ruby::Reference
     def register_reference(reference)
       table.store(reference.identifier, {
         reference:,
-        file_path: reference.location.file_path,
+        file_path: reference.location.file.path,
         type_inference_status: reference.conclusion.status,
         referenced_scope_fully_qualified_name: reference.conclusion.dependency_identifier
       })

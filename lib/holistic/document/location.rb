@@ -2,20 +2,22 @@
 
 module Holistic::Document
   Location = ::Data.define(
-    :file_path,
+    :file,
     :start_line,
     :start_column,
     :end_line,
     :end_column
   ) do
     def self.beginning_of_file(file_path)
-      new(file_path, 0, 0, 0, 0)
+      new(File.new(path: file_path), 0, 0, 0, 0)
     end
 
-    def identifier = "#{file_path}[#{start_line},#{start_column},#{end_line},#{end_column}]"
+    def identifier
+      "#{file.path}[#{start_line},#{start_column},#{end_line},#{end_column}]"
+    end
 
     def contains?(cursor)
-      same_file = cursor.file_path == file_path
+      same_file = cursor.file_path == file.path
       contains_line = cursor.line >= start_line && cursor.line <= end_line
       
       contains_column =

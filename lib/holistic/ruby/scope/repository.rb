@@ -10,7 +10,7 @@ module Holistic::Ruby::Scope
 
     def register_scope(scope)
       table.store(scope.fully_qualified_name, {
-        file_paths: scope.locations.map { |scope_location| scope_location.declaration.file_path },
+        file_paths: scope.locations.map { |scope_location| scope_location.declaration.file.path },
         scope:
       })
     end

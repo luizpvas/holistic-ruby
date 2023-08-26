@@ -9,7 +9,7 @@ module Holistic::Ruby::Scope
 
       return :scope_not_found if scope.nil?
 
-      updated_locations = scope.locations.reject! { |scope_location| scope_location.declaration.file_path == file_path }
+      updated_locations = scope.locations.reject! { |scope_location| scope_location.declaration.file.path == file_path }
 
       return :scope_not_defined_in_speciefied_file if updated_locations.nil?
 
