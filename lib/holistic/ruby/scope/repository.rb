@@ -8,6 +8,7 @@ module Holistic::Ruby::Scope
       @table = ::Holistic::Database::Table.new(indices: [:file_paths])
     end
 
+    # TODO: rename to `store`
     def register_scope(scope)
       table.store(scope.fully_qualified_name, {
         file_paths: scope.locations.map { |scope_location| scope_location.declaration.file.path },

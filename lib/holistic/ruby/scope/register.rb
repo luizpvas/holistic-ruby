@@ -9,6 +9,8 @@ module Holistic::Ruby::Scope
 
       repository.register_scope(child_scope)
 
+      location.declaration.file.connect_scope(child_scope)
+
       child_scope
     end
 

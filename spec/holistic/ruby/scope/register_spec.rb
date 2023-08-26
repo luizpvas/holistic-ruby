@@ -68,6 +68,14 @@ describe ::Holistic::Ruby::Scope::Register do
       expect(repository.find_by_fully_qualified_name("::MyModule::MyChild1")).to be(child_1)
       expect(repository.find_by_fully_qualified_name("::MyModule::MyChild2")).to be(child_2)
     end
+
+    it "connects the scope to the file" do
+      child_1_file = child_1.locations.main.declaration.file
+      expect(child_1_file.scopes.to_a).to eql([child_1])
+
+      child_2_file = child_2.locations.main.declaration.file
+      expect(child_2_file.scopes.to_a).to eql([child_2])
+    end
   end
 
   context "when a scope with the same name EXISTS in the parent scope" do
@@ -92,14 +100,21 @@ describe ::Holistic::Ruby::Scope::Register do
       described_class.call(repository:, parent:, kind: ::Holistic::Ruby::Scope::Kind::MODULE, name: "MyChild", location: location_2)
     end
 
-    it "appends the source location to the existing scope" do
+    it "does not create a new scope" do
       expect(child_1).to be(child_2)
+    end
 
+    it "appends the source location to the existing scope" do
       expect(child_2.locations.items).to match_array([location_1, location_2])
     end
 
-    it "updates the source locations in the repository" do
-      expect(repository.find_by_fully_qualified_name("::MyModule::MyChild")).to be(child_2)
+    it "connects the scope to the new location's file" do
+      expect(location_1.declaration.file.scopes.to_a).to eql([child_1])
+      expect(location_2.declaration.file.scopes.to_a).to eql([child_1])
+
+      expect(
+        child_1.locations.items.map { _1.declaration.file }
+      ).to eql([location_1.declaration.file, location_2.declaration.file])
     end
   end
 end
