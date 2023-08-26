@@ -26,7 +26,7 @@ describe ::Holistic::Ruby::Parser::LiveEditing::ProcessFileChanged do
       before_payment_scope = application.scopes.find_by_fully_qualified_name("::MyApp::Payment")
       before_payment_call_reference = application.references.find_by_code_content("Payment.call")
 
-      file = ::Holistic::Document::File::Record.new(path: "/snippet.rb", adapter: ::Holistic::Document::File::Memory)
+      file = ::Holistic::Document::File::Record.new(path: "/snippet.rb", adapter: ::Holistic::Document::File::Adapter::Memory)
       file.write(source_code_after)
       described_class.call(application:, file:)
 

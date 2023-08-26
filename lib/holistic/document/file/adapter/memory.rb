@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Holistic::Document::File::Memory
+module Holistic::Document::File::Adapter::Memory
   extend self
 
   def read(file)

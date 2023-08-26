@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Holistic::Document::File::Disk
+module Holistic::Document::File::Adapter::Disk
   extend self
 
   def read(file)
