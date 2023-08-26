@@ -3,7 +3,7 @@
 describe ::Holistic::Document::Location do
   concerning :Helpers do
     def build_file(path)
-      ::Holistic::Document::File::Record.new(path:, adapter: ::Holistic::Document::File::Adapter::Memory)
+      ::Holistic::Document::File::Record.new(path:)
     end
   end
 

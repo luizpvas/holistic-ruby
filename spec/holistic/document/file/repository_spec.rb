@@ -6,7 +6,7 @@ describe ::Holistic::Document::File::Repository do
       it "stores a file indexed by the path" do
         repository = described_class.new
 
-        file = ::Holistic::Document::File::Record.new(path: "/my_app/file.rb", adapter: ::Holistic::Document::File::Adapter::Memory)
+        file = ::Holistic::Document::File::Record.new(path: "/my_app/file.rb")
 
         expect(repository.all.size).to be(0)
 
@@ -20,8 +20,8 @@ describe ::Holistic::Document::File::Repository do
       it "updates the existing record" do
         repository = described_class.new
 
-        file_1 = ::Holistic::Document::File::Record.new(path: "/my_app/file.rb", adapter: ::Holistic::Document::File::Adapter::Memory)
-        file_2 = ::Holistic::Document::File::Record.new(path: "/my_app/file.rb", adapter: ::Holistic::Document::File::Adapter::Memory)
+        file_1 = ::Holistic::Document::File::Record.new(path: "/my_app/file.rb")
+        file_2 = ::Holistic::Document::File::Record.new(path: "/my_app/file.rb")
 
         expect(repository.all.size).to be(0)
 
@@ -38,7 +38,7 @@ describe ::Holistic::Document::File::Repository do
       it "returns the file" do
         repository = described_class.new
 
-        file = ::Holistic::Document::File::Record.new(path: "/my_app/file.rb", adapter: ::Holistic::Document::File::Adapter::Memory)
+        file = ::Holistic::Document::File::Record.new(path: "/my_app/file.rb")
 
         repository.store(file)
 
@@ -59,7 +59,7 @@ describe ::Holistic::Document::File::Repository do
     it "deletes a file from the repository" do
       repository = described_class.new
 
-      file = ::Holistic::Document::File::Record.new(path: "/my_app/file.rb", adapter: ::Holistic::Document::File::Adapter::Memory)
+      file = ::Holistic::Document::File::Record.new(path: "/my_app/file.rb")
 
       repository.store(file)
       repository.delete("/my_app/file.rb")

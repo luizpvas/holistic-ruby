@@ -43,8 +43,7 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::DidOpen do
 
     file = application.files.find("/home/luiz.vasconcellos/Projects/holistic/lib/holistic/version.rb")
     expect(file).to have_attributes(
-      itself: ::Holistic::Document::File::Record,
-      adapter: ::Holistic::Document::File::Adapter::Disk
+      itself: ::Holistic::Document::File::Record
     )
   end
 end

@@ -2,11 +2,10 @@
 
 module Holistic::Document::File
   class Record
-    attr_reader :path, :adapter, :scopes
+    attr_reader :path, :scopes
 
-    def initialize(path:, adapter:)
+    def initialize(path:)
       @path = path
-      @adapter = adapter
       @scopes = ::Set.new
     end
 
@@ -16,14 +15,6 @@ module Holistic::Document::File
 
     def disconnect_scope(scope)
       @scopes.delete(scope)
-    end
-
-    def read
-      @adapter.read(self)
-    end
-
-    def write(content)
-      @adapter.write(self, content)
     end
   end
 end
