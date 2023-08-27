@@ -21,10 +21,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
     it "solves the method call reference" do
       reference = application.references.find_by_code_content("sum")
 
-      expect(reference.conclusion).to have_attributes(
-        status: :done,
-        dependency_identifier: "::Calculator#sum"
-      )
+      expect(reference.referenced_scope.fully_qualified_name).to eql("::Calculator#sum")
     end
   end
 
@@ -48,10 +45,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
     it "solves the method call reference" do
       reference = application.references.find_by_code_content("search_events_from_request_params")
 
-      expect(reference.conclusion).to have_attributes(
-        status: :done,
-        dependency_identifier: "::EventsController#search_events_from_request_params"
-      )
+      expect(reference.referenced_scope.fully_qualified_name).to eql("::EventsController#search_events_from_request_params")
     end
   end
 end

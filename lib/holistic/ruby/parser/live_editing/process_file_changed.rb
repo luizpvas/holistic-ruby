@@ -56,7 +56,8 @@ module Holistic::Ruby::Parser
 
     def recalculate_type_inference_for_references(application:, references:)
       references.each do |reference|
-        reference.conclusion = ::Holistic::Ruby::TypeInference::Conclusion.pending
+        reference.referenced_scope.disconnect_referenced_by(reference)
+        reference.disconnect_referenced_scope
 
         ::Holistic::Ruby::TypeInference::Solve.call(application:, reference:)
       end

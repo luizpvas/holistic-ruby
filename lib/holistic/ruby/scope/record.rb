@@ -2,13 +2,17 @@
 
 module Holistic::Ruby::Scope
   class Record
-    attr_reader :kind, :name, :parent, :children, :locations
+    attr_reader :kind, :name, :parent, :children, :locations, :referenced_by
 
     def initialize(kind:, name:, parent:, location: nil)
       @kind = kind
       @name = name
-      @parent = parent
       @locations = Location::Collection.new(self, location)
+
+      # TODO: wrap in API with `connect` terms
+      @parent = parent
+
+      # TODO: wrap in API with `connect` terms
       @children = []
 
       @referenced_by = ::Set.new

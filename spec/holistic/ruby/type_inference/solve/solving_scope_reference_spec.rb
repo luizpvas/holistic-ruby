@@ -18,18 +18,14 @@ describe ::Holistic::Ruby::TypeInference::Solve do
     end
 
     it "solves the scope reference" do
-      expect(application.references.find_reference_to("Example")).to have_attributes(
-        itself: be_a(::Holistic::Ruby::Reference::Record),
-        scope: application.scopes.find_by_fully_qualified_name("::MyApp::Other"),
-        conclusion: have_attributes(
-          itself: be_a(::Holistic::Ruby::TypeInference::Conclusion),
-          status: :done,
-          dependency_identifier: "::MyApp::Example",
-        )
-      )
+      reference = application.references.find_reference_to("Example")
+
+      expect(reference).to be_a(::Holistic::Ruby::Reference::Record)
+      expect(reference.scope.fully_qualified_name).to eql("::MyApp::Other")
+      expect(reference.referenced_scope.fully_qualified_name).to eql("::MyApp::Example")
     end
 
-    it "registers a dependency" do
+    it "registers a dependency between the scope and its references" do
       references = application.references.list_references_to_scopes_in_file(scopes: application.scopes, file_path: "/snippet.rb")
 
       expect(references.size).to eql(1)
@@ -57,18 +53,14 @@ describe ::Holistic::Ruby::TypeInference::Solve do
     end
 
     it "solves the scope reference" do
-      expect(application.references.find_reference_to("Example")).to have_attributes(
-        itself: be_a(::Holistic::Ruby::Reference::Record),
-        scope: application.scopes.find_by_fully_qualified_name("::MyApp::Other"),
-        conclusion: have_attributes(
-          itself: be_a(::Holistic::Ruby::TypeInference::Conclusion),
-          status: :done,
-          dependency_identifier: "::MyApp::Example"
-        )
-      )
+      reference = application.references.find_reference_to("Example")
+
+      expect(reference).to be_a(::Holistic::Ruby::Reference::Record)
+      expect(reference.scope.fully_qualified_name).to eql("::MyApp::Other")
+      expect(reference.referenced_scope.fully_qualified_name).to eql("::MyApp::Example")
     end
 
-    it "registers a dependency" do
+    it "registers a dependency between the scope and its references" do
       references = application.references.list_references_to_scopes_in_file(scopes: application.scopes, file_path: "/my_app/example.rb")
 
       expect(references.size).to eql(1)
@@ -115,7 +107,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
     # TODO. How?
   end
 
-  context "when the clue is a scope reference and it does not exist" do
+  context "when referenced scope does not exist" do
     let(:application) do
       parse_snippet <<~RUBY
       module MyApp
@@ -124,14 +116,11 @@ describe ::Holistic::Ruby::TypeInference::Solve do
       RUBY
     end
 
-    it "leaves the conclusion empty" do
-      expect(application.references.find_reference_to("Unknown")).to have_attributes(
-        itself: be_a(::Holistic::Ruby::Reference::Record),
-        conclusion: have_attributes(
-          status: :done,
-          dependency_identifier: nil
-        )
-      )
+    it "leaves the referenced_by connection empty" do
+      reference = application.references.find_reference_to("Unknown")
+
+      expect(reference).to be_a(::Holistic::Ruby::Reference::Record)
+      expect(reference.referenced_scope).to be_nil
     end
   end
 
@@ -155,12 +144,10 @@ describe ::Holistic::Ruby::TypeInference::Solve do
     end
 
     it "solves the dependency" do
-      expect(application.references.find_reference_to("Example1")).to have_attributes(
-        scope: application.scopes.find_by_fully_qualified_name("::MyApp::Example2"),
-        conclusion: have_attributes(
-          dependency_identifier: "::Example1"
-        )
-      )
+      reference = application.references.find_reference_to("Example1")
+
+      expect(reference.scope.fully_qualified_name).to eql("::MyApp::Example2")
+      expect(reference.referenced_scope.fully_qualified_name).to eql("::Example1")
     end
   end
 
@@ -176,12 +163,10 @@ describe ::Holistic::Ruby::TypeInference::Solve do
     end
 
     it "solves the dependency" do
-      expect(application.references.find_reference_to("PlusOne")).to have_attributes(
-        scope: application.scopes.find_by_fully_qualified_name("::MyApp"),
-        conclusion: have_attributes(
-          dependency_identifier: "::MyApp::PlusOne"
-        )
-      )
+      reference = application.references.find_reference_to("PlusOne")
+
+      expect(reference.scope.fully_qualified_name).to eql("::MyApp")
+      expect(reference.referenced_scope.fully_qualified_name).to eql("::MyApp::PlusOne")
     end
   end
 end

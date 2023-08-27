@@ -3,7 +3,7 @@
 describe ::Holistic::Ruby::Parser::LiveEditing::ProcessFileChanged do
   include ::Support::SnippetParser
 
-  context "when the changed file contents remains the same" do
+  context "when the changed file content remains the same" do
     let(:example_1_source_code) do
       <<~RUBY
       module MyApp
@@ -35,14 +35,14 @@ describe ::Holistic::Ruby::Parser::LiveEditing::ProcessFileChanged do
       references_before = application.references.list_references_to_scopes_in_file(scopes: application.scopes, file_path: "/my_app/example_1.rb")
 
       expect(references_before.size).to eql(2)
-      expect(references_before.first.conclusion).to have_attributes(dependency_identifier: "::MyApp::Example1")
+      expect(references_before.first.referenced_scope.fully_qualified_name).to eql("::MyApp::Example1")
 
       described_class.call(application:, file_path: "my_app/example_1.rb", content: example_1_source_code)
 
       references_after = application.references.list_references_to_scopes_in_file(scopes: application.scopes, file_path: "/my_app/example_1.rb")
 
       expect(references_after.size).to eql(2)
-      expect(references_after.first.conclusion).to have_attributes(dependency_identifier: "::MyApp::Example1")
+      expect(references_after.first.referenced_scope.fully_qualified_name).to eql("::MyApp::Example1")
     end
   end
 
@@ -85,15 +85,15 @@ describe ::Holistic::Ruby::Parser::LiveEditing::ProcessFileChanged do
     end
 
     it "re-evaluates type inference for the referencer" do
-      expect(application.references.find_reference_to("Example1")).to have_attributes(
-        conclusion: have_attributes(dependency_identifier: "::MyApp::Example1")
-      )
+      application.references.find_reference_to("Example1").tap do |reference|
+        expect(reference.referenced_scope.fully_qualified_name).to eql("::MyApp::Example1")
+      end
 
       described_class.call(application:, file_path: "/my_app/example_1.rb", content: example_1_source_code_after)
 
-      expect(application.references.find_reference_to("Example1")).to have_attributes(
-        conclusion: have_attributes(dependency_identifier: nil)
-      )
+      application.references.find_reference_to("Example1").tap do |reference|
+        expect(reference.referenced_scope).to be_nil
+      end
     end
   end
 end

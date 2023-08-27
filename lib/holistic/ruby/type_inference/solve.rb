@@ -5,12 +5,14 @@ module Holistic::Ruby::TypeInference
     extend self
 
     def call(application:, reference:)
-      reference.conclusion =
+      referenced_scope =
         solve_scope_reference(application:, reference:) ||
-        solve_method_call(application:, reference:) ||
-        Conclusion.unresolved
+        solve_method_call(application:, reference:)
 
-      application.references.register_reference(reference)
+      if referenced_scope
+        referenced_scope.connect_referenced_by(reference)
+        reference.connect_referenced_scope(referenced_scope)
+      end
     end
 
     private
@@ -23,30 +25,19 @@ module Holistic::Ruby::TypeInference
 
       scope_reference_clue = reference.clues.first
 
-      referenced_scope = resolve_scope(
+      resolve_scope(
         application:,
         nesting: scope_reference_clue.nesting,
         resolution_possibilities: scope_reference_clue.resolution_possibilities
       )
-
-      if referenced_scope.present?
-        return Conclusion.done(referenced_scope.fully_qualified_name)
-      end
-
-      nil
     end
 
     SolveMethodCallInCurrentScope = ->(application:, reference:, method_call_clue:) do
-      referenced_method = 
-        if reference.scope.class_method?
-          resolve_class_method(application:, scope: reference.scope.parent, method_name: method_call_clue.method_name)
-        elsif reference.scope.instance_method? && reference.scope.parent.present?
-          resolve_instance_method(application:, scope: reference.scope.parent, method_name: method_call_clue.method_name)
-        end
-
-      return if referenced_method.nil?
-
-      Conclusion.done(referenced_method.fully_qualified_name)
+      if reference.scope.class_method?
+        resolve_class_method(application:, scope: reference.scope.parent, method_name: method_call_clue.method_name)
+      elsif reference.scope.instance_method? && reference.scope.parent.present?
+        resolve_instance_method(application:, scope: reference.scope.parent, method_name: method_call_clue.method_name)
+      end
     end
 
     SolveMethodCallInSpecifiedScope = ->(application:, reference:, method_call_clue:) do
@@ -59,9 +50,8 @@ module Holistic::Ruby::TypeInference
       return if referenced_scope.nil?
 
       referenced_method = application.extensions.dispatch(:resolve_method_call_known_scope, { reference:, referenced_scope:, method_call_clue: })
-      referenced_method ||= resolve_class_method(application:, scope: referenced_scope, method_name: method_call_clue.method_name)
 
-      Conclusion.done(referenced_method.fully_qualified_name) if referenced_method.present?
+      referenced_method || resolve_class_method(application:, scope: referenced_scope, method_name: method_call_clue.method_name)
     end
 
     SolveMethodCallInLocalVariable = ->(application:, reference:, method_call_clue:) do

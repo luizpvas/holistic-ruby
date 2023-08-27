@@ -18,7 +18,7 @@ module Holistic::Ruby::Scope
 
     QueryDependenciesRecursively = ->(application, outlined_scope, scope) do
       is_local_dependency = ->(reference) do
-        scope = application.scopes.find_by_fully_qualified_name(reference.conclusion.dependency_identifier)
+        scope = reference.referenced_scope
 
         scope.eql?(outlined_scope) || scope.descendant?(outlined_scope)
       end
@@ -29,7 +29,7 @@ module Holistic::Ruby::Scope
         application.references
           .list_references_in_file(scope_location.declaration.file.path)
           .filter { |reference| reference.scope == scope }
-          .filter { |reference| reference.conclusion.dependency_identifier.present? }
+          .filter { |reference| reference.referenced_scope.present? }
           .reject(&is_local_dependency)
           .tap { dependencies.concat(_1) }
       end
@@ -40,9 +40,9 @@ module Holistic::Ruby::Scope
     def call(application:, scope:)
       declarations = QueryChildScopesRecursively.call(application, scope).sort_by { _1.fully_qualified_name }
 
-      dependencies = QueryDependenciesRecursively.call(application, scope, scope).uniq { _1.conclusion.dependency_identifier }
+      dependencies = QueryDependenciesRecursively.call(application, scope, scope).uniq
 
-      references = application.references.list_references_to(scope.fully_qualified_name)
+      references = scope.referenced_by.to_a
 
       dependants = references.map { |reference| reference.scope }.uniq
 

@@ -8,9 +8,9 @@ module Holistic::Ruby::Reference
       reference = application.references.find_by_cursor(cursor)
 
       return :not_found if reference.nil?
-      return :could_not_find_referenced_scope if reference.conclusion.dependency_identifier.nil?
+      return :could_not_find_referenced_scope if reference.referenced_scope.nil?
 
-      referenced_scope = application.scopes.find_by_fully_qualified_name(reference.conclusion.dependency_identifier)
+      referenced_scope = reference.referenced_scope
 
       [:referenced_scope_found, {reference:, referenced_scope:}]
     end

@@ -32,7 +32,7 @@ describe ::Holistic::Ruby::Scope::Outline do
       "::MyApp::Example::PlusThree.curry"
     ])
 
-    dependencies = result.dependencies.map { _1.conclusion.dependency_identifier }
+    dependencies = result.dependencies.map { _1.referenced_scope.fully_qualified_name }
 
     expect(dependencies).to match_array([
       "::MyApp::PlusOne",
