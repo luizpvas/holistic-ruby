@@ -6,10 +6,6 @@ module Holistic::Ruby::Reference
     :clues,
     :location,
     :referenced_scope,
-
-    # TODO: delete
-    :conclusion,
-    
     keyword_init: true
   ) do
     def identifier = location.identifier

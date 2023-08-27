@@ -40,7 +40,7 @@ module Holistic::Ruby::Reference
     concerning :TestHelpers do
       def find_reference_to(scope_name)
         table.all.map { _1[:reference] }.find do |reference|
-          reference.conclusion.dependency_identifier == scope_name || reference.clues.find { _1.to_s == scope_name }
+          reference.referenced_scope&.fully_qualified_name == scope_name || reference.clues.find { _1.to_s == scope_name }
         end
       end
 

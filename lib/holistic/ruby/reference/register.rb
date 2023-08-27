@@ -5,9 +5,7 @@ module Holistic::Ruby::Reference
     extend self
 
     def call(application:, scope:, clues:, location:)
-      conclusion = ::Holistic::Ruby::TypeInference::Conclusion.pending
-
-      reference = ::Holistic::Ruby::Reference::Record.new(scope:, clues:, location:, conclusion:)
+      reference = ::Holistic::Ruby::Reference::Record.new(scope:, clues:, location:)
 
       application.references.register_reference(reference)
       
