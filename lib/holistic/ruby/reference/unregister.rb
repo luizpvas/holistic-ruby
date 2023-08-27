@@ -6,6 +6,8 @@ module Holistic::Ruby::Reference
 
     def call(repository:, reference:)
       repository.delete(reference.identifier)
+
+      reference.location.file.disconnect_reference(reference)
     end
   end
 end

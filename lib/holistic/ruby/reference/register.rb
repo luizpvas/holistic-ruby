@@ -10,6 +10,8 @@ module Holistic::Ruby::Reference
       reference = ::Holistic::Ruby::Reference::Record.new(scope:, clues:, location:, conclusion:)
 
       repository.register_reference(reference)
+
+      location.file.connect_reference(reference)
     end
   end
 end
