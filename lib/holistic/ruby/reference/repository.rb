@@ -5,7 +5,6 @@ module Holistic::Ruby::Reference
     attr_reader :table
 
     INDICES = [
-      :type_inference_status,
       :referenced_scope_fully_qualified_name
     ].freeze
 
@@ -15,6 +14,7 @@ module Holistic::Ruby::Reference
       @table = ::Holistic::Database::Table.new(indices: INDICES)
     end
 
+    # TODO: rename to `store`
     def register_reference(reference)
       table.store(reference.identifier, {
         reference:,
@@ -24,12 +24,10 @@ module Holistic::Ruby::Reference
     end
 
     def find_by_cursor(cursor)
-      file = @files.find(cursor.file_path)
-
-      return nil if file.nil?
-
-      file.references.find do |reference|
-        reference.location.contains?(cursor)
+      @files.find(cursor.file_path)&.then do |file|
+        file.references.find do |reference|
+          reference.location.contains?(cursor)
+        end
       end
     end
 
@@ -45,10 +43,6 @@ module Holistic::Ruby::Reference
       scopes.list_scopes_in_file(file_path).flat_map do |scope|
         list_references_to(scope.fully_qualified_name)
       end
-    end
-
-    def list_references_pending_type_inference_conclusion
-      table.filter(:type_inference_status, ::Holistic::Ruby::TypeInference::STATUS_PENDING).map { _1[:reference] }
     end
 
     def delete(identifier)

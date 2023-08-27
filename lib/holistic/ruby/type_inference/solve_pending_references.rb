@@ -5,7 +5,9 @@ module Holistic::Ruby::TypeInference
     extend self
 
     def call(application:)
-      application.references.list_references_pending_type_inference_conclusion.each do |reference|
+      until application.type_inference_processing_queue.empty?
+        reference = application.type_inference_processing_queue.pop
+
         Solve.call(application:, reference:)
       end
     end

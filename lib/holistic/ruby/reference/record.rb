@@ -4,8 +4,9 @@ module Holistic::Ruby::Reference
   Record = ::Struct.new(
     :scope,
     :clues,
-    :conclusion,
     :location,
+    :referenced_scope,
+    :conclusion,
     keyword_init: true
   ) do
     def identifier = location.identifier

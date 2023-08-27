@@ -22,6 +22,10 @@ module Holistic
       @references ||= Ruby::Reference::Repository.new(files:)
     end
 
+    def type_inference_processing_queue
+      @type_inference_processing_queue ||= Ruby::TypeInference::ProcessingQueue.new
+    end
+
     def files
       @files ||= Document::File::Repository.new
     end

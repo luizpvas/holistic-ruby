@@ -10,6 +10,9 @@ module Holistic::Ruby::Scope
       @parent = parent
       @locations = Location::Collection.new(self, location)
       @children = []
+
+      @referenced_by = ::Set.new
+      @referenced_by.compare_by_identity
     end
 
     def fully_qualified_name
@@ -23,6 +26,16 @@ module Holistic::Ruby::Scope
         end
 
       "#{parent.fully_qualified_name}#{separator}#{name}"
+    end
+
+    concerning :RefenrecedByConnection do
+      def connect_referenced_by(reference)
+        @referenced_by.add(reference)
+      end
+
+      def disconnect_referenced_by(reference)
+        @referenced_by.delete(reference)
+      end
     end
 
     def root?

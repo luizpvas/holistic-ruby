@@ -4,12 +4,14 @@ module Holistic::Ruby::Reference
   module Register
     extend self
 
-    def call(repository:, scope:, clues:, location:)
+    def call(application:, scope:, clues:, location:)
       conclusion = ::Holistic::Ruby::TypeInference::Conclusion.pending
 
       reference = ::Holistic::Ruby::Reference::Record.new(scope:, clues:, location:, conclusion:)
 
-      repository.register_reference(reference)
+      application.references.register_reference(reference)
+      
+      application.type_inference_processing_queue.push(reference)
 
       location.file.connect_reference(reference)
     end
