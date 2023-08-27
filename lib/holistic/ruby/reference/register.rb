@@ -7,7 +7,7 @@ module Holistic::Ruby::Reference
     def call(application:, scope:, clues:, location:)
       reference = ::Holistic::Ruby::Reference::Record.new(scope:, clues:, location:)
 
-      application.references.register_reference(reference)
+      application.references.store(reference)
       
       application.type_inference_processing_queue.push(reference)
 

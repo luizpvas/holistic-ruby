@@ -10,8 +10,7 @@ module Holistic::Ruby::Reference
       @table = ::Holistic::Database::Table.new
     end
 
-    # TODO: rename to `store`
-    def register_reference(reference)
+    def store(reference)
       table.store(reference.identifier, { reference: })
     end
 
