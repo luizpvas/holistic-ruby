@@ -39,7 +39,7 @@ module Holistic::LanguageServer
     end
 
     def respond_with_location_link(request, reference, referenced_scope)
-      origin_location = reference.attr(:location)
+      origin_location = reference.location
       target_declaration_location = referenced_scope.locations.main.declaration
 
       location_link = {

@@ -38,7 +38,7 @@ module Holistic::LanguageServer
 
     def respond_with_locations(request, references)
       locations = references.map do |reference|
-        location = reference.attr(:location)
+        location = reference.location
 
         {
           "uri" => Format::FileUri.from_path(location.file.attr(:path)),
