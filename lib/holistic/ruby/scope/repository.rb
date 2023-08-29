@@ -36,11 +36,6 @@ module Holistic::Ruby::Scope
       matching_scopes.last
     end
 
-    # TODO rename to `delete_scope`
-    def delete_by_fully_qualified_name(fully_qualified_name)
-      database.delete(fully_qualified_name)
-    end
-
     def list_scopes_in_file(file_path)
       database.find(file_path)&.has_many(:defines_scopes) || []
     end

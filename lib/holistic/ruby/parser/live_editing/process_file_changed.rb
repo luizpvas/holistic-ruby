@@ -32,7 +32,7 @@ module Holistic::Ruby::Parser
     def unregister_scopes_in_file(application:, file_path:)
       application.scopes.list_scopes_in_file(file_path).each do |scope|
         ::Holistic::Ruby::Scope::Unregister.call(
-          repository: application.scopes,
+          database: application.database,
           fully_qualified_name: scope.attr(:fully_qualified_name),
           file_path:
         )

@@ -15,7 +15,7 @@ describe ::Holistic::Ruby::Scope::Unregister do
     let(:repository) { ::Holistic::Ruby::Scope::Repository.new(database:) }
 
     it "returns :scope_not_found" do
-      result = described_class.call(repository:, fully_qualified_name: "NonExisting", file_path: "/snippet.rb")
+      result = described_class.call(database:, fully_qualified_name: "NonExisting", file_path: "/snippet.rb")
 
       expect(result).to be(:scope_not_found)
     end
@@ -37,7 +37,7 @@ describe ::Holistic::Ruby::Scope::Unregister do
     end
 
     it "returns :scope_not_defined_in_speciefied_file" do
-      result = described_class.call(repository:, fully_qualified_name: "::MyModule", file_path: "/non_existing.rb")
+      result = described_class.call(database:, fully_qualified_name: "::MyModule", file_path: "/non_existing.rb")
 
       expect(result).to be(:scope_not_defined_in_speciefied_file)
     end
@@ -65,7 +65,7 @@ describe ::Holistic::Ruby::Scope::Unregister do
     it "detaches the scope its parent and deletes from the repository" do
       expect(parent.has_many(:children)).to eql([scope])
 
-      result = described_class.call(repository:, fully_qualified_name: "::MyModule", file_path: "/snippet.rb")
+      result = described_class.call(database:, fully_qualified_name: "::MyModule", file_path: "/snippet.rb")
 
       expect(result).to be(:definition_unregistered)
 
@@ -76,7 +76,7 @@ describe ::Holistic::Ruby::Scope::Unregister do
     it "disconnects the scope from the file" do
       expect(location.declaration.file.has_many(:defines_scopes)).to eql([scope])
 
-      result = described_class.call(repository:, fully_qualified_name: "::MyModule", file_path: "/snippet.rb")
+      result = described_class.call(database:, fully_qualified_name: "::MyModule", file_path: "/snippet.rb")
 
       expect(location.declaration.file.has_many(:defines_scopes)).to be_empty
     end
@@ -115,7 +115,7 @@ describe ::Holistic::Ruby::Scope::Unregister do
     it "removes the location for the specified path" do
       expect(scope.attr(:locations).items).to match_array([location_1, location_2])
 
-      described_class.call(repository:, fully_qualified_name: "::MyModule", file_path: "/snippet_1.rb")
+      described_class.call(database:, fully_qualified_name: "::MyModule", file_path: "/snippet_1.rb")
 
       expect(scope.attr(:locations).items).to match_array([location_2])
     end
@@ -123,13 +123,13 @@ describe ::Holistic::Ruby::Scope::Unregister do
     it "updates the repository record" do
       expect(repository.list_scopes_in_file("/snippet_1.rb")).to match_array([scope])
 
-      described_class.call(repository:, fully_qualified_name: "::MyModule", file_path: "/snippet_1.rb")
+      described_class.call(database:, fully_qualified_name: "::MyModule", file_path: "/snippet_1.rb")
 
       expect(repository.list_scopes_in_file("/snippet_1.rb")).to be_empty
     end
 
     it "does not detach the scope from its parent" do
-      described_class.call(repository:, fully_qualified_name: "::MyModule", file_path: "/snippet_1.rb")
+      described_class.call(database:, fully_qualified_name: "::MyModule", file_path: "/snippet_1.rb")
 
       expect(parent.has_many(:children)).to match_array([scope])
     end

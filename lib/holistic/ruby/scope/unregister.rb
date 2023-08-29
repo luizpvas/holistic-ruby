@@ -4,8 +4,8 @@ module Holistic::Ruby::Scope
   module Unregister
     extend self
 
-    def call(repository:, fully_qualified_name:, file_path:)
-      scope = repository.find(fully_qualified_name)
+    def call(database:, fully_qualified_name:, file_path:)
+      scope = database.find(fully_qualified_name)
 
       return :scope_not_found if scope.nil?
 
@@ -15,12 +15,12 @@ module Holistic::Ruby::Scope
 
       scope.attr(:locations).delete(location_to_remove)
 
-      repository.database.disconnect(source: location_to_remove.declaration.file, target: scope, name: :defines_scopes, inverse_of: :scope_defined_in_file)
+      database.disconnect(source: location_to_remove.declaration.file, target: scope, name: :defines_scopes, inverse_of: :scope_defined_in_file)
 
       if scope.attr(:locations).empty?
-        repository.database.disconnect(source: scope.has_one(:parent), target: scope, name: :children, inverse_of: :parent)
+        database.disconnect(source: scope.has_one(:parent), target: scope, name: :children, inverse_of: :parent)
 
-        repository.delete_by_fully_qualified_name(fully_qualified_name)
+        database.delete(fully_qualified_name)
       end
 
       :definition_unregistered
