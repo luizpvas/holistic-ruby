@@ -24,7 +24,11 @@ module Holistic::Database
         end
       end
 
-      @records[id] = Node.new(id, attributes)
+      @records[id] =
+        case attributes
+        in ::Hash then Node.new(id, attributes)
+        in Node   then attributes
+        end
     end
 
     def connect(source:, target:, name:, inverse_of:)

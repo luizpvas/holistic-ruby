@@ -68,6 +68,23 @@ describe ::Holistic::Database::Table do
         expect(node_2.attr(:key2)).to eql("value2")
       end
     end
+
+    context "when attributes are specified a kind that inherits from node" do
+      class SubkindNode < ::Holistic::Database::Node
+        def name = attr(:name)
+      end
+
+      it "stores the nodes as-is" do
+        database = described_class.new
+        
+        node = SubkindNode.new("node", { name: "NODE_NAME" })
+
+        node = database.store("node", node)
+
+        expect(node).to be_an_instance_of(SubkindNode)
+        expect(node.name).to eql("NODE_NAME")
+      end
+    end
   end
 
   describe "#connect" do
