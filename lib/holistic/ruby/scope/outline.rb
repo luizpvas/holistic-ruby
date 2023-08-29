@@ -25,7 +25,7 @@ module Holistic::Ruby::Scope
 
       dependencies = []
 
-      scope.attr(:locations).each do |scope_location|
+      scope.locations.each do |scope_location|
         application.references
           .list_references_in_file(scope_location.declaration.file.attr(:path))
           .filter { |reference| reference.has_one(:located_in_scope) == scope }

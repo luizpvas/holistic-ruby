@@ -10,12 +10,12 @@ module Holistic::Ruby::Scope
       child_scope = database.find(fully_qualified_name)
 
       if child_scope.nil?
-        child_scope_node = Node.new(fully_qualified_name, { fully_qualified_name:, name:, kind:, locations: Location::Collection.new(name) })
+        record = Record.new(fully_qualified_name, { fully_qualified_name:, name:, kind:, locations: Location::Collection.new(name) })
 
-        child_scope = database.store(fully_qualified_name, child_scope_node)
+        child_scope = database.store(fully_qualified_name, record)
       end
 
-      child_scope.attr(:locations) << location
+      child_scope.locations << location
 
       database.connect(source: parent, target: child_scope, name: :children, inverse_of: :parent)
       database.connect(source: location.declaration.file, target: child_scope, name: :defines_scopes, inverse_of: :scope_defined_in_file)

@@ -50,7 +50,7 @@ describe ::Holistic::Ruby::Scope::Register do
         locations: be_a(::Holistic::Ruby::Scope::Location::Collection)
       })
 
-      expect(child_1.attr(:locations).items).to match_array([
+      expect(child_1.locations.items).to match_array([
         child_1_location
       ])
 
@@ -62,7 +62,7 @@ describe ::Holistic::Ruby::Scope::Register do
         locations: be_a(::Holistic::Ruby::Scope::Location::Collection)
       })
 
-      expect(child_2.attr(:locations).items).to match_array([
+      expect(child_2.locations.items).to match_array([
         child_2_location
       ])
     end
@@ -73,10 +73,10 @@ describe ::Holistic::Ruby::Scope::Register do
     end
 
     it "connects the scope to the file" do
-      child_1_file = child_1.attr(:locations).main.declaration.file
+      child_1_file = child_1.locations.main.declaration.file
       expect(child_1_file.has_many(:defines_scopes)).to eql([child_1])
 
-      child_2_file = child_2.attr(:locations).main.declaration.file
+      child_2_file = child_2.locations.main.declaration.file
       expect(child_2_file.has_many(:defines_scopes)).to eql([child_2])
     end
   end
@@ -113,7 +113,7 @@ describe ::Holistic::Ruby::Scope::Register do
     end
 
     it "appends the source location to the existing scope" do
-      expect(child_2.attr(:locations).items).to match_array([location_1, location_2])
+      expect(child_2.locations.items).to match_array([location_1, location_2])
     end
 
     it "connects the scope to the new location's file" do
@@ -121,7 +121,7 @@ describe ::Holistic::Ruby::Scope::Register do
       expect(location_2.declaration.file.has_many(:defines_scopes)).to eql([child_1])
 
       expect(
-        child_1.attr(:locations).items.map { _1.declaration.file }
+        child_1.locations.items.map { _1.declaration.file }
       ).to eql([location_1.declaration.file, location_2.declaration.file])
     end
   end

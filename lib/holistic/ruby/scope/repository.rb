@@ -17,7 +17,7 @@ module Holistic::Ruby::Scope
     def find_by_cursor(cursor)
       database.find(cursor.file_path)&.then do |file|
         file.has_many(:defines_scopes).find do |scope|
-          scope.attr(:locations).any? { _1.declaration.contains?(cursor) }
+          scope.locations.any? { _1.declaration.contains?(cursor) }
         end
       end
     end
@@ -28,7 +28,7 @@ module Holistic::Ruby::Scope
       return nil if file.nil?
 
       matching_scopes = file.has_many(:defines_scopes).filter do |scope|
-        scope.attr(:locations).any? { _1.body.contains?(cursor) }
+        scope.locations.any? { _1.body.contains?(cursor) }
       end
 
       matching_scopes.last

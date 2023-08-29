@@ -9,15 +9,15 @@ module Holistic::Ruby::Scope
 
       return :scope_not_found if scope.nil?
 
-      location_to_remove = scope.attr(:locations).find { |scope_location| scope_location.declaration.file.attr(:path) == file_path }
+      location_to_remove = scope.locations.find { |scope_location| scope_location.declaration.file.attr(:path) == file_path }
 
       return :scope_not_defined_in_speciefied_file if location_to_remove.nil?
 
-      scope.attr(:locations).delete(location_to_remove)
+      scope.locations.delete(location_to_remove)
 
       database.disconnect(source: location_to_remove.declaration.file, target: scope, name: :defines_scopes, inverse_of: :scope_defined_in_file)
 
-      if scope.attr(:locations).empty?
+      if scope.locations.empty?
         database.disconnect(source: scope.has_one(:parent), target: scope, name: :children, inverse_of: :parent)
 
         database.delete(fully_qualified_name)

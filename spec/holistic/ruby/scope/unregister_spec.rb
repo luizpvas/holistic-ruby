@@ -106,11 +106,11 @@ describe ::Holistic::Ruby::Scope::Unregister do
     end
 
     it "removes the location for the specified path" do
-      expect(scope.attr(:locations).items).to match_array([location_1, location_2])
+      expect(scope.locations.items).to match_array([location_1, location_2])
 
       described_class.call(database: application.database, fully_qualified_name: "::MyModule", file_path: "/snippet_1.rb")
 
-      expect(scope.attr(:locations).items).to match_array([location_2])
+      expect(scope.locations.items).to match_array([location_2])
     end
 
     it "updates the relations between scope and file in the database" do
