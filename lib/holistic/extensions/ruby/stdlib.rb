@@ -8,7 +8,7 @@ module Holistic::Extensions::Ruby
       method_call_clue, referenced_scope = params[:method_call_clue], params[:referenced_scope]
 
       if method_call_clue.method_name == "new" && referenced_scope.attr(:kind) == ::Holistic::Ruby::Scope::Kind::CLASS
-        initialize_method = "#{referenced_scope.attr(:fully_qualified_name)}#initialize"
+        initialize_method = "#{referenced_scope.fully_qualified_name}#initialize"
 
         return application.scopes.find(initialize_method)
       end

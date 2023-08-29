@@ -37,7 +37,7 @@ describe Holistic::Ruby::Parser do
     })
 
     expect(
-      application.scopes.list_scopes_in_file("/my_app/example_1.rb").map { _1.attr(:fully_qualified_name) }
+      application.scopes.list_scopes_in_file("/my_app/example_1.rb").map { _1.fully_qualified_name }
     ).to match_array([
       "::MyApp",
       "::MyApp::Example1",
@@ -45,7 +45,7 @@ describe Holistic::Ruby::Parser do
     ])
 
     expect(
-      application.scopes.list_scopes_in_file("/my_app/example_2.rb").map { _1.attr(:fully_qualified_name) }
+      application.scopes.list_scopes_in_file("/my_app/example_2.rb").map { _1.fully_qualified_name }
     ).to match_array([
       "::MyApp",
       "::MyApp::Example2"

@@ -35,7 +35,7 @@ module Holistic::Ruby::Reference
 
       def find_reference_to(scope_name)
         @database.all.find do |node|
-          node.has_one(:referenced_scope)&.attr(:fully_qualified_name) == scope_name || node.attr(:clues)&.find { _1.to_s == scope_name }
+          node.has_one(:referenced_scope)&.fully_qualified_name == scope_name || node.attr(:clues)&.find { _1.to_s == scope_name }
         end
       end
 

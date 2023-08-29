@@ -27,10 +27,10 @@ describe ::Holistic::Ruby::Parser::LiveEditing::ProcessFileChanged do
       my_app_example_after = application.scopes.find("::MyApp::Example")
       foo_reference_after = application.references.find_reference_to("Foo")
 
-      expect(my_app_before.attr(:fully_qualified_name)).to eql(my_app_after.attr(:fully_qualified_name))
+      expect(my_app_before.fully_qualified_name).to eql(my_app_after.fully_qualified_name)
       expect(my_app_before).not_to be(my_app_after)
 
-      expect(my_app_example_before.attr(:fully_qualified_name)).to eql(my_app_example_after.attr(:fully_qualified_name))
+      expect(my_app_example_before.fully_qualified_name).to eql(my_app_example_after.fully_qualified_name)
       expect(my_app_example_before).not_to be(my_app_example_after)
 
       expect(foo_reference_before.attr(:identifier)).to eql(foo_reference_after.attr(:identifier))
@@ -76,7 +76,7 @@ describe ::Holistic::Ruby::Parser::LiveEditing::ProcessFileChanged do
       foo_1_reference_after = application.references.find_reference_to("Foo1") rescue nil
       foo_2_reference_after = application.references.find_reference_to("Foo2")
 
-      expect(my_app_before.attr(:fully_qualified_name)).to eql(my_app_after.attr(:fully_qualified_name))
+      expect(my_app_before.fully_qualified_name).to eql(my_app_after.fully_qualified_name)
       expect(my_app_before).not_to be(my_app_after)
 
       expect(my_app_example_1_before).to be_present

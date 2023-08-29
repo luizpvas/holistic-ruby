@@ -41,7 +41,7 @@ describe ::Holistic::Ruby::Reference::FindReferencedScope do
       result, data = described_class.call(application:, cursor:)
 
       expect(result).to eql(:referenced_scope_found)
-      expect(data[:referenced_scope].attr(:fully_qualified_name)).to eql("::MyApp::Example")
+      expect(data[:referenced_scope].fully_qualified_name).to eql("::MyApp::Example")
     end
   end
 end

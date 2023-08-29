@@ -35,14 +35,14 @@ describe ::Holistic::Ruby::Parser::LiveEditing::ProcessFileChanged do
       references_before = application.references.list_references_to_scopes_in_file(scopes: application.scopes, file_path: "/my_app/example_1.rb")
 
       expect(references_before.size).to eql(2)
-      expect(references_before.first.has_one(:referenced_scope).attr(:fully_qualified_name)).to eql("::MyApp::Example1")
+      expect(references_before.first.has_one(:referenced_scope).fully_qualified_name).to eql("::MyApp::Example1")
 
       described_class.call(application:, file_path: "my_app/example_1.rb", content: example_1_source_code)
 
       references_after = application.references.list_references_to_scopes_in_file(scopes: application.scopes, file_path: "/my_app/example_1.rb")
 
       expect(references_after.size).to eql(2)
-      expect(references_after.first.has_one(:referenced_scope).attr(:fully_qualified_name)).to eql("::MyApp::Example1")
+      expect(references_after.first.has_one(:referenced_scope).fully_qualified_name).to eql("::MyApp::Example1")
     end
   end
 
@@ -86,7 +86,7 @@ describe ::Holistic::Ruby::Parser::LiveEditing::ProcessFileChanged do
 
     it "re-evaluates type inference for the referencer" do
       application.references.find_reference_to("Example1").tap do |reference|
-        expect(reference.has_one(:referenced_scope).attr(:fully_qualified_name)).to eql("::MyApp::Example1")
+        expect(reference.has_one(:referenced_scope).fully_qualified_name).to eql("::MyApp::Example1")
       end
 
       described_class.call(application:, file_path: "/my_app/example_1.rb", content: example_1_source_code_after)

@@ -36,7 +36,7 @@ module Holistic::Ruby::Parser
 
       registered_module_scope = @scope
 
-      @constant_resolution_possibilities.unshift(@scope.attr(:fully_qualified_name))
+      @constant_resolution_possibilities.unshift(@scope.fully_qualified_name)
 
       block.call
 
@@ -63,7 +63,7 @@ module Holistic::Ruby::Parser
 
       registered_class_scope = @scope
 
-      @constant_resolution_possibilities.unshift(@scope.attr(:fully_qualified_name))
+      @constant_resolution_possibilities.unshift(@scope.fully_qualified_name)
 
       block.call
 

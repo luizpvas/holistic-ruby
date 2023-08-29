@@ -25,7 +25,7 @@ describe ::Holistic::Ruby::Scope::Outline do
     expect(result.dependencies).to be_empty
 
     expect(
-      result.declarations.map { _1.attr(:fully_qualified_name) }
+      result.declarations.map { _1.fully_qualified_name }
     ).to match_array([
       "::MyApp::PlusOne",
       "::MyApp::PlusOne.call",

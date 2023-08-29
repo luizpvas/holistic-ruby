@@ -23,7 +23,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
     it "solves the method call reference" do
       reference = application.references.find_by_code_content("method_2")
 
-      expect(reference.has_one(:referenced_scope).attr(:fully_qualified_name)).to eql("::MyModule.method_2")
+      expect(reference.has_one(:referenced_scope).fully_qualified_name).to eql("::MyModule.method_2")
     end
   end
 end

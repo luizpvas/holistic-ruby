@@ -29,7 +29,7 @@ module Holistic::Ruby::Scope
       parent_fully_qualified_name =
         case parent.attr(:kind)
         when Kind::ROOT then ""
-        else parent.attr(:fully_qualified_name)
+        else parent.fully_qualified_name
         end
 
       separator =

@@ -29,7 +29,7 @@ describe ::Holistic::Ruby::Scope::Outline do
     ])
 
     expect(
-      result.dependants.map { _1.attr(:fully_qualified_name) }
+      result.dependants.map { _1.fully_qualified_name }
     ).to match_array(["::MyApp::Calc"])
   end
 end

@@ -98,13 +98,13 @@ module Holistic::Ruby::TypeInference
     end
 
     def resolve_instance_method(application:, scope:, method_name:)
-      method_fully_qualified_name = "#{scope.attr(:fully_qualified_name)}##{method_name}"
+      method_fully_qualified_name = "#{scope.fully_qualified_name}##{method_name}"
 
       application.scopes.find(method_fully_qualified_name)
     end
 
     def resolve_class_method(application:, scope:, method_name:)
-      method_fully_qualified_name = "#{scope.attr(:fully_qualified_name)}.#{method_name}"
+      method_fully_qualified_name = "#{scope.fully_qualified_name}.#{method_name}"
 
       application.scopes.find(method_fully_qualified_name)
     end

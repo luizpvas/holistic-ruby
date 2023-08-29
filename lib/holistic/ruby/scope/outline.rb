@@ -38,7 +38,7 @@ module Holistic::Ruby::Scope
     end
 
     def call(application:, scope:)
-      declarations = QueryChildScopesRecursively.call(application, scope).sort_by { _1.attr(:fully_qualified_name) }
+      declarations = QueryChildScopesRecursively.call(application, scope).sort_by { _1.fully_qualified_name }
 
       dependencies = QueryDependenciesRecursively.call(application, scope, scope).uniq
 

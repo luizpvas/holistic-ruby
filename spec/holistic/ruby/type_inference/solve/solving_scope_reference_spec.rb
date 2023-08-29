@@ -20,8 +20,8 @@ describe ::Holistic::Ruby::TypeInference::Solve do
     it "solves the scope reference" do
       reference = application.references.find_reference_to("Example")
 
-      expect(reference.has_one(:located_in_scope).attr(:fully_qualified_name)).to eql("::MyApp::Other")
-      expect(reference.has_one(:referenced_scope).attr(:fully_qualified_name)).to eql("::MyApp::Example")
+      expect(reference.has_one(:located_in_scope).fully_qualified_name).to eql("::MyApp::Other")
+      expect(reference.has_one(:referenced_scope).fully_qualified_name).to eql("::MyApp::Example")
     end
 
     it "registers a dependency between the scope and its references" do
@@ -54,8 +54,8 @@ describe ::Holistic::Ruby::TypeInference::Solve do
     it "solves the scope reference" do
       reference = application.references.find_reference_to("Example")
 
-      expect(reference.has_one(:located_in_scope).attr(:fully_qualified_name)).to eql("::MyApp::Other")
-      expect(reference.has_one(:referenced_scope).attr(:fully_qualified_name)).to eql("::MyApp::Example")
+      expect(reference.has_one(:located_in_scope).fully_qualified_name).to eql("::MyApp::Other")
+      expect(reference.has_one(:referenced_scope).fully_qualified_name).to eql("::MyApp::Example")
     end
 
     it "registers a dependency between the scope and its references" do
@@ -117,7 +117,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
     it "leaves the referenced_by connection empty" do
       reference = application.references.find_reference_to("Unknown")
 
-      expect(reference.has_one(:located_in_scope).attr(:fully_qualified_name)).to eql("::MyApp")
+      expect(reference.has_one(:located_in_scope).fully_qualified_name).to eql("::MyApp")
       expect(reference.has_one(:referenced_scope)).to be_nil
     end
   end
@@ -144,8 +144,8 @@ describe ::Holistic::Ruby::TypeInference::Solve do
     it "solves the dependency" do
       reference = application.references.find_reference_to("Example1")
 
-      expect(reference.has_one(:located_in_scope).attr(:fully_qualified_name)).to eql("::MyApp::Example2")
-      expect(reference.has_one(:referenced_scope).attr(:fully_qualified_name)).to eql("::Example1")
+      expect(reference.has_one(:located_in_scope).fully_qualified_name).to eql("::MyApp::Example2")
+      expect(reference.has_one(:referenced_scope).fully_qualified_name).to eql("::Example1")
     end
   end
 
@@ -163,8 +163,8 @@ describe ::Holistic::Ruby::TypeInference::Solve do
     it "solves the dependency" do
       reference = application.references.find_reference_to("PlusOne")
 
-      expect(reference.has_one(:located_in_scope).attr(:fully_qualified_name)).to eql("::MyApp")
-      expect(reference.has_one(:referenced_scope).attr(:fully_qualified_name)).to eql("::MyApp::PlusOne")
+      expect(reference.has_one(:located_in_scope).fully_qualified_name).to eql("::MyApp")
+      expect(reference.has_one(:referenced_scope).fully_qualified_name).to eql("::MyApp::PlusOne")
     end
   end
 end

@@ -42,7 +42,7 @@ describe ::Holistic::Ruby::Scope::Repository do
 
         scope = application.scopes.find_inner_most_scope_by_cursor(cursor)
 
-        expect(scope.attr(:fully_qualified_name)).to eql("::MyApplication")
+        expect(scope.fully_qualified_name).to eql("::MyApplication")
       end
     end
 
@@ -52,7 +52,7 @@ describe ::Holistic::Ruby::Scope::Repository do
 
         scope = application.scopes.find_inner_most_scope_by_cursor(cursor)
 
-        expect(scope.attr(:fully_qualified_name)).to eql("::MyApplication::MyModule#foo")
+        expect(scope.fully_qualified_name).to eql("::MyApplication::MyModule#foo")
       end
     end
   end

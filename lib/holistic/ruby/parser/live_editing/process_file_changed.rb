@@ -33,7 +33,7 @@ module Holistic::Ruby::Parser
       application.scopes.list_scopes_in_file(file_path).each do |scope|
         ::Holistic::Ruby::Scope::Unregister.call(
           database: application.database,
-          fully_qualified_name: scope.attr(:fully_qualified_name),
+          fully_qualified_name: scope.fully_qualified_name,
           file_path:
         )
       end
