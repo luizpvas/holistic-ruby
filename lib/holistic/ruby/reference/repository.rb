@@ -28,10 +28,6 @@ module Holistic::Ruby::Reference
       references || []
     end
 
-    def delete(id)
-      @database.delete(id)
-    end
-
     concerning :TestHelpers do
       def all
         @database.all.filter { _1.attr(:clues).present? }
