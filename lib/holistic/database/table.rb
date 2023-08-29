@@ -17,18 +17,26 @@ module Holistic::Database
       @connections[inverse_of] = { inverse_of: name }
     end
 
-    def store(id, attributes)
+    def store(id, node_or_attrs)
       if @records.key?(id)
         return @records[id]&.tap do |node|
-          node.attributes = attributes
+          node.attributes =
+            case node_or_attrs
+            in ::Hash then node_or_attrs
+            in Node   then node_or_attrs.attributes
+            end
         end
       end
 
-      @records[id] =
-        case attributes
-        in ::Hash then Node.new(id, attributes)
-        in Node   then attributes
+      node =
+        case node_or_attrs
+        in ::Hash then Node.new(id, node_or_attrs)
+        in Node   then node_or_attrs
         end
+
+      node.__set_database__(self)
+
+      @records[id] = node
     end
 
     def connect(source:, target:, name:, inverse_of:)

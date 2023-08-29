@@ -2,7 +2,7 @@
 
 module Holistic::Database
   class Node
-    attr_accessor :attributes, :connections
+    attr_accessor :attributes, :connections, :__database__
 
     def initialize(id, attributes)
       @id = id
@@ -20,6 +20,10 @@ module Holistic::Database
 
     def has_one(connection_name)
       @connections[connection_name].first
+    end
+
+    def __set_database__(database)
+      @__database__ = database
     end
   end
 end

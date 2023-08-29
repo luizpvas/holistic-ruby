@@ -8,7 +8,12 @@ module Holistic::Ruby::Scope
       fully_qualified_name = build_fully_qualified_name(parent:, kind:, name:)
 
       child_scope = database.find(fully_qualified_name)
-      child_scope ||= database.store(fully_qualified_name, { fully_qualified_name:, name:, kind:, locations: Location::Collection.new(name) })
+
+      if child_scope.nil?
+        child_scope_node = Node.new(fully_qualified_name, { fully_qualified_name:, name:, kind:, locations: Location::Collection.new(name) })
+
+        child_scope = database.store(fully_qualified_name, child_scope_node)
+      end
 
       child_scope.attr(:locations) << location
 

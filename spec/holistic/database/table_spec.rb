@@ -84,6 +84,35 @@ describe ::Holistic::Database::Table do
         expect(node).to be_an_instance_of(SubkindNode)
         expect(node.name).to eql("NODE_NAME")
       end
+
+      it "sets the __database__ property on the node" do
+        database = described_class.new
+        
+        node = SubkindNode.new("node", { name: "NODE_NAME" })
+
+        expect(node.__database__).to be_nil
+
+        database.store("node", node)
+
+        expect(node.__database__).to be(database)
+      end
+
+      it "updates the node attributes if node already exists in the database" do
+        database = described_class.new
+
+        node_1 = SubkindNode.new("node", { name: "NODE_NAME" })
+
+        node_1st_store = database.store("node", node_1)
+
+        node_2 = SubkindNode.new("node", { name: "UPDATED_NODE_NAME" })
+
+        node_2nd_store = database.store("node", node_2)
+
+        expect(node_1st_store).to be(node_1)
+        expect(node_2nd_store).to be(node_1)
+
+        expect(node_1st_store.name).to eql("UPDATED_NODE_NAME")
+      end
     end
   end
 
