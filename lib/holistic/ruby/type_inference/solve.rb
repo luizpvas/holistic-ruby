@@ -10,8 +10,7 @@ module Holistic::Ruby::TypeInference
         solve_method_call(application:, reference:)
 
       if referenced_scope
-        referenced_scope.connect_referenced_by(reference)
-        reference.connect_referenced_scope(referenced_scope)
+        application.database.connect(source: reference, target: referenced_scope, name: :referenced_scope, inverse_of: :referenced_by)
       end
     end
 
@@ -19,11 +18,11 @@ module Holistic::Ruby::TypeInference
 
     def solve_scope_reference(application:, reference:)
       has_scope_reference_clue =
-        reference.clues.one? && reference.clues.first.is_a?(Clue::ScopeReference)
+        reference.attr(:clues).one? && reference.attr(:clues).first.is_a?(Clue::ScopeReference)
 
       return unless has_scope_reference_clue
 
-      scope_reference_clue = reference.clues.first
+      scope_reference_clue = reference.attr(:clues).first
 
       resolve_scope(
         application:,
@@ -33,10 +32,12 @@ module Holistic::Ruby::TypeInference
     end
 
     SolveMethodCallInCurrentScope = ->(application:, reference:, method_call_clue:) do
-      if reference.scope.class_method?
-        resolve_class_method(application:, scope: reference.scope.parent, method_name: method_call_clue.method_name)
-      elsif reference.scope.instance_method? && reference.scope.parent.present?
-        resolve_instance_method(application:, scope: reference.scope.parent, method_name: method_call_clue.method_name)
+      scope = reference.has_one(:located_in_scope)
+
+      if scope.attr(:kind) == ::Holistic::Ruby::Scope::Kind::CLASS_METHOD
+        resolve_class_method(application:, scope: scope.has_one(:parent), method_name: method_call_clue.method_name)
+      elsif scope.attr(:kind) == ::Holistic::Ruby::Scope::Kind::INSTANCE_METHOD && scope.has_one(:parent).present?
+        resolve_instance_method(application:, scope: scope.has_one(:parent), method_name: method_call_clue.method_name)
       end
     end
 
@@ -62,11 +63,11 @@ module Holistic::Ruby::TypeInference
     end
 
     def solve_method_call(application:, reference:)
-      has_method_call_clue = reference.clues.one? && reference.clues.first.is_a?(Clue::MethodCall)
+      has_method_call_clue = reference.attr(:clues).one? && reference.attr(:clues).first.is_a?(Clue::MethodCall)
 
       return unless has_method_call_clue
 
-      method_call_clue = reference.clues.first
+      method_call_clue = reference.attr(:clues).first
 
       if method_call_clue.nesting.nil?
         SolveMethodCallInCurrentScope.call(application:, reference:, method_call_clue:)
@@ -88,7 +89,7 @@ module Holistic::Ruby::TypeInference
             "#{resolution_candidate}::#{nesting.to_s}"
           end
 
-        scope = application.scopes.find_by_fully_qualified_name(fully_qualified_scope_name)
+        scope = application.scopes.find(fully_qualified_scope_name)
 
         return scope if scope.present?
       end
@@ -97,15 +98,15 @@ module Holistic::Ruby::TypeInference
     end
 
     def resolve_instance_method(application:, scope:, method_name:)
-      method_fully_qualified_name = "#{scope.fully_qualified_name}##{method_name}"
+      method_fully_qualified_name = "#{scope.attr(:fully_qualified_name)}##{method_name}"
 
-      application.scopes.find_by_fully_qualified_name(method_fully_qualified_name)
+      application.scopes.find(method_fully_qualified_name)
     end
 
     def resolve_class_method(application:, scope:, method_name:)
-      method_fully_qualified_name = "#{scope.fully_qualified_name}.#{method_name}"
+      method_fully_qualified_name = "#{scope.attr(:fully_qualified_name)}.#{method_name}"
 
-      application.scopes.find_by_fully_qualified_name(method_fully_qualified_name)
+      application.scopes.find(method_fully_qualified_name)
     end
   end
 end

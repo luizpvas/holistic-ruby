@@ -39,15 +39,15 @@ module Holistic::LanguageServer
     end
 
     def respond_with_location_link(request, reference, referenced_scope)
-      origin_location = reference.location
-      target_declaration_location = referenced_scope.locations.main.declaration
+      origin_location = reference.attr(:location)
+      target_declaration_location = referenced_scope.attr(:locations).main.declaration
 
       location_link = {
         "originSelectionRange" => {
           "start" => { "line" => origin_location.start_line, "character" => origin_location.start_column },
           "end" => { "line" => origin_location.end_line, "character" => origin_location.end_column }
         },
-        "targetUri" => Format::FileUri.from_path(target_declaration_location.file.path),
+        "targetUri" => Format::FileUri.from_path(target_declaration_location.file.attr(:path)),
         "targetRange" => {
           "start" => { "line" => target_declaration_location.start_line, "character" => target_declaration_location.start_column },
           "end" => { "line" => target_declaration_location.end_line, "character" => target_declaration_location.end_column }

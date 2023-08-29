@@ -4,7 +4,7 @@ class Holistic::Extensions::Events
   TOPICS = {
     resolve_method_call_known_scope: {
       params: [:reference, :referenced_scope, :method_call_clue],
-      output: ::Holistic::Ruby::Scope::Record
+      output: ::Holistic::Database::Node # TODO: is this useful?
     },
     class_scope_registered: {
       params: [:class_scope, :location],

@@ -11,9 +11,9 @@ describe ::Holistic::Ruby::Parser do
     RUBY
   end
 
-  it "parses the code" do
-    expect(application.scopes.find_by_fully_qualified_name("::MyClass")).to have_attributes(
-      name: "MyClass"
-    )
+  it "parses the code correctly" do
+    expect(
+      application.scopes.find("::MyClass").attr(:name)
+    ).to eql("MyClass")
   end
 end

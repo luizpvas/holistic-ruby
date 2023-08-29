@@ -16,15 +16,15 @@ describe ::Holistic::Ruby::Parser do
     it "parses the code" do
       reference = application.references.find_reference_to("Foo")
 
-      expect(reference.clues.size).to be(1)
-      expect(reference.clues.first).to have_attributes(
+      expect(reference.attr(:clues).size).to be(1)
+      expect(reference.attr(:clues).first).to have_attributes(
         itself: be_a(::Holistic::Ruby::TypeInference::Clue::ScopeReference),
         resolution_possibilities: ["::MyClass", "::"]
       )
 
-      expect(reference.referenced_scope).to be_nil
+      expect(reference.has_one(:referenced_scope)).to be_nil
 
-      expect(serialize_scope(application.root_scope)).to eql({
+      expect(serialize_scope(application.scopes.root)).to eql({
         "::" => {
           "MyClass" => {
             "new" => {}

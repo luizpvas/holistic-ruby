@@ -8,18 +8,12 @@ module Holistic::Document
     :end_line,
     :end_column
   ) do
-    def self.beginning_of_file(file)
-      file = file.is_a?(File::Record) ? file : File::Record.new(path: file)
-
-      new(file, 0, 0, 0, 0)
-    end
-
     def identifier
-      "#{file.path}[#{start_line},#{start_column},#{end_line},#{end_column}]"
+      "#{file.attr(:path)}[#{start_line},#{start_column},#{end_line},#{end_column}]"
     end
 
     def contains?(cursor)
-      same_file = cursor.file_path == file.path
+      same_file = cursor.file_path == file.attr(:path)
       contains_line = cursor.line >= start_line && cursor.line <= end_line
       
       contains_column =

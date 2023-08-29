@@ -38,11 +38,13 @@ module Holistic::LanguageServer
 
     def respond_with_locations(request, references)
       locations = references.map do |reference|
+        location = reference.attr(:location)
+
         {
-          "uri" => Format::FileUri.from_path(reference.location.file.path),
+          "uri" => Format::FileUri.from_path(location.file.attr(:path)),
           "range" => {
-            "start" => { "line" => reference.location.start_line, "character" => reference.location.start_column },
-            "end" => { "line" => reference.location.end_line, "character" => reference.location.end_column }
+            "start" => { "line" => location.start_line, "character" => location.start_column },
+            "end" => { "line" => location.end_line, "character" => location.end_column }
           }
         }
       end

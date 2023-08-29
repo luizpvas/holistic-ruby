@@ -1,106 +1,211 @@
 # frozen_string_literal: true
 
 describe ::Holistic::Database::Table do
-  let(:table) do
-    described_class.new(indices: [:color])
+  describe "#define_connection" do
+    context "when connection does not exist" do
+      it "stores the connection definition" do
+        database = described_class.new
+
+        database.define_connection(name: :contains, inverse_of: :belongs)
+
+        expect(database.connections).to eql({
+          contains: { inverse_of: :belongs },
+          belongs: { inverse_of: :contains }
+        })
+      end
+    end
+
+    context "when connection's :inverse_of exists as the name of another connection" do
+      it "raises an error" do
+        database = described_class.new
+
+        database.define_connection(name: :contains, inverse_of: :belongs)
+
+        expect {
+          database.define_connection(name: :another_contains, inverse_of: :belongs)
+        }.to raise_error(::ArgumentError)
+      end
+    end
+
+    context "when connection already exists" do
+      it "raises an error" do
+        database = described_class.new
+
+        database.define_connection(name: :contains, inverse_of: :belongs)
+
+        expect {
+          database.define_connection(name: :contains, inverse_of: :another_belongs)
+        }.to raise_error(::ArgumentError)
+      end
+    end
   end
 
   describe "#store" do
-    it "inserts a new record if it does not exist" do
-      expect(table.size).to be(0)
+    context "when node does not exist" do
+      it "inserts the node in the database" do
+        database = described_class.new
 
-      table.store("example", {})
+        expect(database.size).to be(0)
 
-      expect(table.size).to be(1)
+        node = database.store("node", { key: "value" })
+
+        expect(database.size).to be(1)
+
+        expect(node.attr(:key)).to eql("value")
+      end
     end
 
-    it "inserts multiple records" do
-      expect(table.size).to be(0)
+    context "when node already exists" do
+      it "replaces the existing node attributes" do
+        database = described_class.new
 
-      table.store("example1", {})
-      table.store("example2", {})
-      table.store("example3", {})
-      
-      expect(table.size).to be(3)
+        node_1 = database.store("node", { key1: "value1" })
+        node_2 = database.store("node", { key2: "value2" })
+
+        expect(node_1).to be(node_2)
+
+        expect(node_2.attr(:key1)).to be_nil
+        expect(node_2.attr(:key2)).to eql("value2")
+      end
+    end
+  end
+
+  describe "#connect" do
+    context "when connection between the nodes does not exist" do
+      it "stores the connection in both nodes" do
+        database = described_class.new
+        database.define_connection(name: :children, inverse_of: :parent)
+
+        parent = database.store("parent", {})
+        child = database.store("child", {})
+
+        database.connect(source: parent, target: child, name: :children, inverse_of: :parent)
+
+        expect(parent.has_many(:children)).to eql([child])
+        expect(child.has_one(:parent)).to eql(parent)
+      end
     end
 
-    it "inserts an entry for each indexed attribute" do
-      record = { color: "green" }
+    context "when connection between the nodes already exist" do
+      it "does not duplicate data" do
+        database = described_class.new
+        database.define_connection(name: :children, inverse_of: :parent)
 
-      table.store("example", record)
+        parent = database.store("parent", {})
+        child = database.store("child", {})
 
-      expect(table.records).to include("example")
-      expect(table.indices[:color]).to include("green")
+        # calling multiple times
+        database.connect(source: parent, target: child, name: :children, inverse_of: :parent)
+        database.connect(source: parent, target: child, name: :children, inverse_of: :parent)
+        database.connect(source: parent, target: child, name: :children, inverse_of: :parent)
 
-      expect(table.find("example")).to eql(record)
-      expect(table.filter(:color, "green")).to eql([record])
+        expect(parent.has_many(:children)).to eql([child])
+        expect(child.has_one(:parent)).to eql(parent)
+      end
     end
 
-    it "indexes multiple values if attribute is an array" do
-      record = { color: ["green", "blue"] }
+    context "when connection was not defined" do
+      it "raises an error" do
+        database = described_class.new
 
-      table.store("example", record)
+        parent = database.store("parent", {})
+        child = database.store("child", {})
 
-      expect(table.indices[:color]).to include("green")
-      expect(table.indices[:color]).to include("blue")
+        expect {
+          database.connect(source: parent, target: child, name: :children, inverse_of: :parent)
+        }.to raise_error(::ArgumentError)
+      end
+    end
+  end
 
-      expect(table.filter(:color, "green")).to eql([record])
-      expect(table.filter(:color, "blue")).to eql([record])
+  describe "#disconnect" do
+    context "when connection between node exist" do
+      it "deletes the connection from both nodes" do
+        database = described_class.new
+        database.define_connection(name: :children, inverse_of: :parent)
+
+        parent = database.store("parent", {})
+        child = database.store("child", {})
+
+        database.connect(source: parent, target: child, name: :children, inverse_of: :parent)
+        database.disconnect(source: parent, target: child, name: :children, inverse_of: :parent)
+
+        expect(parent.has_many(:children)).to eql([])
+        expect(child.has_one(:parent)).to be_nil
+      end
     end
 
-    context "when a record with the same primary key already exists" do
-      it "updates all indices with the new data" do
-        record = { color: "green" }
+    context "when connection between nodes does not exist" do
+      it "does nothing" do
+        database = described_class.new
+        database.define_connection(name: :children, inverse_of: :parent)
 
-        table.store("example", record)
+        parent = database.store("parent", {})
+        child = database.store("child", {})
 
-        record = record.dup
-        record[:color] = ["green", "blue"]
+        # calling disconnect without calling connect first
+        database.disconnect(source: parent, target: child, name: :children, inverse_of: :parent)
 
-        table.store("example", record)
+        expect(parent.has_many(:children)).to eql([])
+        expect(child.has_one(:parent)).to be_nil
+      end
+    end
 
-        expect(table.size).to be(1)
+    context "when connection was not defined before calling disconnect" do
+      it "raises an error" do
+        database = described_class.new
 
-        expect(table.find("example")).to eql(record)
-        expect(table.filter(:color, "green")).to match_array([record])
-        expect(table.filter(:color, "blue")).to match_array([record])
+        parent = database.store("parent", {})
+        child = database.store("child", {})
+
+        # calling disconnect without calling `define_connection`
+        expect {
+          database.disconnect(source: parent, target: child, name: :children, inverse_of: :parent)
+        }.to raise_error(::ArgumentError)
+      end
+    end
+  end
+
+  describe "#find" do
+    context "when node exists in the database" do
+      it "returns the node" do
+        database = described_class.new
+
+        stored_node = database.store("node", {})
+        found_node  = database.find("node")
+
+        expect(found_node).to be(stored_node)
+      end
+    end
+
+    context "when node does not exist in the database" do
+      it "returns nil" do
+        database = described_class.new
+
+        expect(database.find("non_existing_node")).to be_nil
       end
     end
   end
 
   describe "#delete" do
-    context "when record exists" do
-      it "returns the deleted data" do
-        table.store("example", {})
+    context "when node exists in the database" do
+      it "deletes the node from the database" do
+        database = described_class.new
 
-        table.delete("example")
-        table.delete("example") # multiple calls are fine
+        stored_node = database.store("node", {})
+        deleted_node = database.delete("node")
 
-        expect(table.size).to be(0)
-      end
+        expect(deleted_node).to be(stored_node)
 
-      it "deletes the record from all indices" do
-        table.store("example", { color: "green" })
-        table.delete("example")
-
-        expect(table.records).to be_empty
-        expect(table.indices[:color]).to be_empty
-      end
-
-      it "deletes the record from all indices when value is an array" do
-        table.store("example", { color: ["green", "blue"] })
-        table.delete("example")
-
-        expect(table.records).to be_empty
-        expect(table.indices[:color]).to be_empty
+        expect(database.find("node")).to be_nil
       end
     end
 
-    context "when record does not exist" do
+    context "when node does not exist in the database" do
       it "returns nil" do
-        result = table.delete("non-existing-primary-key")
+        database = described_class.new
 
-        expect(result).to be_nil
+        expect(database.delete("non_existing_node")).to be_nil
       end
     end
   end

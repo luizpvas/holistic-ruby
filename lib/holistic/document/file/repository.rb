@@ -1,25 +1,33 @@
 # frozen_string_literal: true
 
 class ::Holistic::Document::File::Repository
-  def initialize
-    @table = ::Holistic::Database::Table.new
+  def initialize(database:)
+    @database = database
+
+    @database.define_connection(name: :defines_scopes, inverse_of: :scope_defined_in_file)
+    @database.define_connection(name: :defines_references, inverse_of: :reference_defined_in_file)
   end
 
-  def store(file)
-    @table.store(file.path, { file: })
+  # rename to `store_file`
+  def store(file_path)
+    @database.store(file_path, { path: file_path })
   end
 
-  def delete(path)
-    @table.delete(path)
+  # rename to `delete_file`
+  def delete(file_path)
+    @database.delete(file_path)
   end
 
-  def find(path)
-    @table.find(path)&.then { _1[:file] }
+  # rename to `find_file`
+  def find(file_path)
+    @database.find(file_path)
   end
 
   concerning :TestHelpers do
-    def all
-      @table.all
+    def build_fake_location(file_path)
+      file = store(file_path)
+
+      ::Holistic::Document::Location.new(file, 0, 0, 0, 0)
     end
   end
 end

@@ -15,8 +15,8 @@ describe ::Holistic::Ruby::TypeInference::Clue::ScopeReference do
     it "infers the scope reference clue" do
       reference = application.references.find_reference_to("MyLib::String")
 
-      expect(reference.clues.size).to be(1)
-      expect(reference.clues.first).to have_attributes(
+      expect(reference.attr(:clues).size).to be(1)
+      expect(reference.attr(:clues).first).to have_attributes(
         itself: be_a(::Holistic::Ruby::TypeInference::Clue::ScopeReference),
         nesting: ::Holistic::Ruby::Parser::NestingSyntax.new(["MyLib", "String"]),
         resolution_possibilities: ["::MyApp", "::"]
@@ -36,8 +36,8 @@ describe ::Holistic::Ruby::TypeInference::Clue::ScopeReference do
     it "infers a scope reference clue" do
       reference = application.references.find_reference_to("String")
 
-      expect(reference.clues.size).to be(1)
-      expect(reference.clues.first).to have_attributes(
+      expect(reference.attr(:clues).size).to be(1)
+      expect(reference.attr(:clues).first).to have_attributes(
         itself: be_a(::Holistic::Ruby::TypeInference::Clue::ScopeReference),
         nesting: ::Holistic::Ruby::Parser::NestingSyntax.new("String"),
         resolution_possibilities: ["::MyApp", "::"]

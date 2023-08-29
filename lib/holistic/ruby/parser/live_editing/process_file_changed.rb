@@ -26,14 +26,14 @@ module Holistic::Ruby::Parser
 
       application.references
         .list_references_to_scopes_in_file(scopes: application.scopes, file_path: file_path)
-        .reject { _1.location.file.path == file_path }
+        .reject { _1.attr(:location).file.attr(:path) == file_path }
     end
 
     def unregister_scopes_in_file(application:, file_path:)
       application.scopes.list_scopes_in_file(file_path).each do |scope|
         ::Holistic::Ruby::Scope::Unregister.call(
           repository: application.scopes,
-          fully_qualified_name: scope.fully_qualified_name,
+          fully_qualified_name: scope.attr(:fully_qualified_name),
           file_path:
         )
       end
@@ -56,8 +56,7 @@ module Holistic::Ruby::Parser
 
     def recalculate_type_inference_for_references(application:, references:)
       references.each do |reference|
-        reference.referenced_scope.disconnect_referenced_by(reference)
-        reference.disconnect_referenced_scope
+        application.database.disconnect(source: reference.has_one(:referenced_scope), target: reference, name: :referenced_by, inverse_of: :referenced_scope)
 
         ::Holistic::Ruby::TypeInference::Solve.call(application:, reference:)
       end

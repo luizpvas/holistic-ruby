@@ -20,25 +20,23 @@ describe ::Holistic::Ruby::Parser do
     end
 
     it "parses the code" do
-      expect(application.references.find_reference_to("Foo1")).to have_attributes(
-        clues: [
-          have_attributes(
-            itself: be_a(::Holistic::Ruby::TypeInference::Clue::ScopeReference),
-            resolution_possibilities: ["::MyApp::MyModule", "::MyApp", "::"]
-          )
-        ]
+      reference_foo_1 = application.references.find_reference_to("Foo1")
+
+      expect(reference_foo_1.attr(:clues).size).to be(1)
+      expect(reference_foo_1.attr(:clues).first).to have_attributes(
+        itself: be_a(::Holistic::Ruby::TypeInference::Clue::ScopeReference),
+        resolution_possibilities: ["::MyApp::MyModule", "::MyApp", "::"]
       )
 
-      expect(application.references.find_reference_to("Foo2")).to have_attributes(
-        clues: [
-          have_attributes(
-            itself: be_a(::Holistic::Ruby::TypeInference::Clue::ScopeReference),
-            resolution_possibilities: ["::MyApp::MyModule", "::MyApp", "::"]
-          )
-        ]
+      reference_foo_2 = application.references.find_reference_to("Foo2")
+
+      expect(reference_foo_2.attr(:clues).size).to be(1)
+      expect(reference_foo_2.attr(:clues).first).to have_attributes(
+        itself: be_a(::Holistic::Ruby::TypeInference::Clue::ScopeReference),
+        resolution_possibilities: ["::MyApp::MyModule", "::MyApp", "::"]
       )
 
-      expect(serialize_scope(application.root_scope)).to eql({
+      expect(serialize_scope(application.scopes.root)).to eql({
         "::" => {
           "MyApp" => {
             "MyModule" => {}

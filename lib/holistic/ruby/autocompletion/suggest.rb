@@ -16,7 +16,7 @@ module Holistic::Ruby::Autocompletion
       lookup_scope = scope
 
       if code.start_with?("::")
-        lookup_scope = lookup_scope.parent until lookup_scope.root?
+        lookup_scope = lookup_scope.has_one(:parent) until lookup_scope.attr(:kind) == ::Holistic::Ruby::Scope::Kind::ROOT
       end
 
       if StartsWithLowerCaseLetter[code]
@@ -35,16 +35,20 @@ module Holistic::Ruby::Autocompletion
 
       method_to_autocomplete = code
 
-      if scope.instance_method?
-        scope.parent.children.filter(&:instance_method?).each do |method_scope|
-          if method_scope.name.start_with?(method_to_autocomplete)
-            suggestions << Suggestion.new(code: method_scope.name, kind: method_scope.kind)
+      if scope.attr(:kind) == ::Holistic::Ruby::Scope::Kind::INSTANCE_METHOD
+        sibling_methods = scope.has_one(:parent).has_many(:children).filter { _1.attr(:kind) == ::Holistic::Ruby::Scope::Kind::INSTANCE_METHOD }
+
+        sibling_methods.each do |method_scope|
+          if method_scope.attr(:name).start_with?(method_to_autocomplete)
+            suggestions << Suggestion.new(code: method_scope.attr(:name), kind: method_scope.attr(:kind))
           end
         end
-      elsif scope.class_method?
-        scope.parent.children.filter(&:class_method?).each do |method_scope|
-          if method_scope.name.start_with?(method_to_autocomplete)
-            suggestions << Suggestion.new(code: method_scope.name, kind: method_scope.kind)
+      elsif scope.attr(:kind) == ::Holistic::Ruby::Scope::Kind::CLASS_METHOD
+        sibling_methods = scope.has_one(:parent).has_many(:children).filter { _1.attr(:kind) == ::Holistic::Ruby::Scope::Kind::CLASS_METHOD }
+
+        sibling_methods.each do |method_scope|
+          if method_scope.attr(:name).start_with?(method_to_autocomplete)
+            suggestions << Suggestion.new(code: method_scope.attr(:name), kind: method_scope.attr(:kind))
           end
         end
       end
@@ -65,9 +69,11 @@ module Holistic::Ruby::Autocompletion
         return suggestions if scope.nil?
       end
 
-      scope.children.filter(&:class_method?).each do |method_scope|
-        if method_scope.name.start_with?(method_to_autocomplete)
-          suggestions << Suggestion.new(code: method_scope.name, kind: method_scope.kind)
+      class_methods = scope.has_many(:children).filter { _1.attr(:kind) == ::Holistic::Ruby::Scope::Kind::CLASS_METHOD }
+
+      class_methods.each do |method_scope|
+        if method_scope.attr(:name).start_with?(method_to_autocomplete)
+          suggestions << Suggestion.new(code: method_scope.attr(:name), kind: method_scope.attr(:kind))
         end
       end
 
@@ -90,15 +96,15 @@ module Holistic::Ruby::Autocompletion
       should_search_upwards = namespaces_to_resolve.empty?
 
       search = ->(scope) do
-        scope.children.each do |child_scope|
-          next if child_scope.method?
+        scope.has_many(:children).each do |child_scope|
+          next if child_scope.attr(:kind) == ::Holistic::Ruby::Scope::Kind::CLASS_METHOD || child_scope.attr(:kind) == ::Holistic::Ruby::Scope::Kind::INSTANCE_METHOD
 
-          if child_scope.name.start_with?(namespace_to_autocomplete)
-            suggestions << Suggestion.new(code: child_scope.name, kind: child_scope.kind)
+          if child_scope.attr(:name).start_with?(namespace_to_autocomplete)
+            suggestions << Suggestion.new(code: child_scope.attr(:name), kind: child_scope.attr(:kind))
           end
         end
 
-        search.(scope.parent) if scope.parent.present? && should_search_upwards
+        search.(scope.has_one(:parent)) if scope.has_one(:parent).present? && should_search_upwards
       end
 
       search.(scope)
@@ -107,10 +113,10 @@ module Holistic::Ruby::Autocompletion
     end
 
     def resolve_scope(name:, from_scope:)
-      resolved_scope = from_scope.children.find { |scope| scope.name == name }
+      resolved_scope = from_scope.has_many(:children).find { |scope| scope.attr(:name) == name }
 
-      if resolved_scope.nil? && from_scope.parent.present?
-        resolved_scope = resolve_scope(name:, from_scope: from_scope.parent)
+      if resolved_scope.nil? && from_scope.has_one(:parent).present?
+        resolved_scope = resolve_scope(name:, from_scope: from_scope.has_one(:parent))
       end
 
       resolved_scope

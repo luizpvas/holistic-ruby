@@ -18,23 +18,20 @@ describe ::Holistic::Ruby::Parser do
   end
 
   it "parses the code" do
-    expect(application.scopes.find_by_fully_qualified_name("::MyClass")).to have_attributes(
-      itself: be_a(::Holistic::Ruby::Scope::Record)
-    )
+    expect(
+      application.scopes.find("::MyClass").attr(:name)
+    ).to eql("MyClass")
 
-    expect(application.scopes.find_by_fully_qualified_name("::MyClass.my_class_method")).to have_attributes(
-      itself: be_a(::Holistic::Ruby::Scope::Record),
-      name: "my_class_method"
-    )
+    expect(
+      application.scopes.find("::MyClass.my_class_method").attr(:name)
+    ).to eql("my_class_method")
 
-    expect(application.scopes.find_by_fully_qualified_name("::MyClass#my_method")).to have_attributes(
-      itself: be_a(::Holistic::Ruby::Scope::Record),
-      name: "my_method"
-    )
+    expect(
+      application.scopes.find("::MyClass#my_method").attr(:name)
+    ).to eql("my_method")
 
-    expect(application.scopes.find_by_fully_qualified_name("::MyClass#my_private_method")).to have_attributes(
-      itself: be_a(::Holistic::Ruby::Scope::Record),
-      name: "my_private_method"
-    )
+    expect(
+      application.scopes.find("::MyClass#my_private_method").attr(:name)
+    ).to eql("my_private_method")
   end
 end

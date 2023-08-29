@@ -9,9 +9,9 @@ module Holistic::Ruby::Parser
 
     attr_reader :scope_repository, :scope, :method_registration_mode
 
-    def initialize(scope_repository:, root_scope:)
+    def initialize(scope_repository:)
       @scope_repository = scope_repository
-      @scope = root_scope
+      @scope = scope_repository.root
       @constant_resolution_possibilities = ["::"]
       @method_registration_mode = MethodRegistrationMode::INSTANCE_METHODS
     end
@@ -36,7 +36,7 @@ module Holistic::Ruby::Parser
 
       registered_module_scope = @scope
 
-      @constant_resolution_possibilities.unshift(@scope.fully_qualified_name)
+      @constant_resolution_possibilities.unshift(@scope.attr(:fully_qualified_name))
 
       block.call
 
@@ -63,7 +63,7 @@ module Holistic::Ruby::Parser
 
       registered_class_scope = @scope
 
-      @constant_resolution_possibilities.unshift(@scope.fully_qualified_name)
+      @constant_resolution_possibilities.unshift(@scope.attr(:fully_qualified_name))
 
       block.call
 

@@ -2,50 +2,57 @@
 
 module Holistic::Ruby::Reference
   class Repository
-    attr_reader :table
+    attr_reader :database
 
-    def initialize(files:)
-      @files = files
-      
-      @table = ::Holistic::Database::Table.new
+    def initialize(database:)
+      database.define_connection(name: :referenced_scope, inverse_of: :referenced_by)
+      database.define_connection(name: :located_in_scope, inverse_of: :contains_many_references)
+
+      @database = database
     end
 
-    def store(reference)
-      table.store(reference.identifier, { reference: })
+    def store(identifier:, clues:, location:)
+      database.store(identifier, { identifier:, clues:, location: })
     end
 
     def find_by_cursor(cursor)
-      @files.find(cursor.file_path)&.then do |file|
-        file.references.find do |reference|
-          reference.location.contains?(cursor)
+      @database.find(cursor.file_path)&.then do |file|
+        file.has_many(:defines_references).find do |reference|
+          reference.attr(:location).contains?(cursor)
         end
       end
     end
 
     def list_references_in_file(file_path)
-      @files.find(file_path)&.references&.to_a || []
+      @database.find(file_path)&.has_many(:defines_references) || []
     end
 
     def list_references_to_scopes_in_file(scopes:, file_path:)
-      scopes.list_scopes_in_file(file_path).flat_map do |scope|
-        scope.referenced_by.to_a
+      references = @database.find(file_path)&.has_many(:defines_scopes)&.flat_map do |scope|
+        scope.has_many(:referenced_by)
       end
+
+      references || []
     end
 
-    def delete(identifier)
-      table.delete(identifier)
+    def delete(id)
+      @database.delete(id)
     end
 
     concerning :TestHelpers do
+      def all
+        @database.all.filter { _1.attr(:clues).present? }
+      end
+
       def find_reference_to(scope_name)
-        table.all.map { _1[:reference] }.find do |reference|
-          reference.referenced_scope&.fully_qualified_name == scope_name || reference.clues.find { _1.to_s == scope_name }
+        @database.all.find do |node|
+          node.has_one(:referenced_scope)&.attr(:fully_qualified_name) == scope_name || node.attr(:clues)&.find { _1.to_s == scope_name }
         end
       end
 
       def find_by_code_content(code_content)
-        table.all.map { _1[:reference] }.find do |reference|
-          reference.clues.find { _1.to_s == code_content }
+        @database.all.find do |node|
+          node.attr(:clues)&.find { _1.to_s == code_content }
         end
       end
     end

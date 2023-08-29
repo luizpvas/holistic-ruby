@@ -5,7 +5,7 @@ describe ::Holistic::Ruby::Autocompletion::Suggest do
     include ::Support::SnippetParser
 
     def assert_suggestions(code, suggestions)
-      scope = application.scopes.find_by_fully_qualified_name("::MyApp::EventsController#index")
+      scope = application.scopes.find("::MyApp::EventsController#index")
 
       actual_suggestions = described_class.call(code:, scope:)
 

@@ -12,10 +12,7 @@ module Holistic::Ruby::Parser
   ParseFile = ->(application:, file_path:, content:) do
     program = ::SyntaxTree.parse(content)
 
-    constant_resolution = ConstantResolution.new(
-      scope_repository: application.scopes,
-      root_scope: application.root_scope
-    )
+    constant_resolution = ConstantResolution.new(scope_repository: application.scopes)
 
     file = ::Holistic::Document::File::Register.call(repository: application.files, file_path:)
 

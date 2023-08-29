@@ -17,7 +17,7 @@ describe ::Holistic::Extensions::Ruby::Stdlib do
     it "solves the method call reference" do
       reference = application.references.find_by_code_content("Example.new")
 
-      expect(reference.referenced_scope.fully_qualified_name).to eql("::Example#initialize")
+      expect(reference.has_one(:referenced_scope).attr(:fully_qualified_name)).to eql("::Example#initialize")
     end
   end
 end

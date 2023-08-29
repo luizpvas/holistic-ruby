@@ -5,29 +5,36 @@ module Holistic::Ruby::Scope
     extend self
 
     def call(repository:, parent:, kind:, name:, location:)
-      child_scope = append_location_to_existing_scope(scope: parent, name:, location:) || add_new_scope(parent:, kind:, name:, location:)
+      fully_qualified_name = build_fully_qualified_name(parent:, kind:, name:)
 
-      repository.store(child_scope)
+      child_scope = repository.find(fully_qualified_name)
+      child_scope ||= repository.store(fully_qualified_name:, name:, kind:, locations: Location::Collection.new(name))
 
-      location.declaration.file.connect_scope(child_scope)
+      child_scope.attr(:locations) << location
+
+      repository.database.connect(source: parent, target: child_scope, name: :children, inverse_of: :parent)
+      repository.database.connect(source: location.declaration.file, target: child_scope, name: :defines_scopes, inverse_of: :scope_defined_in_file)
 
       child_scope
     end
 
     private
 
-    def append_location_to_existing_scope(scope:, name:, location:)
-      child_scope = scope.children.find { _1.name == name }
+    def build_fully_qualified_name(parent:, kind:, name:)
+      parent_fully_qualified_name =
+        case parent.attr(:kind)
+        when Kind::ROOT then ""
+        else parent.attr(:fully_qualified_name)
+        end
 
-      return if child_scope.nil?
+      separator =
+        case kind
+        when Kind::INSTANCE_METHOD then "#"
+        when Kind::CLASS_METHOD    then "."
+        else "::"
+        end
 
-      child_scope.tap { _1.locations << location }
-    end
-
-    def add_new_scope(parent:, kind:, name:, location:)
-      child_scope = Record.new(kind:, name:, parent:, location:)
-
-      child_scope.tap { parent.children << _1 }
+      "#{parent_fully_qualified_name}#{separator}#{name}"
     end
   end
 end

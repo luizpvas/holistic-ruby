@@ -25,7 +25,7 @@ describe Holistic::Ruby::Parser do
   end
 
   it "parses the code" do
-    expect(serialize_scope(application.root_scope)).to eql({
+    expect(serialize_scope(application.scopes.root)).to eql({
       "::" => {
         "MyApp" => {
           "Example1" => {
@@ -37,7 +37,7 @@ describe Holistic::Ruby::Parser do
     })
 
     expect(
-      application.scopes.list_scopes_in_file("/my_app/example_1.rb").map(&:fully_qualified_name)
+      application.scopes.list_scopes_in_file("/my_app/example_1.rb").map { _1.attr(:fully_qualified_name) }
     ).to match_array([
       "::MyApp",
       "::MyApp::Example1",
@@ -45,14 +45,14 @@ describe Holistic::Ruby::Parser do
     ])
 
     expect(
-      application.scopes.list_scopes_in_file("/my_app/example_2.rb").map(&:fully_qualified_name)
+      application.scopes.list_scopes_in_file("/my_app/example_2.rb").map { _1.attr(:fully_qualified_name) }
     ).to match_array([
       "::MyApp",
       "::MyApp::Example2"
     ])
 
     expect(
-      application.references.list_references_in_file("/my_app/example_2.rb").map(&:identifier)
+      application.references.list_references_in_file("/my_app/example_2.rb").map { _1.attr(:identifier) }
     ).to match_array([
       "/my_app/example_2.rb[2,4,2,12]",
       "/my_app/example_2.rb[2,13,2,17]"

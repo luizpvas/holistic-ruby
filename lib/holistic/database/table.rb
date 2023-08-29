@@ -1,62 +1,66 @@
+
 # frozen_string_literal: true
 
-class Holistic::Database::Table
-  attr_reader :records, :indices
+module Holistic::Database
+  class Table
+    attr_reader :records, :connections
 
-  def initialize(indices: [])
-    @records = ::Hash.new
+    def initialize
+      @records = ::Hash.new
+      @connections = ::Hash.new
+    end
 
-    @indices = indices.map do |attribute_name|
-      [attribute_name, ::Hash.new { |hash, key| hash[key] = ::Set.new }]
-    end.to_h
-  end
+    def define_connection(name:, inverse_of:)
+      raise ::ArgumentError if @connections.key?(name) || @connections.key?(inverse_of)
 
-  def store(id, record)
-    delete(id) if records.key?(id)
+      @connections[name] = { inverse_of: }
+      @connections[inverse_of] = { inverse_of: name }
+    end
 
-    @records[id] = record
-
-    @indices.each do |attribute_name, index_data|
-      Array(record[attribute_name]).each do |value|
-        index_data[value].add(id)
+    def store(id, attributes)
+      if @records.key?(id)
+        return @records[id]&.tap do |node|
+          node.attributes = attributes
+        end
       end
+
+      @records[id] = Node.new(id, attributes)
     end
-  end
 
-  def find(id)
-    @records[id]
-  end
+    def connect(source:, target:, name:, inverse_of:)
+      connection = @connections[name]
 
-  def filter(name, value)
-    return [] unless indices[name].key?(value)
+      raise ::ArgumentError if connection.nil? || connection[:inverse_of] != inverse_of
 
-    indices.dig(name, value).to_a.map { find(_1) }
-  end
+      source.connections[name].add(target)
+      target.connections[inverse_of].add(source)
+    end
 
-  def delete(id)
-    record = find(id)
+    def disconnect(source:, target:, name:, inverse_of:)
+      connection = @connections[name]
 
-    return if record.nil?
+      raise ::ArgumentError if connection.nil? || connection[:inverse_of] != inverse_of
 
-    records.delete(id)
+      source.connections[name].delete(target)
+      target.connections[inverse_of].delete(source)
+    end
 
-    indices.each do |attribute_name, index_data|
-      Array(record[attribute_name]).each do |value|
-        index_data[value].delete(id)
-        index_data.delete(value) if index_data[value].empty?
+    def find(id)
+      @records[id]
+    end
+
+    def delete(id)
+      records.delete(id)
+    end
+
+    concerning :TestHelpers do
+      def all
+        records.values
       end
-    end
 
-    record
-  end
-
-  concerning :TestHelpers do
-    def all
-      records.values
-    end
-
-    def size
-      records.size
+      def size
+        records.size
+      end
     end
   end
 end

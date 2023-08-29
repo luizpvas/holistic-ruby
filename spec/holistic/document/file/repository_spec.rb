@@ -3,68 +3,66 @@
 describe ::Holistic::Document::File::Repository do
   describe "#store" do
     context "when file does not exist in the repository" do
+      let(:database)   { ::Holistic::Database::Table.new }
+      let(:repository) { described_class.new(database:) }
+
       it "stores a file indexed by the path" do
-        repository = described_class.new
+        expect(database.all.size).to be(0)
 
-        file = ::Holistic::Document::File::Record.new(path: "/my_app/file.rb")
+        repository.store("/my_app/file.rb")
 
-        expect(repository.all.size).to be(0)
-
-        repository.store(file)
-
-        expect(repository.all.size).to be(1)
+        expect(database.all.size).to be(1)
       end
     end
 
     context "when file already exists" do
+      let(:database)   { ::Holistic::Database::Table.new }
+      let(:repository) { described_class.new(database:) }
+
       it "updates the existing record" do
-        repository = described_class.new
+        expect(database.all.size).to be(0)
 
-        file_1 = ::Holistic::Document::File::Record.new(path: "/my_app/file.rb")
-        file_2 = ::Holistic::Document::File::Record.new(path: "/my_app/file.rb")
+        repository.store("/my_app/file.rb")
+        repository.store("/my_app/file.rb")
 
-        expect(repository.all.size).to be(0)
-
-        repository.store(file_1)
-        repository.store(file_2)
-
-        expect(repository.all.size).to be(1)
+        expect(database.all.size).to be(1)
       end
     end
   end
 
   describe "#find" do
     context "when file exists" do
+      let(:database)   { ::Holistic::Database::Table.new }
+      let(:repository) { described_class.new(database:) }
+
       it "returns the file" do
-        repository = described_class.new
-
-        file = ::Holistic::Document::File::Record.new(path: "/my_app/file.rb")
-
-        repository.store(file)
+        file = repository.store("/my_app/file.rb")
 
         expect(repository.find("/my_app/file.rb")).to be(file)
       end
     end
 
     context "when file does not exist" do
-      it "returns nil" do
-        repository = described_class.new
+      let(:database)   { ::Holistic::Database::Table.new }
+      let(:repository) { described_class.new(database:) }
 
+      it "returns nil" do
         expect(repository.find("/non_existing_file.rb")).to be_nil
       end
     end
   end
 
   describe "#delete" do
-    it "deletes a file from the repository" do
-      repository = described_class.new
+    context "when file exists in the database" do
+      let(:database)   { ::Holistic::Database::Table.new }
+      let(:repository) { described_class.new(database:) }
 
-      file = ::Holistic::Document::File::Record.new(path: "/my_app/file.rb")
+      it "deletes a file from the repository" do
+        repository.store("/my_app/file.rb")
+        repository.delete("/my_app/file.rb")
 
-      repository.store(file)
-      repository.delete("/my_app/file.rb")
-
-      expect(repository.all.size).to be(0)
+        expect(database.all.size).to be(0)
+      end
     end
   end
 end

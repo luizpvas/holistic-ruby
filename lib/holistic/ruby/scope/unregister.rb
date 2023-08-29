@@ -5,24 +5,22 @@ module Holistic::Ruby::Scope
     extend self
 
     def call(repository:, fully_qualified_name:, file_path:)
-      scope = repository.find_by_fully_qualified_name(fully_qualified_name)
+      scope = repository.find(fully_qualified_name)
 
       return :scope_not_found if scope.nil?
 
-      location_to_remove = scope.locations.find { |scope_location| scope_location.declaration.file.path == file_path }
+      location_to_remove = scope.attr(:locations).find { |scope_location| scope_location.declaration.file.attr(:path) == file_path }
 
       return :scope_not_defined_in_speciefied_file if location_to_remove.nil?
 
-      scope.locations.delete(location_to_remove)
+      scope.attr(:locations).delete(location_to_remove)
 
-      location_to_remove.declaration.file.disconnect_scope(scope)
+      repository.database.disconnect(source: location_to_remove.declaration.file, target: scope, name: :defines_scopes, inverse_of: :scope_defined_in_file)
 
-      if scope.locations.empty?
-        scope.parent.children.delete(scope)
+      if scope.attr(:locations).empty?
+        repository.database.disconnect(source: scope.has_one(:parent), target: scope, name: :children, inverse_of: :parent)
 
         repository.delete_by_fully_qualified_name(fully_qualified_name)
-      else
-        repository.store(scope)
       end
 
       :definition_unregistered

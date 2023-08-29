@@ -23,7 +23,7 @@ module Holistic::LanguageServer
 
       return request.respond_with(nil) if code.blank?
 
-      scope = request.application.scopes.find_inner_most_scope_by_cursor(cursor) || request.application.root_scope
+      scope = request.application.scopes.find_inner_most_scope_by_cursor(cursor) || request.application.scopes.root
 
       suggestions = ::Holistic::Ruby::Autocompletion::Suggest.call(code:, scope:)
 

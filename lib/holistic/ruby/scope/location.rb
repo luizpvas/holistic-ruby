@@ -3,13 +3,11 @@
 module Holistic::Ruby::Scope
   class Location
     class Collection
-      attr_reader :scope, :items
+      attr_reader :scope_name, :items
 
-      def initialize(scope, location)
-        raise ::ArgumentError if location.present? && !location.is_a?(Location)
-
-        @scope = scope
-        @items = location.nil? ? [] : [location]
+      def initialize(scope_name)
+        @scope_name = scope_name
+        @items = []
       end
 
       def main
@@ -27,10 +25,10 @@ module Holistic::Ruby::Scope
       private
 
       def location_matching_scope_name
-        scope_name_in_snake_case = scope.name.underscore
+        scope_name_in_snake_case = scope_name.underscore
 
         items.find do |location|
-          ::File.basename(location.declaration.file.path) == "#{scope_name_in_snake_case}.rb"
+          ::File.basename(location.declaration.file.attr(:path)) == "#{scope_name_in_snake_case}.rb"
         end
       end
     end

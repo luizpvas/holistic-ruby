@@ -17,7 +17,8 @@ describe ::Holistic::Ruby::TypeInference::Clue::ScopeReference do
     it "infers a scope reference clue" do
       reference = application.references.find_by_code_content("Example")
 
-      expect(reference.clues.first).to have_attributes(
+      expect(reference.attr(:clues).size).to be(1)
+      expect(reference.attr(:clues).first).to have_attributes(
         itself: be_a(::Holistic::Ruby::TypeInference::Clue::ScopeReference),
         nesting: ::Holistic::Ruby::Parser::NestingSyntax.new("Example"),
         resolution_possibilities: ["::MyApp::MyClass", "::MyApp", "::"]

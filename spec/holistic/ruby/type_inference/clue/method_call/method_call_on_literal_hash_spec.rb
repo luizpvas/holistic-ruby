@@ -11,7 +11,7 @@ describe ::Holistic::Ruby::TypeInference::Clue::MethodCall do
     end
 
     it "does not register a reference" do
-      expect(application.references.table.size).to be(0)
+      expect(application.references.all.size).to be(0)
     end
   end
 end

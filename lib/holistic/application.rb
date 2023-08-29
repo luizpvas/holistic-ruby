@@ -2,12 +2,12 @@
 
 module Holistic
   class Application
-    attr_reader :name, :root_directory, :root_scope
+    attr_reader :name, :root_directory, :database
 
     def initialize(name:, root_directory:)
       @name = name
       @root_directory = root_directory
-      @root_scope = Ruby::Scope::Record.new(kind: Ruby::Scope::Kind::ROOT, name: "::", parent: nil)
+      @database = Database::Table.new
     end
 
     def extensions
@@ -15,19 +15,19 @@ module Holistic
     end
 
     def scopes
-      @scopes ||= Ruby::Scope::Repository.new(files:)
+      @scopes ||= Ruby::Scope::Repository.new(database:)
     end
 
     def references
-      @references ||= Ruby::Reference::Repository.new(files:)
+      @references ||= Ruby::Reference::Repository.new(database:)
+    end
+
+    def files
+      @files ||= Document::File::Repository.new(database:)
     end
 
     def type_inference_processing_queue
       @type_inference_processing_queue ||= Ruby::TypeInference::ProcessingQueue.new
-    end
-
-    def files
-      @files ||= Document::File::Repository.new
     end
 
     def unsaved_documents

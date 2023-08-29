@@ -23,12 +23,12 @@ describe ::Holistic::Ruby::Parser::LiveEditing::ProcessFileChanged do
 
   context "when file has an invalid syntax" do
     it "does not lose reference to existing code" do
-      before_payment_scope = application.scopes.find_by_fully_qualified_name("::MyApp::Payment")
+      before_payment_scope = application.scopes.find("::MyApp::Payment")
       before_payment_call_reference = application.references.find_by_code_content("Payment.call")
 
       described_class.call(application:, file_path: "/snippet.rb", content: source_code_after)
 
-      after_payment_scope = application.scopes.find_by_fully_qualified_name("::MyApp::Payment")
+      after_payment_scope = application.scopes.find("::MyApp::Payment")
       after_payment_call_reference = application.references.find_by_code_content("Payment.call")
 
       expect(after_payment_scope).to be(before_payment_scope)

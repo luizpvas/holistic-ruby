@@ -13,14 +13,13 @@ describe ::Holistic::Ruby::TypeInference::Clue::ScopeReference do
     end
 
     it "infers a scope reference clue" do
-      expect(application.references.find_reference_to("MyParent")).to have_attributes(
-        clues: [
-          have_attributes(
-            itself: be_a(::Holistic::Ruby::TypeInference::Clue::ScopeReference),
-            nesting: ::Holistic::Ruby::Parser::NestingSyntax.new("MyParent"),
-            resolution_possibilities: ["::MyApp", "::"]
-          )
-        ]
+      reference = application.references.find_reference_to("MyParent")
+
+      expect(reference.attr(:clues).size).to be(1)
+      expect(reference.attr(:clues).first).to have_attributes(
+        itself: be_a(::Holistic::Ruby::TypeInference::Clue::ScopeReference),
+        nesting: ::Holistic::Ruby::Parser::NestingSyntax.new("MyParent"),
+        resolution_possibilities: ["::MyApp", "::"]
       )
     end
   end

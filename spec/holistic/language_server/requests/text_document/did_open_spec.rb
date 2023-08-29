@@ -42,8 +42,6 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::DidOpen do
     expect(document.content).to eql(content)
 
     file = application.files.find("/home/luiz.vasconcellos/Projects/holistic/lib/holistic/version.rb")
-    expect(file).to have_attributes(
-      itself: ::Holistic::Document::File::Record
-    )
+    expect(file.attr(:path)).to eql("/home/luiz.vasconcellos/Projects/holistic/lib/holistic/version.rb")
   end
 end

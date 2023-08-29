@@ -15,9 +15,7 @@ module Holistic::Document::File
     end
 
     def store_new_file(repository:, file_path:)
-      Record.new(path: file_path).tap do |file|
-        repository.store(file)
-      end
+      repository.store(file_path)
     end
   end
 end

@@ -7,10 +7,10 @@ module Holistic::Extensions::Ruby
     ResolveClassConstructor = ->(application, params) do
       method_call_clue, referenced_scope = params[:method_call_clue], params[:referenced_scope]
 
-      if method_call_clue.method_name == "new" && referenced_scope.class?
-        initialize_method = "#{referenced_scope.fully_qualified_name}#initialize"
+      if method_call_clue.method_name == "new" && referenced_scope.attr(:kind) == ::Holistic::Ruby::Scope::Kind::CLASS
+        initialize_method = "#{referenced_scope.attr(:fully_qualified_name)}#initialize"
 
-        return application.scopes.find_by_fully_qualified_name(initialize_method)
+        return application.scopes.find(initialize_method)
       end
 
       nil
@@ -19,7 +19,7 @@ module Holistic::Extensions::Ruby
     RegisterClassConstructor = ->(application, params) do
       class_scope, location = params[:class_scope], params[:location]
 
-      has_overridden_new_method = class_scope.children.find { _1.class_method? && _1.name == "new" }
+      has_overridden_new_method = class_scope.has_many(:children).find { _1.attr(:kind) == ::Holistic::Ruby::Scope::Kind::CLASS_METHOD && _1.attr(:name) == "new" }
 
       unless has_overridden_new_method
         ::Holistic::Ruby::Scope::Register.call(

@@ -17,18 +17,18 @@ describe ::Holistic::Ruby::Scope::Outline do
   end
 
   it "outlines a lambda with no dependencies and two references" do
-    result = described_class.call(application:, scope: application.scopes.find_by_fully_qualified_name("::MyApp::PlusOne"))
+    result = described_class.call(application:, scope: application.scopes.find("::MyApp::PlusOne"))
 
     expect(result.dependencies).to be_empty
-    expect(result.declarations.map(&:fully_qualified_name)).to match_array([
-      "::MyApp::PlusOne.call",
-      "::MyApp::PlusOne.curry",
-    ])
+    
+    expect(
+      result.declarations.map { _1.attr(:fully_qualified_name) }
+    ).to match_array(["::MyApp::PlusOne.call", "::MyApp::PlusOne.curry"])
 
     expect(result.references.size).to be(2)
 
     expect(result.dependants).to match_array([
-      application.scopes.find_by_fully_qualified_name("::MyApp::Example1")
+      application.scopes.find("::MyApp::Example1")
     ])
   end
 end

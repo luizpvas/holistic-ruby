@@ -18,13 +18,15 @@ describe ::Holistic::Ruby::Scope::Outline do
   end
 
   it "outlines a module with lots of declarations" do
-    result = described_class.call(application:, scope: application.scopes.find_by_fully_qualified_name("::MyApp"))
+    result = described_class.call(application:, scope: application.scopes.find("::MyApp"))
 
     expect(result.dependants).to be_empty
     expect(result.references).to be_empty
     expect(result.dependencies).to be_empty
 
-    expect(result.declarations.map(&:fully_qualified_name)).to match_array([
+    expect(
+      result.declarations.map { _1.attr(:fully_qualified_name) }
+    ).to match_array([
       "::MyApp::PlusOne",
       "::MyApp::PlusOne.call",
       "::MyApp::PlusOne.curry",

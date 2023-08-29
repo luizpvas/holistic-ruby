@@ -94,7 +94,7 @@ describe ::Holistic::Ruby::Scope::ListReferences do
 
       expect(result).to be(:references_listed)
 
-      references_file_paths = data[:references].map { _1.location.file.path }
+      references_file_paths = data[:references].map { _1.attr(:location).file.attr(:path) }
 
       expect(references_file_paths).to eql([
         "/my_app/reference.rb",
