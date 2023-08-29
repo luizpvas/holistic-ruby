@@ -10,11 +10,6 @@ class ::Holistic::Document::File::Repository
     @database.store(file_path, { path: file_path })
   end
 
-  # rename to `delete_file`
-  def delete(file_path)
-    @database.delete(file_path)
-  end
-
   # rename to `find_file`
   def find(file_path)
     @database.find(file_path)

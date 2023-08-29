@@ -51,18 +51,4 @@ describe ::Holistic::Document::File::Repository do
       end
     end
   end
-
-  describe "#delete" do
-    context "when file exists in the database" do
-      let(:database)   { ::Holistic::Database::Table.new }
-      let(:repository) { described_class.new(database:) }
-
-      it "deletes a file from the repository" do
-        repository.store("/my_app/file.rb")
-        repository.delete("/my_app/file.rb")
-
-        expect(database.all.size).to be(0)
-      end
-    end
-  end
 end
