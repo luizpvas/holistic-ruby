@@ -27,7 +27,7 @@ module Holistic::Ruby::Scope
 
     def build_fully_qualified_name(parent:, kind:, name:)
       parent_fully_qualified_name =
-        case parent.attr(:kind)
+        case parent.kind
         when Kind::ROOT then ""
         else parent.fully_qualified_name
         end

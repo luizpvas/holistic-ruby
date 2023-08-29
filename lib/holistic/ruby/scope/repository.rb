@@ -5,7 +5,14 @@ module Holistic::Ruby::Scope
     attr_reader :database, :root
 
     def initialize(database:)
-      @root = database.store("root_scope", { fully_qualified_name: "::", name: "::", kind: Kind::ROOT })
+      @root = database.store(
+        "root_scope", 
+        Record.new("root_scope", {
+          fully_qualified_name: "::",
+          name: "::",
+          kind: Kind::ROOT 
+        })
+      )
 
       @database = database
     end

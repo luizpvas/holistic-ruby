@@ -13,7 +13,7 @@ describe ::Holistic::Ruby::Parser do
 
   it "parses the code correctly" do
     expect(
-      application.scopes.find("::MyClass").attr(:name)
+      application.scopes.find("::MyClass").name
     ).to eql("MyClass")
   end
 end

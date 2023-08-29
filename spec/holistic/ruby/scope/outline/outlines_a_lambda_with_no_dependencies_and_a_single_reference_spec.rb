@@ -21,7 +21,7 @@ describe ::Holistic::Ruby::Scope::Outline do
     expect(result.dependencies).to be_empty
 
     expect(
-      result.declarations.map { _1.attr(:name) }
+      result.declarations.map { _1.name }
     ).to match_array(["call", "curry"])
 
     expect(result.references).to match_array([

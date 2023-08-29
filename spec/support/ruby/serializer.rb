@@ -5,7 +5,7 @@ module Support
     module Serializer
       def serialize_scope(scope)
         nested = {}
-        root = {scope.attr(:name) => nested}
+        root = {scope.name => nested}
 
         scope.has_many(:children).each do |child|
           nested.merge!(serialize_scope(child))

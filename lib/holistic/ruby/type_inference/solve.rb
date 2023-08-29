@@ -34,9 +34,9 @@ module Holistic::Ruby::TypeInference
     SolveMethodCallInCurrentScope = ->(application:, reference:, method_call_clue:) do
       scope = reference.has_one(:located_in_scope)
 
-      if scope.attr(:kind) == ::Holistic::Ruby::Scope::Kind::CLASS_METHOD
+      if scope.kind == ::Holistic::Ruby::Scope::Kind::CLASS_METHOD
         resolve_class_method(application:, scope: scope.has_one(:parent), method_name: method_call_clue.method_name)
-      elsif scope.attr(:kind) == ::Holistic::Ruby::Scope::Kind::INSTANCE_METHOD && scope.has_one(:parent).present?
+      elsif scope.kind == ::Holistic::Ruby::Scope::Kind::INSTANCE_METHOD && scope.has_one(:parent).present?
         resolve_instance_method(application:, scope: scope.has_one(:parent), method_name: method_call_clue.method_name)
       end
     end

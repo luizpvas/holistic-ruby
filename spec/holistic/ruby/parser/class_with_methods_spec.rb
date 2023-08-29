@@ -19,19 +19,19 @@ describe ::Holistic::Ruby::Parser do
 
   it "parses the code" do
     expect(
-      application.scopes.find("::MyClass").attr(:name)
+      application.scopes.find("::MyClass").name
     ).to eql("MyClass")
 
     expect(
-      application.scopes.find("::MyClass.my_class_method").attr(:name)
+      application.scopes.find("::MyClass.my_class_method").name
     ).to eql("my_class_method")
 
     expect(
-      application.scopes.find("::MyClass#my_method").attr(:name)
+      application.scopes.find("::MyClass#my_method").name
     ).to eql("my_method")
 
     expect(
-      application.scopes.find("::MyClass#my_private_method").attr(:name)
+      application.scopes.find("::MyClass#my_private_method").name
     ).to eql("my_private_method")
   end
 end
