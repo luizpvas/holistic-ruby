@@ -2,6 +2,7 @@
 
 module Holistic::Ruby::Reference
   class Record < ::Holistic::Database::Node
-    def clues = attr(:clues)
+    def identifier = attr(:identifier)
+    def clues      = attr(:clues)
   end
 end

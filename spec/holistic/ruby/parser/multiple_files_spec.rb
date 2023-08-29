@@ -52,7 +52,7 @@ describe Holistic::Ruby::Parser do
     ])
 
     expect(
-      application.references.list_references_in_file("/my_app/example_2.rb").map { _1.attr(:identifier) }
+      application.references.list_references_in_file("/my_app/example_2.rb").map { _1.identifier }
     ).to match_array([
       "/my_app/example_2.rb[2,4,2,12]",
       "/my_app/example_2.rb[2,13,2,17]"

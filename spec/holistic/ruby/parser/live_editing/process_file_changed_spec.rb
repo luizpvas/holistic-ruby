@@ -33,7 +33,7 @@ describe ::Holistic::Ruby::Parser::LiveEditing::ProcessFileChanged do
       expect(my_app_example_before.fully_qualified_name).to eql(my_app_example_after.fully_qualified_name)
       expect(my_app_example_before).not_to be(my_app_example_after)
 
-      expect(foo_reference_before.attr(:identifier)).to eql(foo_reference_after.attr(:identifier))
+      expect(foo_reference_before.identifier).to eql(foo_reference_after.identifier)
       expect(foo_reference_before).not_to be(foo_reference_after)
     end
   end
