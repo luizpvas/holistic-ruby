@@ -4,9 +4,8 @@ describe ::Holistic::Document::Location do
   concerning :Helpers do
     def build_file(file_path)
       database = ::Holistic::Database::Table.new
-      repository = ::Holistic::Document::File::Repository.new(database:)
 
-      ::Holistic::Document::File::Register.call(repository:, file_path:)
+      ::Holistic::Document::File::Register.call(database:, file_path:)
     end
   end
 
