@@ -2,21 +2,19 @@
 
 describe ::Holistic::Ruby::Scope::Register do
   context "when a scope with the same name DOES NOT EXIST in the parent scope" do
-    let(:database)   { ::Holistic::Database::Table.new }
-    let(:files)      { ::Holistic::Document::File::Repository.new(database:) }
-    let(:repository) { ::Holistic::Ruby::Scope::Repository.new(database:) }
-    let(:parent)     { repository.root }
+    let(:application) { ::Holistic::Application.new(name: "fake", root_directory: ".") }
+    let(:parent)      { application.scopes.root }
 
     let(:child_1_location) do
       ::Holistic::Ruby::Scope::Location.new(
-        declaration: files.build_fake_location("app_1.rb"),
-        body: files.build_fake_location("app_1.rb")
+        declaration: application.files.build_fake_location("app_1.rb"),
+        body: application.files.build_fake_location("app_1.rb")
       )
     end
 
     let!(:child_1) do
       described_class.call(
-        database:,
+        database: application.database,
         parent:,
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
         name: "MyChild1",
@@ -26,14 +24,14 @@ describe ::Holistic::Ruby::Scope::Register do
 
     let(:child_2_location) do
       ::Holistic::Ruby::Scope::Location.new(
-        declaration: files.build_fake_location("app_2.rb"),
-        body: files.build_fake_location("app_2.rb")
+        declaration: application.files.build_fake_location("app_2.rb"),
+        body: application.files.build_fake_location("app_2.rb")
       )
     end
 
     let!(:child_2) do
       described_class.call(
-        database:,
+        database: application.database,
         parent:,
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
         name: "MyChild2",
@@ -69,9 +67,9 @@ describe ::Holistic::Ruby::Scope::Register do
       ])
     end
 
-    it "inserts the scope in the repository" do
-      expect(repository.find("::MyChild1")).to be(child_1)
-      expect(repository.find("::MyChild2")).to be(child_2)
+    it "inserts the scope in the database" do
+      expect(application.database.find("::MyChild1")).to be(child_1)
+      expect(application.database.find("::MyChild2")).to be(child_2)
     end
 
     it "connects the scope to the file" do
@@ -84,17 +82,15 @@ describe ::Holistic::Ruby::Scope::Register do
   end
 
   context "when a scope with the same name EXISTS in the parent scope" do
-    let(:database)   { ::Holistic::Database::Table.new }
-    let(:files)      { ::Holistic::Document::File::Repository.new(database:) }
-    let(:repository) { ::Holistic::Ruby::Scope::Repository.new(database:) }
-    let(:parent)     { repository.root }
+    let(:application) { ::Holistic::Application.new(name: "fake", root_directory: ".") }
+    let(:parent)      { application.scopes.root }
 
-    let(:location_1) { ::Holistic::Ruby::Scope::Location.new(declaration: files.build_fake_location("app_1.rb"), body: files.build_fake_location("app_1.rb")) }
-    let(:location_2) { ::Holistic::Ruby::Scope::Location.new(declaration: files.build_fake_location("app_2.rb"), body: files.build_fake_location("app_2.rb")) }
+    let(:location_1) { ::Holistic::Ruby::Scope::Location.new(declaration: application.files.build_fake_location("app_1.rb"), body: application.files.build_fake_location("app_1.rb")) }
+    let(:location_2) { ::Holistic::Ruby::Scope::Location.new(declaration: application.files.build_fake_location("app_2.rb"), body: application.files.build_fake_location("app_2.rb")) }
 
     let!(:child_1) do
       described_class.call(
-        database:,
+        database: application.database,
         parent:,
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
         name: "MyChild",
@@ -104,7 +100,7 @@ describe ::Holistic::Ruby::Scope::Register do
 
     let!(:child_2) do
       described_class.call(
-        database:,
+        database: application.database,
         parent:,
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
         name: "MyChild",

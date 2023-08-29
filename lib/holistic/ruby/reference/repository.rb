@@ -5,14 +5,7 @@ module Holistic::Ruby::Reference
     attr_reader :database
 
     def initialize(database:)
-      database.define_connection(name: :referenced_scope, inverse_of: :referenced_by)
-      database.define_connection(name: :located_in_scope, inverse_of: :contains_many_references)
-
       @database = database
-    end
-
-    def store(identifier:, clues:, location:)
-      database.store(identifier, { identifier:, clues:, location: })
     end
 
     def find_by_cursor(cursor)

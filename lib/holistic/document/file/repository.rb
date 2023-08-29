@@ -3,9 +3,6 @@
 class ::Holistic::Document::File::Repository
   def initialize(database:)
     @database = database
-
-    @database.define_connection(name: :defines_scopes, inverse_of: :scope_defined_in_file)
-    @database.define_connection(name: :defines_references, inverse_of: :reference_defined_in_file)
   end
 
   # rename to `store_file`

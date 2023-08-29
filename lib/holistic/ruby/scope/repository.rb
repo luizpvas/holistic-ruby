@@ -5,8 +5,6 @@ module Holistic::Ruby::Scope
     attr_reader :database, :root
 
     def initialize(database:)
-      database.define_connection(name: :children, inverse_of: :parent)
-
       @root = database.store("root_scope", { fully_qualified_name: "::", name: "::", kind: Kind::ROOT })
 
       @database = database

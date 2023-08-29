@@ -5,7 +5,11 @@ module Holistic::Ruby::Reference
     extend self
 
     def call(application:, scope:, clues:, location:)
-      reference = application.references.store(identifier: location.identifier, clues:, location:)
+      reference = application.database.store(location.identifier, {
+        identifier: location.identifier,
+        clues:,
+        location:
+      })
 
       application.database.connect(source: scope, target: reference, name: :contains_many_references, inverse_of: :located_in_scope)
       application.database.connect(source: location.file, target: reference, name: :defines_references, inverse_of: :reference_defined_in_file)
