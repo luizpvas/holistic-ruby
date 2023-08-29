@@ -23,7 +23,7 @@ module Holistic::Extensions::Ruby
 
       unless has_overridden_new_method
         ::Holistic::Ruby::Scope::Register.call(
-          repository: application.scopes,
+          database: application.database,
           parent: class_scope,
           kind: ::Holistic::Ruby::Scope::Kind::CLASS_METHOD,
           name: "new",
@@ -39,7 +39,7 @@ module Holistic::Extensions::Ruby
 
       LAMBDA_METHODS.each do |method_name|
         ::Holistic::Ruby::Scope::Register.call(
-          repository: application.scopes,
+          database: application.database,
           parent: lambda_scope,
           kind: ::Holistic::Ruby::Scope::Kind::CLASS_METHOD,
           name: method_name,

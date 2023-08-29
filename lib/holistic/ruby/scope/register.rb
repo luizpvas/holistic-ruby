@@ -4,16 +4,16 @@ module Holistic::Ruby::Scope
   module Register
     extend self
 
-    def call(repository:, parent:, kind:, name:, location:)
+    def call(database:, parent:, kind:, name:, location:)
       fully_qualified_name = build_fully_qualified_name(parent:, kind:, name:)
 
-      child_scope = repository.find(fully_qualified_name)
-      child_scope ||= repository.store(fully_qualified_name:, name:, kind:, locations: Location::Collection.new(name))
+      child_scope = database.find(fully_qualified_name)
+      child_scope ||= database.store(fully_qualified_name, { fully_qualified_name:, name:, kind:, locations: Location::Collection.new(name) })
 
       child_scope.attr(:locations) << location
 
-      repository.database.connect(source: parent, target: child_scope, name: :children, inverse_of: :parent)
-      repository.database.connect(source: location.declaration.file, target: child_scope, name: :defines_scopes, inverse_of: :scope_defined_in_file)
+      database.connect(source: parent, target: child_scope, name: :children, inverse_of: :parent)
+      database.connect(source: location.declaration.file, target: child_scope, name: :defines_scopes, inverse_of: :scope_defined_in_file)
 
       child_scope
     end

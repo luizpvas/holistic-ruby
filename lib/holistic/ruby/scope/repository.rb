@@ -12,10 +12,6 @@ module Holistic::Ruby::Scope
       @database = database
     end
 
-    def store(fully_qualified_name:, name:, kind:, locations:)
-      database.store(fully_qualified_name, { fully_qualified_name:, name:, kind:, locations: })
-    end
-
     def find(fully_qualified_name)
       database.find(fully_qualified_name)
     end

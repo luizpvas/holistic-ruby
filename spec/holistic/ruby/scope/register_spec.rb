@@ -16,7 +16,7 @@ describe ::Holistic::Ruby::Scope::Register do
 
     let!(:child_1) do
       described_class.call(
-        repository:,
+        database:,
         parent:,
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
         name: "MyChild1",
@@ -33,7 +33,7 @@ describe ::Holistic::Ruby::Scope::Register do
 
     let!(:child_2) do
       described_class.call(
-        repository:,
+        database:,
         parent:,
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
         name: "MyChild2",
@@ -94,7 +94,7 @@ describe ::Holistic::Ruby::Scope::Register do
 
     let!(:child_1) do
       described_class.call(
-        repository:,
+        database:,
         parent:,
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
         name: "MyChild",
@@ -104,7 +104,7 @@ describe ::Holistic::Ruby::Scope::Register do
 
     let!(:child_2) do
       described_class.call(
-        repository:,
+        database:,
         parent:,
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
         name: "MyChild",

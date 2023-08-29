@@ -28,7 +28,7 @@ describe ::Holistic::Ruby::Scope::Unregister do
 
     let!(:scope) do
       ::Holistic::Ruby::Scope::Register.call(
-        repository:,
+        database:,
         parent: repository.root,
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
         name: "MyModule",
@@ -54,7 +54,7 @@ describe ::Holistic::Ruby::Scope::Unregister do
 
     let!(:scope) do
       ::Holistic::Ruby::Scope::Register.call(
-        repository:,
+        database:,
         parent: repository.root,
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
         name: "MyModule",
@@ -95,7 +95,7 @@ describe ::Holistic::Ruby::Scope::Unregister do
     let!(:scope) do
       # first call to register
       ::Holistic::Ruby::Scope::Register.call(
-        repository:,
+        database:,
         parent:,
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
         name: "MyModule",
@@ -104,7 +104,7 @@ describe ::Holistic::Ruby::Scope::Unregister do
 
       # second call to add location
       ::Holistic::Ruby::Scope::Register.call(
-        repository:,
+        database:,
         parent:,
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
         name: "MyModule",

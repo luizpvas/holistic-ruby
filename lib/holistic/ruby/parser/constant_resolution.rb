@@ -26,7 +26,7 @@ module Holistic::Ruby::Parser
       nesting.each do |name|
         @scope =
           ::Holistic::Ruby::Scope::Register.call(
-            repository: @scope_repository,
+            database: @scope_repository.database,
             parent: @scope,
             kind: ::Holistic::Ruby::Scope::Kind::MODULE,
             name:,
@@ -53,7 +53,7 @@ module Holistic::Ruby::Parser
       nesting.each do |name|
         @scope =
           ::Holistic::Ruby::Scope::Register.call(
-            repository: @scope_repository,
+            database: @scope_repository.database,
             parent: @scope,
             kind: ::Holistic::Ruby::Scope::Kind::CLASS,
             name:,
@@ -80,7 +80,7 @@ module Holistic::Ruby::Parser
       nesting.each do |name|
         @scope =
           ::Holistic::Ruby::Scope::Register.call(
-            repository: @scope_repository,
+            database: @scope_repository.database,
             parent: @scope,
             kind:,
             name:,
