@@ -22,16 +22,16 @@ describe ::Holistic::Ruby::Parser do
     it "parses the code" do
       reference_foo_1 = application.references.find_reference_to("Foo1")
 
-      expect(reference_foo_1.attr(:clues).size).to be(1)
-      expect(reference_foo_1.attr(:clues).first).to have_attributes(
+      expect(reference_foo_1.clues.size).to be(1)
+      expect(reference_foo_1.clues.first).to have_attributes(
         itself: be_a(::Holistic::Ruby::TypeInference::Clue::ScopeReference),
         resolution_possibilities: ["::MyApp::MyModule", "::MyApp", "::"]
       )
 
       reference_foo_2 = application.references.find_reference_to("Foo2")
 
-      expect(reference_foo_2.attr(:clues).size).to be(1)
-      expect(reference_foo_2.attr(:clues).first).to have_attributes(
+      expect(reference_foo_2.clues.size).to be(1)
+      expect(reference_foo_2.clues.first).to have_attributes(
         itself: be_a(::Holistic::Ruby::TypeInference::Clue::ScopeReference),
         resolution_possibilities: ["::MyApp::MyModule", "::MyApp", "::"]
       )

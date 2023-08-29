@@ -13,8 +13,8 @@ describe ::Holistic::Ruby::TypeInference::Clue::MethodCall do
     it "registers the reference" do
       reference = application.references.find_by_code_content("example.do_something")
 
-      expect(reference.attr(:clues).size).to be(1)
-      expect(reference.attr(:clues).first).to have_attributes(
+      expect(reference.clues.size).to be(1)
+      expect(reference.clues.first).to have_attributes(
         itself: be_a(::Holistic::Ruby::TypeInference::Clue::MethodCall),
         nesting: ::Holistic::Ruby::Parser::NestingSyntax.new("example"),
         method_name: "do_something",
@@ -33,8 +33,8 @@ describe ::Holistic::Ruby::TypeInference::Clue::MethodCall do
     it "registers the references" do
       reference_to_do_something = application.references.find_by_code_content("example.do_something")
 
-      expect(reference_to_do_something.attr(:clues).size).to be(1)
-      expect(reference_to_do_something.attr(:clues).first).to have_attributes(
+      expect(reference_to_do_something.clues.size).to be(1)
+      expect(reference_to_do_something.clues.first).to have_attributes(
         itself: be_a(::Holistic::Ruby::TypeInference::Clue::MethodCall),
         nesting: ::Holistic::Ruby::Parser::NestingSyntax.new("example"),
         method_name: "do_something",
@@ -43,8 +43,8 @@ describe ::Holistic::Ruby::TypeInference::Clue::MethodCall do
 
       reference_to_value = application.references.find_by_code_content("example.value")
 
-      expect(reference_to_value.attr(:clues).size).to be(1)
-      expect(reference_to_value.attr(:clues).first).to have_attributes(
+      expect(reference_to_value.clues.size).to be(1)
+      expect(reference_to_value.clues.first).to have_attributes(
         itself: be_a(::Holistic::Ruby::TypeInference::Clue::MethodCall),
         nesting: ::Holistic::Ruby::Parser::NestingSyntax.new("example"),
         method_name: "value",
@@ -65,8 +65,8 @@ describe ::Holistic::Ruby::TypeInference::Clue::MethodCall do
     it "registers the references" do
       reference_to_do_something = application.references.find_by_code_content("example.do_something")
 
-      expect(reference_to_do_something.attr(:clues).size).to be(1)
-      expect(reference_to_do_something.attr(:clues).first).to have_attributes(
+      expect(reference_to_do_something.clues.size).to be(1)
+      expect(reference_to_do_something.clues.first).to have_attributes(
         itself: be_a(::Holistic::Ruby::TypeInference::Clue::MethodCall),
         nesting: ::Holistic::Ruby::Parser::NestingSyntax.new("example"),
         method_name: "do_something",
@@ -75,8 +75,8 @@ describe ::Holistic::Ruby::TypeInference::Clue::MethodCall do
 
       reference_to_do_something_else = application.references.find_by_code_content("arg.do_something_else")
 
-      expect(reference_to_do_something_else.attr(:clues).size).to be(1)
-      expect(reference_to_do_something_else.attr(:clues).first).to have_attributes(
+      expect(reference_to_do_something_else.clues.size).to be(1)
+      expect(reference_to_do_something_else.clues.first).to have_attributes(
         itself: be_a(::Holistic::Ruby::TypeInference::Clue::MethodCall),
         nesting: ::Holistic::Ruby::Parser::NestingSyntax.new("arg"),
         method_name: "do_something_else",
@@ -97,8 +97,8 @@ describe ::Holistic::Ruby::TypeInference::Clue::MethodCall do
     it "registers the references" do
       reference_to_do_something = application.references.find_by_code_content("example.do_something")
 
-      expect(reference_to_do_something.attr(:clues).size).to be(1)
-      expect(reference_to_do_something.attr(:clues).first).to have_attributes(
+      expect(reference_to_do_something.clues.size).to be(1)
+      expect(reference_to_do_something.clues.first).to have_attributes(
         itself: be_a(::Holistic::Ruby::TypeInference::Clue::MethodCall),
         nesting: ::Holistic::Ruby::Parser::NestingSyntax.new("example"),
         method_name: "do_something",
@@ -107,8 +107,8 @@ describe ::Holistic::Ruby::TypeInference::Clue::MethodCall do
 
       reference_to_do_something_else = application.references.find_by_code_content("arg.do_something_else")
 
-      expect(reference_to_do_something_else.attr(:clues).size).to be(1)
-      expect(reference_to_do_something_else.attr(:clues).first).to have_attributes(
+      expect(reference_to_do_something_else.clues.size).to be(1)
+      expect(reference_to_do_something_else.clues.first).to have_attributes(
         itself: be_a(::Holistic::Ruby::TypeInference::Clue::MethodCall),
         nesting: ::Holistic::Ruby::Parser::NestingSyntax.new("arg"),
         method_name: "do_something_else",

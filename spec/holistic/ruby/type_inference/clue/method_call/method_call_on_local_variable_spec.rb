@@ -13,8 +13,8 @@ describe ::Holistic::Ruby::TypeInference::Clue::MethodCall do
     it "registers the method call clue" do
       reference = application.references.find_by_code_content("user.nickname")
 
-      expect(reference.attr(:clues).size).to be(1)
-      expect(reference.attr(:clues).first).to have_attributes(
+      expect(reference.clues.size).to be(1)
+      expect(reference.clues.first).to have_attributes(
         itself: be_a(::Holistic::Ruby::TypeInference::Clue::MethodCall),
         nesting: ::Holistic::Ruby::Parser::NestingSyntax.new("user"),
         method_name: "nickname",

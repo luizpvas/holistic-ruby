@@ -16,8 +16,8 @@ describe ::Holistic::Ruby::Parser do
     it "parses the code" do
       reference = application.references.find_reference_to("Foo")
 
-      expect(reference.attr(:clues).size).to be(1)
-      expect(reference.attr(:clues).first).to have_attributes(
+      expect(reference.clues.size).to be(1)
+      expect(reference.clues.first).to have_attributes(
         itself: be_a(::Holistic::Ruby::TypeInference::Clue::ScopeReference),
         resolution_possibilities: ["::MyApp::MyModule", "::"]
       )

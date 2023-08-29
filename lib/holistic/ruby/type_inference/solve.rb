@@ -18,11 +18,11 @@ module Holistic::Ruby::TypeInference
 
     def solve_scope_reference(application:, reference:)
       has_scope_reference_clue =
-        reference.attr(:clues).one? && reference.attr(:clues).first.is_a?(Clue::ScopeReference)
+        reference.clues.one? && reference.clues.first.is_a?(Clue::ScopeReference)
 
       return unless has_scope_reference_clue
 
-      scope_reference_clue = reference.attr(:clues).first
+      scope_reference_clue = reference.clues.first
 
       resolve_scope(
         application:,
@@ -63,11 +63,11 @@ module Holistic::Ruby::TypeInference
     end
 
     def solve_method_call(application:, reference:)
-      has_method_call_clue = reference.attr(:clues).one? && reference.attr(:clues).first.is_a?(Clue::MethodCall)
+      has_method_call_clue = reference.clues.one? && reference.clues.first.is_a?(Clue::MethodCall)
 
       return unless has_method_call_clue
 
-      method_call_clue = reference.attr(:clues).first
+      method_call_clue = reference.clues.first
 
       if method_call_clue.nesting.nil?
         SolveMethodCallInCurrentScope.call(application:, reference:, method_call_clue:)

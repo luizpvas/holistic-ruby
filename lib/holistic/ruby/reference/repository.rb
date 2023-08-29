@@ -30,18 +30,18 @@ module Holistic::Ruby::Reference
 
     concerning :TestHelpers do
       def all
-        @database.all.filter { _1.attr(:clues).present? }
+        @database.all.filter { _1.is_a?(Record) }
       end
 
       def find_reference_to(scope_name)
-        @database.all.find do |node|
-          node.has_one(:referenced_scope)&.fully_qualified_name == scope_name || node.attr(:clues)&.find { _1.to_s == scope_name }
+        all.find do |node|
+          node.has_one(:referenced_scope)&.fully_qualified_name == scope_name || node.clues&.find { _1.to_s == scope_name }
         end
       end
 
       def find_by_code_content(code_content)
-        @database.all.find do |node|
-          node.attr(:clues)&.find { _1.to_s == code_content }
+        all.find do |node|
+          node.clues&.find { _1.to_s == code_content }
         end
       end
     end
