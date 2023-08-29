@@ -4,6 +4,8 @@ module Holistic::Ruby::Reference
   module Register
     extend self
 
+    # TODO: receive database + processing_queue instead of application. Narrow down requirements.
+
     def call(application:, scope:, clues:, location:)
       reference = application.database.store(location.identifier, {
         identifier: location.identifier,
