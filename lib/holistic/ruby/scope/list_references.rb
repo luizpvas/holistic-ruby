@@ -5,9 +5,9 @@ module Holistic::Ruby::Scope
     extend self
 
     QueryReferencesRecursively = ->(application, scope) do
-      references_to_scope = scope.has_many(:referenced_by)
+      references_to_scope = scope.referenced_by
 
-      references_to_child_scopes = scope.has_many(:children).flat_map { QueryReferencesRecursively.call(application, _1) }
+      references_to_child_scopes = scope.children.flat_map { QueryReferencesRecursively.call(application, _1) }
 
       references_to_scope + references_to_child_scopes
     end

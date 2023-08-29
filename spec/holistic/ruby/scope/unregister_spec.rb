@@ -58,13 +58,13 @@ describe ::Holistic::Ruby::Scope::Unregister do
     end
 
     it "detaches the scope its parent and deletes the node from the database" do
-      expect(parent.has_many(:children)).to eql([scope])
+      expect(parent.children).to eql([scope])
 
       result = described_class.call(database: application.database, fully_qualified_name: "::MyModule", file_path: "/snippet.rb")
 
       expect(result).to be(:definition_unregistered)
 
-      expect(parent.has_many(:children)).to be_empty
+      expect(parent.children).to be_empty
       expect(application.database.find("::MyModule")).to be_nil
     end
 
@@ -124,7 +124,7 @@ describe ::Holistic::Ruby::Scope::Unregister do
     it "does not detach the scope from its parent" do
       described_class.call(database: application.database, fully_qualified_name: "::MyModule", file_path: "/snippet_1.rb")
 
-      expect(parent.has_many(:children)).to match_array([scope])
+      expect(parent.children).to match_array([scope])
     end
   end
 end

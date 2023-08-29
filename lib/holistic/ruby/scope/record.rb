@@ -6,5 +6,9 @@ module Holistic::Ruby::Scope
     def locations            = attr(:locations)
     def name                 = attr(:name)
     def kind                 = attr(:kind)
+
+    def parent        = has_one(:parent)
+    def children      = has_many(:children)
+    def referenced_by = has_many(:referenced_by)
   end
 end

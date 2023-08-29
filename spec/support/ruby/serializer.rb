@@ -7,7 +7,7 @@ module Support
         nested = {}
         root = {scope.name => nested}
 
-        scope.has_many(:children).each do |child|
+        scope.children.each do |child|
           nested.merge!(serialize_scope(child))
         end
 

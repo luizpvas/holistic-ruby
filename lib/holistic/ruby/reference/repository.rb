@@ -22,7 +22,7 @@ module Holistic::Ruby::Reference
 
     def list_references_to_scopes_in_file(scopes:, file_path:)
       references = @database.find(file_path)&.has_many(:defines_scopes)&.flat_map do |scope|
-        scope.has_many(:referenced_by)
+        scope.referenced_by
       end
 
       references || []

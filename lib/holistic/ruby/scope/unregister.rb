@@ -18,7 +18,7 @@ module Holistic::Ruby::Scope
       database.disconnect(source: location_to_remove.declaration.file, target: scope, name: :defines_scopes, inverse_of: :scope_defined_in_file)
 
       if scope.locations.empty?
-        database.disconnect(source: scope.has_one(:parent), target: scope, name: :children, inverse_of: :parent)
+        database.disconnect(source: scope.parent, target: scope, name: :children, inverse_of: :parent)
 
         database.delete(fully_qualified_name)
       end
