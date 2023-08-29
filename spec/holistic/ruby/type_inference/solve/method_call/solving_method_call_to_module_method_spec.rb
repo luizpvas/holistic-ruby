@@ -19,7 +19,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
     it "solves the method call reference" do
       reference = application.references.find_by_code_content("Calculator.sum")
 
-      expect(reference.has_one(:referenced_scope).fully_qualified_name).to eql("::Calculator.sum")
+      expect(reference.referenced_scope.fully_qualified_name).to eql("::Calculator.sum")
     end
   end
 
@@ -41,7 +41,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
     it "solves the method call reference" do
       reference = application.references.find_by_code_content("Calculator.sum")
 
-      expect(reference.has_one(:referenced_scope).fully_qualified_name).to eql("::Calculator.sum")
+      expect(reference.referenced_scope.fully_qualified_name).to eql("::Calculator.sum")
     end
   end
 end

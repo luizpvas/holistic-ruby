@@ -5,5 +5,7 @@ module Holistic::Ruby::Reference
     def identifier = attr(:identifier)
     def clues      = attr(:clues)
     def location   = attr(:location)
+
+    def referenced_scope = has_one(:referenced_scope)
   end
 end

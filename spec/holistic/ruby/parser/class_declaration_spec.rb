@@ -22,7 +22,7 @@ describe ::Holistic::Ruby::Parser do
         resolution_possibilities: ["::MyClass", "::"]
       )
 
-      expect(reference.has_one(:referenced_scope)).to be_nil
+      expect(reference.referenced_scope).to be_nil
 
       expect(serialize_scope(application.scopes.root)).to eql({
         "::" => {

@@ -37,7 +37,7 @@ describe ::Holistic::Ruby::Scope::Outline do
     dependencies = 
 
     expect(
-      result.dependencies.map { _1.has_one(:referenced_scope).fully_qualified_name }
+      result.dependencies.map { _1.referenced_scope.fully_qualified_name }
     ).to match_array([
       "::MyApp::PlusOne",
       "::MyApp::PlusOne.call",
