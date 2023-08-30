@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Holistic::Document::File
-  module Register
+  module Store
     extend self
 
     def call(database:, file_path:)

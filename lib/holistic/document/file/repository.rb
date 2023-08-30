@@ -15,7 +15,7 @@ module ::Holistic::Document::File
 
     concerning :TestHelpers do
       def build_fake_location(file_path)
-        file = Register.call(database:, file_path:)
+        file = Store.call(database:, file_path:)
 
         ::Holistic::Document::Location.new(file, 0, 0, 0, 0)
       end

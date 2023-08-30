@@ -7,7 +7,7 @@ describe ::Holistic::Document::File::Repository do
       let(:repository) { described_class.new(database:) }
 
       it "returns the file" do
-        file = ::Holistic::Document::File::Register.call(database:, file_path: "/my_app/file.rb")
+        file = ::Holistic::Document::File::Store.call(database:, file_path: "/my_app/file.rb")
 
         expect(repository.find("/my_app/file.rb")).to be(file)
       end

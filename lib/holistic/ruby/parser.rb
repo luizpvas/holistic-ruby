@@ -14,7 +14,7 @@ module Holistic::Ruby::Parser
 
     constant_resolution = ConstantResolution.new(scope_repository: application.scopes)
 
-    file = ::Holistic::Document::File::Register.call(database: application.database, file_path:)
+    file = ::Holistic::Document::File::Store.call(database: application.database, file_path:)
 
     visitor = ProgramVisitor.new(application:, constant_resolution:, file:)
 

@@ -5,7 +5,7 @@ describe ::Holistic::Document::Location do
     def build_file(file_path)
       database = ::Holistic::Database::Table.new
 
-      ::Holistic::Document::File::Register.call(database:, file_path:)
+      ::Holistic::Document::File::Store.call(database:, file_path:)
     end
   end
 

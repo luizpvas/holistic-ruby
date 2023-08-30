@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe ::Holistic::Document::File::Register do
+describe ::Holistic::Document::File::Store do
   context "when file does not exist in the repository" do
     let(:database)   { ::Holistic::Database::Table.new }
 
