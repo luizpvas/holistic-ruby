@@ -7,20 +7,20 @@ module Holistic::Ruby::Scope
     def call(database:, parent:, kind:, name:, location:)
       fully_qualified_name = build_fully_qualified_name(parent:, kind:, name:)
 
-      child_scope = database.find(fully_qualified_name)
+      scope = database.find(fully_qualified_name)
 
-      if child_scope.nil?
+      if scope.nil?
         record = Record.new(fully_qualified_name, { fully_qualified_name:, name:, kind:, locations: Location::Collection.new(name) })
 
-        child_scope = database.store(fully_qualified_name, record)
+        scope = database.store(fully_qualified_name, record)
       end
 
-      child_scope.locations << location
+      scope.locations << location
 
-      database.connect(source: parent, target: child_scope, name: :children, inverse_of: :parent)
-      database.connect(source: location.declaration.file, target: child_scope, name: :defines_scopes, inverse_of: :scope_defined_in_file)
+      database.connect(source: parent, target: scope, name: :children, inverse_of: :parent)
+      database.connect(source: location.declaration.file, target: scope, name: :defines_scopes, inverse_of: :scope_defined_in_file)
 
-      child_scope
+      scope
     end
 
     private
