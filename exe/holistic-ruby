@@ -3,4 +3,3 @@
 require "holistic"
 
 ::Holistic::LanguageServer::Stdio::Start.call
-
