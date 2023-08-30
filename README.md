@@ -25,10 +25,11 @@
 
 * Go to definition.
 * Find references.
-* Autocompletion for namespaces, methods and local variables.
-* Syntax highlighting boundaries based on packwerk.
-* Outline dependencies.
-* Glossary.
+* Autocompletion for namespaces and methods.
+* (WIP) Type inference for variables
+* (WIP) Syntax highlighting boundaries based on packwerk.
+* (WIP) Outline dependencies.
+* (WIP) Glossary.
 
 ## Why is it a toy language server?
 
