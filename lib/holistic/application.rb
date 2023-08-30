@@ -7,22 +7,7 @@ module Holistic
     def initialize(name:, root_directory:)
       @name = name
       @root_directory = root_directory
-      @database = Database::Table.new
-
-      # scope parent-children relation
-      @database.define_connection(name: :children, inverse_of: :parent)
-
-      # type inference conclusion
-      @database.define_connection(name: :referenced_scope, inverse_of: :referenced_by)
-
-      # reference definition
-      @database.define_connection(name: :located_in_scope, inverse_of: :contains_many_references)
-
-      # scope location
-      @database.define_connection(name: :defines_scopes, inverse_of: :scope_defined_in_file)
-
-      # reference location
-      @database.define_connection(name: :defines_references, inverse_of: :reference_defined_in_file)
+      @database = Database::Table.new.tap(&Database::Migrations::Run)
     end
 
     def extensions
