@@ -16,7 +16,7 @@ module Holistic::Ruby::Autocompletion
       lookup_scope = scope
 
       if code.start_with?("::")
-        lookup_scope = lookup_scope.parent until lookup_scope.kind == ::Holistic::Ruby::Scope::Kind::ROOT
+        lookup_scope = lookup_scope.parent until lookup_scope.root?
       end
 
       if StartsWithLowerCaseLetter[code]
@@ -35,16 +35,16 @@ module Holistic::Ruby::Autocompletion
 
       method_to_autocomplete = code
 
-      if scope.kind == ::Holistic::Ruby::Scope::Kind::INSTANCE_METHOD
-        sibling_methods = scope.parent.children.filter { _1.kind == ::Holistic::Ruby::Scope::Kind::INSTANCE_METHOD }
+      if scope.instance_method?
+        sibling_methods = scope.parent.children.filter { _1.instance_method? }
 
         sibling_methods.each do |method_scope|
           if method_scope.name.start_with?(method_to_autocomplete)
             suggestions << Suggestion.new(code: method_scope.name, kind: method_scope.kind)
           end
         end
-      elsif scope.kind == ::Holistic::Ruby::Scope::Kind::CLASS_METHOD
-        sibling_methods = scope.parent.children.filter { _1.kind == ::Holistic::Ruby::Scope::Kind::CLASS_METHOD }
+      elsif scope.class_method?
+        sibling_methods = scope.parent.children.filter { _1.class_method? }
 
         sibling_methods.each do |method_scope|
           if method_scope.name.start_with?(method_to_autocomplete)
@@ -69,7 +69,7 @@ module Holistic::Ruby::Autocompletion
         return suggestions if scope.nil?
       end
 
-      class_methods = scope.children.filter { _1.kind == ::Holistic::Ruby::Scope::Kind::CLASS_METHOD }
+      class_methods = scope.children.filter { _1.class_method? }
 
       class_methods.each do |method_scope|
         if method_scope.name.start_with?(method_to_autocomplete)
@@ -97,7 +97,7 @@ module Holistic::Ruby::Autocompletion
 
       search = ->(scope) do
         scope.children.each do |child_scope|
-          next if child_scope.kind == ::Holistic::Ruby::Scope::Kind::CLASS_METHOD || child_scope.kind == ::Holistic::Ruby::Scope::Kind::INSTANCE_METHOD
+          next if child_scope.method?
 
           if child_scope.name.start_with?(namespace_to_autocomplete)
             suggestions << Suggestion.new(code: child_scope.name, kind: child_scope.kind)
