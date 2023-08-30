@@ -59,7 +59,7 @@ describe ::Holistic::Extensions::Events do
     context "when an event has multiple listeners" do
       it "stops on the first listeners that returns a non-nil value" do
         calls = []
-        output = ::Holistic::Database::Node.new("fake-node", {})
+        output = ::Holistic::Ruby::Scope::Record.new("scope", {})
 
         events.bind(:resolve_method_call_known_scope) do |_params|
           calls << "first"
