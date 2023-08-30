@@ -28,7 +28,7 @@ module Holistic::Ruby::Scope
       scope.locations.each do |scope_location|
         application.references
           .list_references_in_file(scope_location.declaration.file.path)
-          .filter { |reference| reference.has_one(:located_in_scope) == scope }
+          .filter { |reference| reference.located_in_scope == scope }
           .filter { |reference| reference.referenced_scope.present? }
           .reject(&is_local_dependency)
           .tap { dependencies.concat(_1) }
@@ -44,7 +44,7 @@ module Holistic::Ruby::Scope
 
       references = scope.referenced_by
 
-      dependants = references.map { |reference| reference.has_one(:located_in_scope) }.uniq
+      dependants = references.map { |reference| reference.located_in_scope }.uniq
 
       Result.new(declarations:, dependencies:, references:, dependants:)
     end

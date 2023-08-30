@@ -32,7 +32,7 @@ module Holistic::Ruby::TypeInference
     end
 
     SolveMethodCallInCurrentScope = ->(application:, reference:, method_call_clue:) do
-      scope = reference.has_one(:located_in_scope)
+      scope = reference.located_in_scope
 
       if scope.kind == ::Holistic::Ruby::Scope::Kind::CLASS_METHOD
         resolve_class_method(application:, scope: scope.parent, method_name: method_call_clue.method_name)

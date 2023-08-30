@@ -7,5 +7,6 @@ module Holistic::Ruby::Reference
     def location   = attr(:location)
 
     def referenced_scope = has_one(:referenced_scope)
+    def located_in_scope = has_one(:located_in_scope)
   end
 end
