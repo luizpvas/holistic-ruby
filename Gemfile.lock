@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    holistic-ruby (0.1.4)
+    holistic-ruby (0.1.6)
       activesupport (~> 7.0)
       syntax_tree (~> 6.0)
       zeitwerk (~> 2.6)
