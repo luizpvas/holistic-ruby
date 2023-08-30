@@ -41,7 +41,7 @@ module Holistic::Ruby::Parser
 
     def unregsiter_references_in_file(application:, file_path:)
       application.references.list_references_in_file(file_path).each do |reference|
-        ::Holistic::Ruby::Reference::Unregister.call(
+        ::Holistic::Ruby::Reference::Delete.call(
           database: application.database,
           reference: reference
         )

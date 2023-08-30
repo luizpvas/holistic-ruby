@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Holistic::Ruby::Reference
-  module Register
+  module Store
     extend self
 
     def call(database:, processing_queue:, scope:, clues:, location:)

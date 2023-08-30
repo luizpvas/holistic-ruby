@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Holistic::Ruby::Reference
-  module Unregister
+  module Delete
     extend self
 
     def call(database:, reference:)

@@ -80,7 +80,7 @@ module Holistic::Ruby::Parser
           resolution_possibilities: @constant_resolution.current
         )
 
-        ::Holistic::Ruby::Reference::Register.call(
+        ::Holistic::Ruby::Reference::Store.call(
           database: @application.database,
           processing_queue: @application.type_inference_processing_queue,
           scope: @constant_resolution.scope,
@@ -115,7 +115,7 @@ module Holistic::Ruby::Parser
           resolution_possibilities: @constant_resolution.current
         )
 
-        ::Holistic::Ruby::Reference::Register.call(
+        ::Holistic::Ruby::Reference::Store.call(
           database: @application.database,
           processing_queue: @application.type_inference_processing_queue,
           scope: @constant_resolution.scope,
@@ -187,7 +187,7 @@ module Holistic::Ruby::Parser
         resolution_possibilities: @constant_resolution.current
       )
 
-      ::Holistic::Ruby::Reference::Register.call(
+      ::Holistic::Ruby::Reference::Store.call(
         database: @application.database,
         processing_queue: @application.type_inference_processing_queue,
         scope: @constant_resolution.scope,
