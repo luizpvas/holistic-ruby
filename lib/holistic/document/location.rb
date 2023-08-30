@@ -9,11 +9,11 @@ module Holistic::Document
     :end_column
   ) do
     def identifier
-      "#{file.attr(:path)}[#{start_line},#{start_column},#{end_line},#{end_column}]"
+      "#{file.path}[#{start_line},#{start_column},#{end_line},#{end_column}]"
     end
 
     def contains?(cursor)
-      same_file = cursor.file_path == file.attr(:path)
+      same_file = cursor.file_path == file.path
       contains_line = cursor.line >= start_line && cursor.line <= end_line
       
       contains_column =

@@ -26,7 +26,7 @@ module Holistic::Ruby::Parser
 
       application.references
         .list_references_to_scopes_in_file(scopes: application.scopes, file_path: file_path)
-        .reject { _1.location.file.attr(:path) == file_path }
+        .reject { _1.location.file.path == file_path }
     end
 
     def unregister_scopes_in_file(application:, file_path:)

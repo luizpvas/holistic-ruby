@@ -10,7 +10,7 @@ describe ::Holistic::Document::File::Register do
       file_path = "/my_app/file.rb"
       file = described_class.call(database:, file_path:)
 
-      expect(file.attr(:path)).to eql(file_path)
+      expect(file.path).to eql(file_path)
       expect(database.all.size).to be(1)
     end
   end

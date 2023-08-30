@@ -41,7 +41,7 @@ module Holistic::LanguageServer
         location = reference.location
 
         {
-          "uri" => Format::FileUri.from_path(location.file.attr(:path)),
+          "uri" => Format::FileUri.from_path(location.file.path),
           "range" => {
             "start" => { "line" => location.start_line, "character" => location.start_column },
             "end" => { "line" => location.end_line, "character" => location.end_column }

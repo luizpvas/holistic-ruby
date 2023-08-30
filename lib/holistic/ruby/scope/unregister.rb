@@ -9,7 +9,7 @@ module Holistic::Ruby::Scope
 
       return :scope_not_found if scope.nil?
 
-      location_to_remove = scope.locations.find { |scope_location| scope_location.declaration.file.attr(:path) == file_path }
+      location_to_remove = scope.locations.find { |scope_location| scope_location.declaration.file.path == file_path }
 
       return :scope_not_defined_in_speciefied_file if location_to_remove.nil?
 

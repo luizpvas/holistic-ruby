@@ -21,7 +21,7 @@ describe ::Holistic::Ruby::Scope::Location do
             body: build_document_location("/my_app/my_class.rb")
           )
 
-          expect(locations.main.declaration.file.attr(:path)).to eql("/my_app/my_class.rb")
+          expect(locations.main.declaration.file.path).to eql("/my_app/my_class.rb")
         end
       end
 
@@ -39,7 +39,7 @@ describe ::Holistic::Ruby::Scope::Location do
             body: build_document_location("/my_app/my_class/other_class.rb")
           )
 
-          expect(locations.main.declaration.file.attr(:path)).to eql("/my_app/my_class.rb")
+          expect(locations.main.declaration.file.path).to eql("/my_app/my_class.rb")
         end
       end
     end
