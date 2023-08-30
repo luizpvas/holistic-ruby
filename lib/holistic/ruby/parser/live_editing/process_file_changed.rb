@@ -10,8 +10,8 @@ module Holistic::Ruby::Parser
 
       references_to_recalculate = identify_references_to_recalculate(application:, file_path:)
 
-      unregister_scopes_in_file(application:, file_path:)
-      unregsiter_references_in_file(application:, file_path:)
+      delete_scopes_in_file(application:, file_path:)
+      delete_references_in_file(application:, file_path:)
 
       parse_again(application:, file_path:, content:)
 
@@ -29,9 +29,9 @@ module Holistic::Ruby::Parser
         .reject { _1.location.file.path == file_path }
     end
 
-    def unregister_scopes_in_file(application:, file_path:)
+    def delete_scopes_in_file(application:, file_path:)
       application.scopes.list_scopes_in_file(file_path).each do |scope|
-        ::Holistic::Ruby::Scope::Unregister.call(
+        ::Holistic::Ruby::Scope::Delete.call(
           database: application.database,
           fully_qualified_name: scope.fully_qualified_name,
           file_path:
@@ -39,7 +39,7 @@ module Holistic::Ruby::Parser
       end
     end
 
-    def unregsiter_references_in_file(application:, file_path:)
+    def delete_references_in_file(application:, file_path:)
       application.references.list_references_in_file(file_path).each do |reference|
         ::Holistic::Ruby::Reference::Delete.call(
           database: application.database,

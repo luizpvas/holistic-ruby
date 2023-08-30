@@ -22,7 +22,7 @@ module Holistic::Extensions::Ruby
       has_overridden_new_method = class_scope.children.find { _1.class_method? && _1.name == "new" }
 
       unless has_overridden_new_method
-        ::Holistic::Ruby::Scope::Register.call(
+        ::Holistic::Ruby::Scope::Store.call(
           database: application.database,
           parent: class_scope,
           kind: ::Holistic::Ruby::Scope::Kind::CLASS_METHOD,
@@ -38,7 +38,7 @@ module Holistic::Extensions::Ruby
       lambda_scope, location = params[:lambda_scope], params[:location]
 
       LAMBDA_METHODS.each do |method_name|
-        ::Holistic::Ruby::Scope::Register.call(
+        ::Holistic::Ruby::Scope::Store.call(
           database: application.database,
           parent: lambda_scope,
           kind: ::Holistic::Ruby::Scope::Kind::CLASS_METHOD,

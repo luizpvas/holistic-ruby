@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe ::Holistic::Ruby::Scope::Unregister do
+describe ::Holistic::Ruby::Scope::Delete do
   concerning :TestHelpers do
     def build_scope_location(files:, file_path:)
       ::Holistic::Ruby::Scope::Location.new(
@@ -24,7 +24,7 @@ describe ::Holistic::Ruby::Scope::Unregister do
     let(:application) { ::Holistic::Application.new(name: "fake", root_directory: ".") }
 
     let!(:scope) do
-      ::Holistic::Ruby::Scope::Register.call(
+      ::Holistic::Ruby::Scope::Store.call(
         database: application.database,
         parent: application.scopes.root,
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
@@ -48,7 +48,7 @@ describe ::Holistic::Ruby::Scope::Unregister do
     let(:location) { build_scope_location(files: application.files, file_path: "/snippet.rb") }
 
     let!(:scope) do
-      ::Holistic::Ruby::Scope::Register.call(
+      ::Holistic::Ruby::Scope::Store.call(
         database: application.database,
         parent: application.scopes.root,
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
@@ -87,7 +87,7 @@ describe ::Holistic::Ruby::Scope::Unregister do
 
     let!(:scope) do
       # first call to register
-      ::Holistic::Ruby::Scope::Register.call(
+      ::Holistic::Ruby::Scope::Store.call(
         database: application.database,
         parent:,
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
@@ -96,7 +96,7 @@ describe ::Holistic::Ruby::Scope::Unregister do
       )
 
       # second call to add location
-      ::Holistic::Ruby::Scope::Register.call(
+      ::Holistic::Ruby::Scope::Store.call(
         database: application.database,
         parent:,
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,

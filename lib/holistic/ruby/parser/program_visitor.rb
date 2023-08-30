@@ -153,7 +153,7 @@ module Holistic::Ruby::Parser
         location = build_scope_location(declaration_node: assign_node, body_node:)
 
         lambda_scope =
-          ::Holistic::Ruby::Scope::Register.call(
+          ::Holistic::Ruby::Scope::Store.call(
             database: @application.database,
             parent: @constant_resolution.scope,
             kind: ::Holistic::Ruby::Scope::Kind::LAMBDA,

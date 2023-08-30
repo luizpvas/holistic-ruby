@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe ::Holistic::Ruby::Scope::Register do
+describe ::Holistic::Ruby::Scope::Store do
   context "when a scope with the same name DOES NOT EXIST in the parent scope" do
     let(:application) { ::Holistic::Application.new(name: "fake", root_directory: ".") }
     let(:parent)      { application.scopes.root }

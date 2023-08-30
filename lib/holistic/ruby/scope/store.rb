@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Holistic::Ruby::Scope
-  module Register
+  module Store
     extend self
 
     def call(database:, parent:, kind:, name:, location:)

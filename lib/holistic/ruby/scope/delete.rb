@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Holistic::Ruby::Scope
-  module Unregister
+  module Delete
     extend self
 
     def call(database:, fully_qualified_name:, file_path:)
