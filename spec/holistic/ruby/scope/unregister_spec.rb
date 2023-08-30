@@ -69,11 +69,11 @@ describe ::Holistic::Ruby::Scope::Unregister do
     end
 
     it "disconnects the scope from the file" do
-      expect(location.declaration.file.has_many(:defines_scopes)).to eql([scope])
+      expect(location.declaration.file.defines_scopes).to eql([scope])
 
       result = described_class.call(database: application.database, fully_qualified_name: "::MyModule", file_path: "/snippet.rb")
 
-      expect(location.declaration.file.has_many(:defines_scopes)).to be_empty
+      expect(location.declaration.file.defines_scopes).to be_empty
     end
   end
 

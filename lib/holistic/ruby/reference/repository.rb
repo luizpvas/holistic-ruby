@@ -10,18 +10,18 @@ module Holistic::Ruby::Reference
 
     def find_by_cursor(cursor)
       @database.find(cursor.file_path)&.then do |file|
-        file.has_many(:defines_references).find do |reference|
+        file.defines_references.find do |reference|
           reference.location.contains?(cursor)
         end
       end
     end
 
     def list_references_in_file(file_path)
-      @database.find(file_path)&.has_many(:defines_references) || []
+      @database.find(file_path)&.defines_references || []
     end
 
     def list_references_to_scopes_in_file(scopes:, file_path:)
-      references = @database.find(file_path)&.has_many(:defines_scopes)&.flat_map do |scope|
+      references = @database.find(file_path)&.defines_scopes&.flat_map do |scope|
         scope.referenced_by
       end
 
