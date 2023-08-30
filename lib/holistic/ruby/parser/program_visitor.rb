@@ -14,28 +14,28 @@ module Holistic::Ruby::Parser
 
     visit_methods do
       def visit_module(node)
-        declaration_node, body_node = node.child_nodes
+        declaration_node, body_statements_node = node.child_nodes
 
         nesting = NestingSyntax.build(declaration_node)
-        location = build_scope_location(declaration_node:, body_node:)
+        location = build_scope_location(declaration_node:, body_node: node)
 
         @constant_resolution.register_child_module(nesting:, location:) do
-          visit(body_node)
+          visit(body_statements_node)
         end
       end
 
       def visit_class(node)
-        declaration_node, superclass_node, body_node = node.child_nodes
+        declaration_node, superclass_node, body_statements_node = node.child_nodes
 
         if superclass_node
           register_reference(nesting: NestingSyntax.build(superclass_node), location: build_location(superclass_node))
         end
 
         nesting = NestingSyntax.build(declaration_node)
-        location = build_scope_location(declaration_node:, body_node:)
+        location = build_scope_location(declaration_node:, body_node: node)
 
         class_scope = @constant_resolution.register_child_class(nesting:, location:) do
-          visit(body_node)
+          visit(body_statements_node)
         end
 
         @application.extensions.dispatch(:class_scope_registered, { class_scope:, location: })
@@ -54,10 +54,10 @@ module Holistic::Ruby::Parser
       end
 
       def visit_def(node)
-        instance_node, period_node, method_name_node, _params, body_node = node.child_nodes
+        instance_node, period_node, method_name_node, _params, body_statements_node = node.child_nodes
 
         nesting = NestingSyntax.new(method_name_node.value)
-        location = build_scope_location(declaration_node: method_name_node, body_node:)
+        location = build_scope_location(declaration_node: method_name_node, body_node: node)
 
         kind =
           if instance_node.present? && instance_node.child_nodes.first.value == "self"
@@ -69,7 +69,7 @@ module Holistic::Ruby::Parser
           end
 
         @constant_resolution.register_child_method(nesting:, location:, kind:) do
-          visit(body_node)
+          visit(body_statements_node)
         end
       end
 
@@ -211,12 +211,6 @@ module Holistic::Ruby::Parser
       end_line     = node.location.end_line - offset_to_match_language_server_zero_based_position
       start_column = node.location.start_column
       end_column   = node.location.end_column
-
-      # syntax_tree seems to have a bug with the bodystmt node.
-      # It sets the end_column lower than the start_column.
-      if start_line == end_line && start_column > end_column
-        start_column, end_column = end_column, start_column
-      end
 
       ::Holistic::Document::Location.new(file:, start_line:, start_column:, end_line:, end_column:)
     end

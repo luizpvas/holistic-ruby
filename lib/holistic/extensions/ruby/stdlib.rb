@@ -19,7 +19,7 @@ module Holistic::Extensions::Ruby
     RegisterClassConstructor = ->(application, params) do
       class_scope, location = params[:class_scope], params[:location]
 
-      has_overridden_new_method = class_scope.children.find { _1.class_method? && _1.name == "new" }
+      has_overridden_new_method = class_scope.children.find { _1.instance_method? && _1.name == "initialize" }
 
       unless has_overridden_new_method
         ::Holistic::Ruby::Scope::Store.call(
