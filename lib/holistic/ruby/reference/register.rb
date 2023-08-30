@@ -4,17 +4,15 @@ module Holistic::Ruby::Reference
   module Register
     extend self
 
-    # TODO: receive database + processing_queue instead of application. Narrow down requirements.
-
-    def call(application:, scope:, clues:, location:)
+    def call(database:, processing_queue:, scope:, clues:, location:)
       record = Record.new(location.identifier, { identifier: location.identifier, clues:, location: })
 
-      reference = application.database.store(location.identifier, record)
+      reference = database.store(location.identifier, record)
 
-      application.database.connect(source: scope, target: reference, name: :contains_many_references, inverse_of: :located_in_scope)
-      application.database.connect(source: location.file, target: reference, name: :defines_references, inverse_of: :reference_defined_in_file)
+      database.connect(source: scope, target: reference, name: :contains_many_references, inverse_of: :located_in_scope)
+      database.connect(source: location.file, target: reference, name: :defines_references, inverse_of: :reference_defined_in_file)
 
-      application.type_inference_processing_queue.push(reference)
+      processing_queue.push(reference)
     end
   end
 end

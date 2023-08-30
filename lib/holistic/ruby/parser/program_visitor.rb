@@ -81,7 +81,8 @@ module Holistic::Ruby::Parser
         )
 
         ::Holistic::Ruby::Reference::Register.call(
-          application: @application,
+          database: @application.database,
+          processing_queue: @application.type_inference_processing_queue,
           scope: @constant_resolution.scope,
           clues: [method_call_clue],
           location: build_location(node)
@@ -115,7 +116,8 @@ module Holistic::Ruby::Parser
         )
 
         ::Holistic::Ruby::Reference::Register.call(
-          application: @application,
+          database: @application.database,
+          processing_queue: @application.type_inference_processing_queue,
           scope: @constant_resolution.scope,
           clues: [method_call_clue],
           location: build_location(method_name_node || instance_node)
@@ -186,7 +188,8 @@ module Holistic::Ruby::Parser
       )
 
       ::Holistic::Ruby::Reference::Register.call(
-        application: @application,
+        database: @application.database,
+        processing_queue: @application.type_inference_processing_queue,
         scope: @constant_resolution.scope,
         clues: [clue],
         location:
