@@ -27,7 +27,7 @@ module Holistic
     end
 
     def type_inference_processing_queue
-      @type_inference_processing_queue ||= Ruby::TypeInference::ProcessingQueue.new
+      @type_inference_processing_queue ||= ::Queue.new
     end
 
     def unsaved_documents
