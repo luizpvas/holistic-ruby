@@ -9,8 +9,8 @@ module Holistic::Ruby::Reference
 
       reference = database.store(location.identifier, record)
 
-      database.connect(source: scope, target: reference, name: :contains_many_references, inverse_of: :located_in_scope)
-      database.connect(source: location.file, target: reference, name: :defines_references, inverse_of: :reference_defined_in_file)
+      reference.relation(:located_in_scope).add!(scope)
+      reference.relation(:reference_defined_in_file).add!(location.file)
 
       processing_queue.push(reference)
     end

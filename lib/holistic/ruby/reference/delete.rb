@@ -7,11 +7,11 @@ module Holistic::Ruby::Reference
     def call(database:, reference:)
       database.delete(reference.identifier)
 
-      database.disconnect(source: reference.location.file, target: reference, name: :defines_references, inverse_of: :reference_defined_in_file)
-      database.disconnect(source: reference.located_in_scope, target: reference, name: :contains_many_references, inverse_of: :located_in_scope)
+      reference.relation(:reference_defined_in_file).delete!(reference.location.file)
+      reference.relation(:located_in_scope).delete!(reference.located_in_scope)
 
       if reference.referenced_scope
-        database.disconnect(source: reference.referenced_scope, target: reference, name: :referenced_by, inverse_of: :referenced_scope)
+        reference.relation(:referenced_scope).delete!(reference.referenced_scope)
       end
     end
   end

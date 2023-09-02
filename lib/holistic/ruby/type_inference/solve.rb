@@ -10,7 +10,7 @@ module Holistic::Ruby::TypeInference
         solve_method_call(application:, reference:)
 
       if referenced_scope
-        application.database.connect(source: reference, target: referenced_scope, name: :referenced_scope, inverse_of: :referenced_by)
+        reference.relation(:referenced_scope).add!(referenced_scope)
       end
     end
 

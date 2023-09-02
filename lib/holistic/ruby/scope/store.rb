@@ -17,8 +17,8 @@ module Holistic::Ruby::Scope
 
       scope.locations << location
 
-      database.connect(source: parent, target: scope, name: :children, inverse_of: :parent)
-      database.connect(source: location.declaration.file, target: scope, name: :defines_scopes, inverse_of: :scope_defined_in_file)
+      scope.relation(:parent).add!(parent)
+      scope.relation(:scope_defined_in_file).add!(location.declaration.file)
 
       scope
     end

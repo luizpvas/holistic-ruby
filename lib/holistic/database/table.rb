@@ -34,27 +34,9 @@ module Holistic::Database
         in Node   then node_or_attrs
         end
 
-        node.__database__ = self
+      node.__database__ = self
 
       @records[id] = node
-    end
-
-    def connect(source:, target:, name:, inverse_of:)
-      connection = @connections[name]
-
-      raise ::ArgumentError if connection.nil? || connection[:inverse_of] != inverse_of
-
-      source.connections[name].add(target)
-      target.connections[inverse_of].add(source)
-    end
-
-    def disconnect(source:, target:, name:, inverse_of:)
-      connection = @connections[name]
-
-      raise ::ArgumentError if connection.nil? || connection[:inverse_of] != inverse_of
-
-      source.connections[name].delete(target)
-      target.connections[inverse_of].delete(source)
     end
 
     def find(id)

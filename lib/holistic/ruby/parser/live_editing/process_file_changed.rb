@@ -15,7 +15,7 @@ module Holistic::Ruby::Parser
 
       parse_again(application:, file_path:, content:)
 
-      recalculate_type_inference_for_references(application:, references: references_to_recalculate)
+      recalculate_type_inference(application:, references: references_to_recalculate)
     end
 
     private
@@ -54,9 +54,9 @@ module Holistic::Ruby::Parser
       ::Holistic::Ruby::TypeInference::SolvePendingReferences.call(application:)
     end
 
-    def recalculate_type_inference_for_references(application:, references:)
+    def recalculate_type_inference(application:, references:)
       references.each do |reference|
-        application.database.disconnect(source: reference.referenced_scope, target: reference, name: :referenced_by, inverse_of: :referenced_scope)
+        reference.relation(:referenced_scope).delete!(reference.referenced_scope)
 
         ::Holistic::Ruby::TypeInference::Solve.call(application:, reference:)
       end
