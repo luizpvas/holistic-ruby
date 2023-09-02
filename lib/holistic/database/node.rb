@@ -21,9 +21,5 @@ module Holistic::Database
     def has_one(connection_name)
       @connections[connection_name].first
     end
-
-    def __set_database__(database)
-      @__database__ = database
-    end
   end
 end
