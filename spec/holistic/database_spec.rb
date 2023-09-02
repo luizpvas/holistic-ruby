@@ -1,40 +1,40 @@
 # frozen_string_literal: true
 
 describe ::Holistic::Database do
-  describe "#define_connection" do
-    context "when connection does not exist" do
-      it "stores the connection definition" do
+  describe "#define_relation" do
+    context "when relation does not exist" do
+      it "stores the relation definition" do
         database = described_class.new
 
-        database.define_connection(name: :contains, inverse_of: :belongs)
+        database.define_relation(name: :contains, inverse_of: :belongs)
 
-        expect(database.connections).to eql({
+        expect(database.relations).to eql({
           contains: { inverse_of: :belongs },
           belongs: { inverse_of: :contains }
         })
       end
     end
 
-    context "when connection's :inverse_of exists as the name of another connection" do
+    context "when relation's :inverse_of exists as the name of another relation" do
       it "raises an error" do
         database = described_class.new
 
-        database.define_connection(name: :contains, inverse_of: :belongs)
+        database.define_relation(name: :contains, inverse_of: :belongs)
 
         expect {
-          database.define_connection(name: :another_contains, inverse_of: :belongs)
+          database.define_relation(name: :another_contains, inverse_of: :belongs)
         }.to raise_error(::ArgumentError)
       end
     end
 
-    context "when connection already exists" do
+    context "when relation already exists" do
       it "raises an error" do
         database = described_class.new
 
-        database.define_connection(name: :contains, inverse_of: :belongs)
+        database.define_relation(name: :contains, inverse_of: :belongs)
 
         expect {
-          database.define_connection(name: :contains, inverse_of: :another_belongs)
+          database.define_relation(name: :contains, inverse_of: :another_belongs)
         }.to raise_error(::ArgumentError)
       end
     end
@@ -117,10 +117,10 @@ describe ::Holistic::Database do
   end
 
   describe "#connect" do
-    context "when connection between the nodes does not exist" do
-      it "stores the connection in both nodes" do
+    context "when relation between the nodes does not exist" do
+      it "stores the relation in both nodes" do
         database = described_class.new
-        database.define_connection(name: :children, inverse_of: :parent)
+        database.define_relation(name: :children, inverse_of: :parent)
 
         parent = database.store("parent", {})
         child = database.store("child", {})
@@ -132,10 +132,10 @@ describe ::Holistic::Database do
       end
     end
 
-    context "when connection between the nodes already exist" do
+    context "when relation between the nodes already exist" do
       it "does not duplicate data" do
         database = described_class.new
-        database.define_connection(name: :children, inverse_of: :parent)
+        database.define_relation(name: :children, inverse_of: :parent)
 
         parent = database.store("parent", {})
         child = database.store("child", {})
@@ -150,7 +150,7 @@ describe ::Holistic::Database do
       end
     end
 
-    context "when connection was not defined" do
+    context "when relation was not defined" do
       it "raises an error" do
         database = described_class.new
 
@@ -165,10 +165,10 @@ describe ::Holistic::Database do
   end
 
   describe "#disconnect" do
-    context "when connection between node exist" do
-      it "deletes the connection from both nodes" do
+    context "when relation between node exist" do
+      it "deletes the relation from both nodes" do
         database = described_class.new
-        database.define_connection(name: :children, inverse_of: :parent)
+        database.define_relation(name: :children, inverse_of: :parent)
 
         parent = database.store("parent", {})
         child = database.store("child", {})
@@ -181,10 +181,10 @@ describe ::Holistic::Database do
       end
     end
 
-    context "when connection between nodes does not exist" do
+    context "when relation between nodes does not exist" do
       it "does nothing" do
         database = described_class.new
-        database.define_connection(name: :children, inverse_of: :parent)
+        database.define_relation(name: :children, inverse_of: :parent)
 
         parent = database.store("parent", {})
         child = database.store("child", {})
@@ -197,14 +197,14 @@ describe ::Holistic::Database do
       end
     end
 
-    context "when connection was not defined before calling disconnect" do
+    context "when relation was not defined before calling disconnect" do
       it "raises an error" do
         database = described_class.new
 
         parent = database.store("parent", {})
         child = database.store("child", {})
 
-        # calling disconnect without calling `define_connection`
+        # calling disconnect without calling `define_relation`
         expect {
           parent.relation(:children).delete!(child)
         }.to raise_error(::ArgumentError)

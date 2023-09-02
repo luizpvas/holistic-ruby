@@ -10,12 +10,12 @@ class Holistic::Database::Relation < ::Set
   end
 
   def add!(related_node)
-    @node.connections[@name].add(related_node)
-    related_node.connections[@inverse_of].add(@node)
+    @node.relations[@name].add(related_node)
+    related_node.relations[@inverse_of].add(@node)
   end
 
   def delete!(related_node)
-    @node.connections[@name].delete(related_node)
-    related_node.connections[@inverse_of].delete(@node)
+    @node.relations[@name].delete(related_node)
+    related_node.relations[@inverse_of].delete(@node)
   end
 end

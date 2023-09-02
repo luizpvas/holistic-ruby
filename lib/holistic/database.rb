@@ -1,18 +1,18 @@
 # frozen_string_literal: true
 
 class Holistic::Database
-  attr_reader :records, :connections
+  attr_reader :records, :relations
 
   def initialize
     @records = ::Hash.new
-    @connections = ::Hash.new
+    @relations = ::Hash.new
   end
 
-  def define_connection(name:, inverse_of:)
-    raise ::ArgumentError if @connections.key?(name) || @connections.key?(inverse_of)
+  def define_relation(name:, inverse_of:)
+    raise ::ArgumentError if @relations.key?(name) || @relations.key?(inverse_of)
 
-    @connections[name] = { inverse_of: }
-    @connections[inverse_of] = { inverse_of: name }
+    @relations[name] = { inverse_of: }
+    @relations[inverse_of] = { inverse_of: name }
   end
 
   def store(id, node_or_attrs)
