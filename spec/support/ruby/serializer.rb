@@ -7,7 +7,7 @@ module Support
         nested = {}
         root = {scope.name => nested}
 
-        scope.children.each do |child|
+        scope.lexical_children.each do |child|
           nested.merge!(serialize_scope(child))
         end
 

@@ -13,7 +13,7 @@ module Holistic::Ruby::Scope
     )
 
     QueryChildScopesRecursively = ->(application, scope) do
-      scope.children.to_a + scope.children.flat_map { QueryChildScopesRecursively[application, _1] }
+      scope.lexical_children.to_a + scope.lexical_children.flat_map { QueryChildScopesRecursively[application, _1] }
     end
 
     QueryDependenciesRecursively = ->(application, outlined_scope, scope) do
@@ -34,7 +34,7 @@ module Holistic::Ruby::Scope
           .tap { dependencies.concat(_1) }
       end
 
-      scope.children.map(&QueryDependenciesRecursively.curry[application, outlined_scope]).flatten.concat(dependencies)
+      scope.lexical_children.map(&QueryDependenciesRecursively.curry[application, outlined_scope]).flatten.concat(dependencies)
     end
 
     def call(application:, scope:)

@@ -12,9 +12,6 @@ application = ::Holistic::Application.new(name:, root_directory:)
 
 ::Holistic::Ruby::TypeInference::SolvePendingReferences.call(application:)
 
-summary = {
-  amount_of_scopes: application.scopes.table.size,
-  amount_of_references: application.references.table.size
-}
+summary = { amount_of_records: application.database.size }
 
 puts(summary.inspect)

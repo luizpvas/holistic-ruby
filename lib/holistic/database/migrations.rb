@@ -3,7 +3,7 @@
 module Holistic::Database::Migrations
   Run = ->(database) do
     # scope parent-children relation
-    database.define_relation(name: :children, inverse_of: :parent)
+    database.define_relation(name: :lexical_children, inverse_of: :lexical_parent)
 
     # type inference conclusion
     database.define_relation(name: :referenced_scope, inverse_of: :referenced_by)

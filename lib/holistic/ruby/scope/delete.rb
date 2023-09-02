@@ -18,7 +18,7 @@ module Holistic::Ruby::Scope
       scope.relation(:scope_defined_in_file).delete!(location_to_remove.declaration.file)
 
       if scope.locations.empty?
-        scope.relation(:parent).delete!(scope.parent)
+        scope.relation(:lexical_parent).delete!(scope.lexical_parent)
 
         database.delete(fully_qualified_name)
       end

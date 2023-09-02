@@ -40,9 +40,9 @@ describe ::Holistic::Ruby::Scope::Store do
     end
 
     it "adds new children in the parent scope" do
-      expect(parent.children).to match_array([child_1, child_2])
+      expect(parent.lexical_children).to match_array([child_1, child_2])
 
-      expect(child_1.parent).to be(parent)
+      expect(child_1.lexical_parent).to be(parent)
       expect(child_1.attributes).to match({
         fully_qualified_name: "::MyChild1",
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
@@ -54,7 +54,7 @@ describe ::Holistic::Ruby::Scope::Store do
         child_1_location
       ])
 
-      expect(child_2.parent).to be(parent)
+      expect(child_2.lexical_parent).to be(parent)
       expect(child_2.attributes).to match({
         fully_qualified_name: "::MyChild2",
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,

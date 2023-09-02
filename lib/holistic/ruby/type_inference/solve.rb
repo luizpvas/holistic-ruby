@@ -35,9 +35,9 @@ module Holistic::Ruby::TypeInference
       scope = reference.located_in_scope
 
       if scope.class_method?
-        resolve_class_method(application:, scope: scope.parent, method_name: method_call_clue.method_name)
-      elsif scope.instance_method? && scope.parent.present?
-        resolve_instance_method(application:, scope: scope.parent, method_name: method_call_clue.method_name)
+        resolve_class_method(application:, scope: scope.lexical_parent, method_name: method_call_clue.method_name)
+      elsif scope.instance_method? && scope.lexical_parent.present?
+        resolve_instance_method(application:, scope: scope.lexical_parent, method_name: method_call_clue.method_name)
       end
     end
 
