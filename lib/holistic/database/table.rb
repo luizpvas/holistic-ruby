@@ -34,7 +34,7 @@ module Holistic::Database
         in Node   then node_or_attrs
         end
 
-      node.__set_database__(self)
+        node.__database__ = self
 
       @records[id] = node
     end
