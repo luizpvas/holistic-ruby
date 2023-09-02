@@ -125,9 +125,9 @@ describe ::Holistic::Database::Table do
         parent = database.store("parent", {})
         child = database.store("child", {})
 
-        database.connect(source: parent, target: child, name: :children, inverse_of: :parent)
+        parent.relation(:children).add!(child)
 
-        expect(parent.has_many(:children)).to eql([child])
+        expect(parent.relation(:children)).to match_array([child])
         expect(child.has_one(:parent)).to eql(parent)
       end
     end
@@ -141,11 +141,11 @@ describe ::Holistic::Database::Table do
         child = database.store("child", {})
 
         # calling multiple times
-        database.connect(source: parent, target: child, name: :children, inverse_of: :parent)
-        database.connect(source: parent, target: child, name: :children, inverse_of: :parent)
-        database.connect(source: parent, target: child, name: :children, inverse_of: :parent)
+        parent.relation(:children).add!(child)
+        parent.relation(:children).add!(child)
+        parent.relation(:children).add!(child)
 
-        expect(parent.has_many(:children)).to eql([child])
+        expect(parent.relation(:children)).to match_array([child])
         expect(child.has_one(:parent)).to eql(parent)
       end
     end
@@ -158,7 +158,7 @@ describe ::Holistic::Database::Table do
         child = database.store("child", {})
 
         expect {
-          database.connect(source: parent, target: child, name: :children, inverse_of: :parent)
+          parent.relation(:children).add!(child)
         }.to raise_error(::ArgumentError)
       end
     end
@@ -173,10 +173,10 @@ describe ::Holistic::Database::Table do
         parent = database.store("parent", {})
         child = database.store("child", {})
 
-        database.connect(source: parent, target: child, name: :children, inverse_of: :parent)
-        database.disconnect(source: parent, target: child, name: :children, inverse_of: :parent)
+        parent.relation(:children).add!(child)
+        parent.relation(:children).delete!(child)
 
-        expect(parent.has_many(:children)).to eql([])
+        expect(parent.relation(:children)).to match_array([])
         expect(child.has_one(:parent)).to be_nil
       end
     end
@@ -190,9 +190,9 @@ describe ::Holistic::Database::Table do
         child = database.store("child", {})
 
         # calling disconnect without calling connect first
-        database.disconnect(source: parent, target: child, name: :children, inverse_of: :parent)
+        parent.relation(:children).delete!(child)
 
-        expect(parent.has_many(:children)).to eql([])
+        expect(parent.relation(:children)).to match_array([])
         expect(child.has_one(:parent)).to be_nil
       end
     end
@@ -206,7 +206,7 @@ describe ::Holistic::Database::Table do
 
         # calling disconnect without calling `define_connection`
         expect {
-          database.disconnect(source: parent, target: child, name: :children, inverse_of: :parent)
+          parent.relation(:children).delete!(child)
         }.to raise_error(::ArgumentError)
       end
     end

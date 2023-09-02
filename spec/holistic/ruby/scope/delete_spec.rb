@@ -58,7 +58,7 @@ describe ::Holistic::Ruby::Scope::Delete do
     end
 
     it "detaches the scope its parent and deletes the node from the database" do
-      expect(parent.children).to eql([scope])
+      expect(parent.children).to match_array([scope])
 
       result = described_class.call(database: application.database, fully_qualified_name: "::MyModule", file_path: "/snippet.rb")
 
@@ -69,7 +69,7 @@ describe ::Holistic::Ruby::Scope::Delete do
     end
 
     it "disconnects the scope from the file" do
-      expect(location.declaration.file.defines_scopes).to eql([scope])
+      expect(location.declaration.file.defines_scopes).to match_array([scope])
 
       result = described_class.call(database: application.database, fully_qualified_name: "::MyModule", file_path: "/snippet.rb")
 

@@ -13,7 +13,7 @@ module Holistic::Ruby::Scope
     )
 
     QueryChildScopesRecursively = ->(application, scope) do
-      scope.children + scope.children.flat_map { QueryChildScopesRecursively[application, _1] }
+      scope.children.to_a + scope.children.flat_map { QueryChildScopesRecursively[application, _1] }
     end
 
     QueryDependenciesRecursively = ->(application, outlined_scope, scope) do

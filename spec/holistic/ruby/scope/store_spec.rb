@@ -74,10 +74,10 @@ describe ::Holistic::Ruby::Scope::Store do
 
     it "connects the scope to the file" do
       child_1_file = child_1.locations.main.declaration.file
-      expect(child_1_file.defines_scopes).to eql([child_1])
+      expect(child_1_file.defines_scopes).to match_array([child_1])
 
       child_2_file = child_2.locations.main.declaration.file
-      expect(child_2_file.defines_scopes).to eql([child_2])
+      expect(child_2_file.defines_scopes).to match_array([child_2])
     end
   end
 
@@ -117,12 +117,12 @@ describe ::Holistic::Ruby::Scope::Store do
     end
 
     it "connects the scope to the new location's file" do
-      expect(location_1.declaration.file.defines_scopes).to eql([child_1])
-      expect(location_2.declaration.file.defines_scopes).to eql([child_1])
+      expect(location_1.declaration.file.defines_scopes).to match_array([child_1])
+      expect(location_2.declaration.file.defines_scopes).to match_array([child_1])
 
       expect(
         child_1.locations.items.map { _1.declaration.file }
-      ).to eql([location_1.declaration.file, location_2.declaration.file])
+      ).to match_array([location_1.declaration.file, location_2.declaration.file])
     end
   end
 end

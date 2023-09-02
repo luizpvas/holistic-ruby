@@ -7,11 +7,15 @@ module Holistic::Database
     def initialize(id, attributes)
       @id = id
       @attributes = attributes
-      @connections = ::Hash.new { |hash, key| hash[key] = ::Set.new }
+      @connections = ::Hash.new(&method(:build_relation_hash))
     end
 
     def attr(attribute_name)
       @attributes[attribute_name]
+    end
+
+    def relation(relation_name)
+      @connections[relation_name]
     end
 
     def has_many(connection_name)
@@ -20,6 +24,16 @@ module Holistic::Database
 
     def has_one(connection_name)
       @connections[connection_name].first
+    end
+
+    private
+
+    def build_relation_hash(hash, name)
+      inverse_of = __database__.connections.dig(name, :inverse_of)
+
+      raise ::ArgumentError, "unknown relation: #{name}" if inverse_of.nil?
+
+      hash[name] = Relation.new(node: self, name:, inverse_of:)
     end
   end
 end

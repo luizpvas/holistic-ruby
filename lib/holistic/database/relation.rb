@@ -6,6 +6,8 @@ module Holistic::Database
       @node = node
       @name = name
       @inverse_of = inverse_of
+
+      super()
     end
 
     def add!(related_node)
