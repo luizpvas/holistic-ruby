@@ -3,7 +3,7 @@
 describe ::Holistic::Ruby::Scope::Location do
   concerning :Helpers do
     def build_document_location(file_path)
-      database = ::Holistic::Database::Table.new
+      database = ::Holistic::Database.new
       files = ::Holistic::Document::File::Repository.new(database:)
 
       files.build_fake_location(file_path)

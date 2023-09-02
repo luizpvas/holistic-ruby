@@ -7,7 +7,7 @@ module Holistic
     def initialize(name:, root_directory:)
       @name = name
       @root_directory = root_directory
-      @database = Database::Table.new.tap(&Database::Migrations::Run)
+      @database = Database.new.tap(&Database::Migrations::Run)
     end
 
     def extensions

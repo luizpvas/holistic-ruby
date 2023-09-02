@@ -3,7 +3,7 @@
 describe ::Holistic::Document::Location do
   concerning :Helpers do
     def build_file(file_path)
-      database = ::Holistic::Database::Table.new
+      database = ::Holistic::Database.new
 
       ::Holistic::Document::File::Store.call(database:, file_path:)
     end

@@ -3,7 +3,7 @@
 describe ::Holistic::Document::File::Repository do
   describe "#find" do
     context "when file exists" do
-      let(:database)   { ::Holistic::Database::Table.new }
+      let(:database)   { ::Holistic::Database.new }
       let(:repository) { described_class.new(database:) }
 
       it "returns the file" do
@@ -14,7 +14,7 @@ describe ::Holistic::Document::File::Repository do
     end
 
     context "when file does not exist" do
-      let(:database)   { ::Holistic::Database::Table.new }
+      let(:database)   { ::Holistic::Database.new }
       let(:repository) { described_class.new(database:) }
 
       it "returns nil" do

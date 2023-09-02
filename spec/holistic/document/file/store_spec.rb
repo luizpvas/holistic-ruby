@@ -2,7 +2,7 @@
 
 describe ::Holistic::Document::File::Store do
   context "when file does not exist in the repository" do
-    let(:database)   { ::Holistic::Database::Table.new }
+    let(:database)   { ::Holistic::Database.new }
 
     it "stores the file in the database" do
       expect(database.all.size).to be(0)
@@ -16,7 +16,7 @@ describe ::Holistic::Document::File::Store do
   end
 
   context "when file already exists in the repository" do
-    let(:database)   { ::Holistic::Database::Table.new }
+    let(:database)   { ::Holistic::Database.new }
 
     it "returns the existing file" do
       file_path = "/my_app/file.rb"

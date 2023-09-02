@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe ::Holistic::Database::Table do
+describe ::Holistic::Database do
   describe "#define_connection" do
     context "when connection does not exist" do
       it "stores the connection definition" do
