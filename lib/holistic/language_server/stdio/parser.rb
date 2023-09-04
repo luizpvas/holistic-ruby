@@ -11,7 +11,7 @@ module Holistic::LanguageServer
 
     def ingest(payload)
       payload.each_char do |char|
-        if @in_header || !completed?
+        if @in_header || !has_complete_message?
           @buffer.concat(char)
         else
           @overflow_from_previous_ingestion.concat(char)
@@ -23,7 +23,7 @@ module Holistic::LanguageServer
       end
     end
 
-    def completed?
+    def has_complete_message?
       !@in_header && @content_length == @buffer.length
     end
 

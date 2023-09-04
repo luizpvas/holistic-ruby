@@ -11,7 +11,7 @@ describe ::Holistic::LanguageServer::Stdio::Parser do
 
       parser.ingest(payload)
 
-      expect(parser.completed?).to be(true)
+      expect(parser.has_complete_message?).to be(true)
       expect(parser.message.data).to eql({ "message" => "ok" })
     end
   end
@@ -31,7 +31,7 @@ describe ::Holistic::LanguageServer::Stdio::Parser do
 
       payloads.each { parser.ingest(_1) }
 
-      expect(parser.completed?).to be(true)
+      expect(parser.has_complete_message?).to be(true)
       expect(parser.message.data).to eql({ "message" => "ok" })
     end
   end
@@ -51,7 +51,7 @@ describe ::Holistic::LanguageServer::Stdio::Parser do
       encoded_messages.each do |encoded_message|
         parser.ingest("Content-Length: #{encoded_message.length}\r\n\r\n#{encoded_message}")
 
-        expect(parser.completed?).to be(true)
+        expect(parser.has_complete_message?).to be(true)
         expect(parser.message.data).to eql(::JSON.parse(encoded_message))
 
         parser.clear
@@ -72,16 +72,16 @@ describe ::Holistic::LanguageServer::Stdio::Parser do
     it "parses both messages successfully" do
       parser.ingest(payloads[0])
 
-      expect(parser.completed?).to be(true)
+      expect(parser.has_complete_message?).to be(true)
       expect(parser.message.data).to eql({})
 
       parser.clear
 
-      expect(parser.completed?).to be(false)
+      expect(parser.has_complete_message?).to be(false)
 
       parser.ingest(payloads[1])
 
-      expect(parser.completed?).to be(true)
+      expect(parser.has_complete_message?).to be(true)
       expect(parser.message.data).to eql({})
     end
   end
@@ -94,12 +94,12 @@ describe ::Holistic::LanguageServer::Stdio::Parser do
 
       parser.ingest(payload)
 
-      expect(parser.completed?).to be(true)
+      expect(parser.has_complete_message?).to be(true)
       expect(parser.message.data).to eql({})
 
       parser.clear
 
-      expect(parser.completed?).to be(true)
+      expect(parser.has_complete_message?).to be(true)
       expect(parser.message.data).to eql({})
     end
   end
@@ -110,7 +110,7 @@ describe ::Holistic::LanguageServer::Stdio::Parser do
     it "raises an error" do
       parser.ingest("Content-Length: 3\r\n\r\nfoo")
 
-      expect(parser.completed?).to be(true)
+      expect(parser.has_complete_message?).to be(true)
       expect { parser.message }.to raise_error(::JSON::ParserError)
     end
   end

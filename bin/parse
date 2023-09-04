@@ -3,15 +3,17 @@
 
 require "bundler/setup"
 require "holistic"
+require "benchmark"
 
 root_directory = ARGV.first
 name = ::File.basename(root_directory)
 application = ::Holistic::Application.new(name:, root_directory:)
 
-::Holistic::Ruby::Parser::ParseDirectory.call(application:, directory_path: application.root_directory)
+performance_metrics = ::Holistic::Ruby::Parser::ParseDirectory.call(application:, directory_path: application.root_directory)
 
-::Holistic::Ruby::TypeInference::SolvePendingReferences.call(application:)
+total_type_inference_type = ::Benchmark.realtime { ::Holistic::Ruby::TypeInference::SolvePendingReferences.call(application:) }
 
-summary = { amount_of_records: application.database.size }
+summary = { amount_of_records: application.database.size, total_type_inference_type: }
 
 puts(summary.inspect)
+puts(performance_metrics.inspect)

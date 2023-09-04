@@ -15,7 +15,7 @@ module Holistic::LanguageServer
       server.start_input_loop do |payload|
         parser.ingest(payload)
 
-        while parser.completed?
+        while parser.has_complete_message?
           response = ::Holistic::LanguageServer::Router.dispatch(parser.message)
 
           case response
