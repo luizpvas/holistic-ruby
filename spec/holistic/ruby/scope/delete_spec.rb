@@ -26,7 +26,7 @@ describe ::Holistic::Ruby::Scope::Delete do
     let!(:scope) do
       ::Holistic::Ruby::Scope::Store.call(
         database: application.database,
-        parent: application.scopes.root,
+        lexical_parent: application.scopes.root,
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
         name: "MyModule",
         location: build_scope_location(files: application.files, file_path: "/snippet.rb")
@@ -50,7 +50,7 @@ describe ::Holistic::Ruby::Scope::Delete do
     let!(:scope) do
       ::Holistic::Ruby::Scope::Store.call(
         database: application.database,
-        parent: application.scopes.root,
+        lexical_parent: application.scopes.root,
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
         name: "MyModule",
         location:
@@ -80,7 +80,7 @@ describe ::Holistic::Ruby::Scope::Delete do
   context "when scope exists and it is defined in multiple files" do
     let(:application) { ::Holistic::Application.new(name: "fake", root_directory: ".") }
 
-    let(:parent) { application.scopes.root }
+    let(:lexical_parent) { application.scopes.root }
 
     let(:location_1) { build_scope_location(files: application.files, file_path: "/snippet_1.rb") }
     let(:location_2) { build_scope_location(files: application.files, file_path: "/snippet_2.rb") }
@@ -89,7 +89,7 @@ describe ::Holistic::Ruby::Scope::Delete do
       # first call to register
       ::Holistic::Ruby::Scope::Store.call(
         database: application.database,
-        parent:,
+        lexical_parent:,
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
         name: "MyModule",
         location: location_1
@@ -98,7 +98,7 @@ describe ::Holistic::Ruby::Scope::Delete do
       # second call to add location
       ::Holistic::Ruby::Scope::Store.call(
         database: application.database,
-        parent:,
+        lexical_parent:,
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
         name: "MyModule",
         location: location_2
@@ -124,7 +124,7 @@ describe ::Holistic::Ruby::Scope::Delete do
     it "does not detach the scope from its parent" do
       described_class.call(database: application.database, fully_qualified_name: "::MyModule", file_path: "/snippet_1.rb")
 
-      expect(parent.lexical_children).to match_array([scope])
+      expect(lexical_parent.lexical_children).to match_array([scope])
     end
   end
 end

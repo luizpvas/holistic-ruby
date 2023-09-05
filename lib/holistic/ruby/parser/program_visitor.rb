@@ -155,7 +155,7 @@ module Holistic::Ruby::Parser
         lambda_scope =
           ::Holistic::Ruby::Scope::Store.call(
             database: @application.database,
-            parent: @constant_resolution.scope,
+            lexical_parent: @constant_resolution.scope,
             kind: ::Holistic::Ruby::Scope::Kind::LAMBDA,
             name: assign_node.child_nodes.first.value,
             location:

@@ -7,6 +7,8 @@ describe ::Holistic::Ruby::TypeInference::Clue::ScopeReference do
     let(:application) do
       parse_snippet <<~RUBY
       module MyApp
+        class MyParent; end
+
         class MyClass < MyParent; end
       end
       RUBY
@@ -21,6 +23,14 @@ describe ::Holistic::Ruby::TypeInference::Clue::ScopeReference do
         nesting: ::Holistic::Ruby::Parser::NestingSyntax.new("MyParent"),
         resolution_possibilities: ["::MyApp", "::"]
       )
+    end
+
+    it "sets the relation between ancestor and descentand" do
+      parent_scope = application.scopes.find("::MyApp::MyParent")
+      child_class  = application.scopes.find("::MyApp::MyClass")
+
+      expect(parent_scope.descendants).to match_array([child_class])
+      expect(child_class.ancestors).to match_array([parent_scope])
     end
   end
 end
