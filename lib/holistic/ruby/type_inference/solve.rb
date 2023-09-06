@@ -12,22 +12,24 @@ module Holistic::Ruby::TypeInference
       if referenced_scope
         reference.relation(:referenced_scope).add!(referenced_scope)
       end
+
+      reference_to_superclass_clue = reference.clues.find { _1.is_a?(Clue::ReferenceToSuperclass) }
+      if referenced_scope.present? && reference_to_superclass_clue.present?
+        referenced_scope.relation(:descendants).add!(reference_to_superclass_clue.subclass_scope)
+      end
     end
 
     private
 
     def solve_scope_reference(application:, reference:)
-      has_scope_reference_clue =
-        reference.clues.one? && reference.clues.first.is_a?(Clue::ScopeReference)
+      reference_to_scope_clue = reference.clues.find { _1.is_a?(Clue::ScopeReference) }
 
-      return unless has_scope_reference_clue
-
-      scope_reference_clue = reference.clues.first
+      return if reference_to_scope_clue.nil?
 
       resolve_scope(
         application:,
-        nesting: scope_reference_clue.nesting,
-        resolution_possibilities: scope_reference_clue.resolution_possibilities
+        nesting: reference_to_scope_clue.nesting,
+        resolution_possibilities: reference_to_scope_clue.resolution_possibilities
       )
     end
 

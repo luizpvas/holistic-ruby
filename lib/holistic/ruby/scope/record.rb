@@ -9,7 +9,7 @@ module Holistic::Ruby::Scope
 
     def lexical_parent   = has_one(:lexical_parent)
     def lexical_children = has_many(:lexical_children)
-    def ancestors        = has_many(:ancetors)
+    def ancestors        = has_many(:ancestors)
     def descendants      = has_many(:descendants)
     def referenced_by    = has_many(:referenced_by)
 

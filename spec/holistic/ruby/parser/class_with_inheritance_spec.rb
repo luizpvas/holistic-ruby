@@ -16,10 +16,14 @@ describe ::Holistic::Ruby::Parser do
     it "parses the code" do
       reference = application.references.find_reference_to("MyParentClass")
 
-      expect(reference.clues.size).to be(1)
-      expect(reference.clues.first).to have_attributes(
+      expect(reference.clues.size).to be(2)
+      expect(reference.clues[0]).to have_attributes(
         itself: be_a(::Holistic::Ruby::TypeInference::Clue::ScopeReference),
         resolution_possibilities: ["::MyModule", "::"]
+      )
+      expect(reference.clues[1]).to have_attributes(
+        itself: be_a(::Holistic::Ruby::TypeInference::Clue::ReferenceToSuperclass),
+        subclass_scope: have_attributes(fully_qualified_name: "::MyModule::MySubClass")
       )
 
       expect(serialize_scope(application.scopes.root)).to eql({
