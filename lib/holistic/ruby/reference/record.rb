@@ -8,5 +8,9 @@ module Holistic::Ruby::Reference
 
     def referenced_scope = has_one(:referenced_scope)
     def located_in_scope = has_one(:located_in_scope)
+
+    def find_clue(clue_kind)
+      clues.find { |clue| clue.is_a?(clue_kind) }
+    end
   end
 end

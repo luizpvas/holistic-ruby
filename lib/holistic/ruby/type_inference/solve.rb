@@ -11,18 +11,19 @@ module Holistic::Ruby::TypeInference
 
       if referenced_scope
         reference.relation(:referenced_scope).add!(referenced_scope)
-      end
 
-      reference_to_superclass_clue = reference.clues.find { _1.is_a?(Clue::ReferenceToSuperclass) }
-      if referenced_scope.present? && reference_to_superclass_clue.present?
-        referenced_scope.relation(:descendants).add!(reference_to_superclass_clue.subclass_scope)
+        # NOTE: should this be an event that is handled by stdlib? I guess inheritance support with dedicated syntax for that
+        # is part of the language core, so it makes sense being here. Let me think about this for a bit.
+        reference.find_clue(Clue::ReferenceToSuperclass)&.then do |reference_to_superclass_clue|
+          referenced_scope.relation(:descendants).add!(reference_to_superclass_clue.subclass_scope)
+        end
       end
     end
 
     private
 
     def solve_scope_reference(application:, reference:)
-      reference_to_scope_clue = reference.clues.find { _1.is_a?(Clue::ScopeReference) }
+      reference_to_scope_clue = reference.find_clue(Clue::ScopeReference)
 
       return if reference_to_scope_clue.nil?
 
