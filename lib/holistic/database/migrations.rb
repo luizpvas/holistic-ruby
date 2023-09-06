@@ -2,8 +2,10 @@
 
 module Holistic::Database::Migrations
   Run = ->(database) do
-    # scope parent-children relation
+    # scope lexical parent-children relation
     database.define_relation(name: :lexical_children, inverse_of: :lexical_parent)
+
+    # scope inheritance and mixins
     database.define_relation(name: :ancestors, inverse_of: :descendants)
 
     # type inference conclusion
