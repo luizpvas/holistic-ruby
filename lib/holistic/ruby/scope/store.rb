@@ -19,7 +19,7 @@ module Holistic::Ruby::Scope
 
       scope.relation(:lexical_parent).add!(lexical_parent)
       scope.relation(:scope_defined_in_file).add!(location.declaration.file)
-      
+
       scope
     end
 
