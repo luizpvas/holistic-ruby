@@ -4,7 +4,7 @@ module Holistic::Ruby::Scope
   module Store
     extend self
 
-    def call(database:, lexical_parent:, kind:, name:, location:, ancestor: nil)
+    def call(database:, lexical_parent:, kind:, name:, location:)
       fully_qualified_name = build_fully_qualified_name(lexical_parent:, kind:, name:)
 
       scope = database.find(fully_qualified_name)
@@ -19,7 +19,6 @@ module Holistic::Ruby::Scope
 
       scope.relation(:lexical_parent).add!(lexical_parent)
       scope.relation(:scope_defined_in_file).add!(location.declaration.file)
-      scope.relation(:ancestors).add!(ancestor) if ancestor.present?
       
       scope
     end
