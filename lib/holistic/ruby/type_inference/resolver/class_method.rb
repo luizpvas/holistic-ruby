@@ -3,19 +3,7 @@
 module Holistic::Ruby::TypeInference::Resolver::ClassMethod
   extend self
 
-  def resolve(application:, scope:, method_name:)
-    method_fully_qualified_name = "#{scope.fully_qualified_name}.#{method_name}"
-
-    method_scope = application.scopes.find(method_fully_qualified_name)
-
-    return method_scope if method_scope.present?
-
-    scope.ancestors.each do |ancestor|
-      method_scope = resolve(application:, scope: ancestor, method_name:)
-
-      return method_scope if method_scope.present?
-    end
-
-    nil
+  def resolve(scope:, method_name:)
+    ::Holistic::Ruby::Scope::ListClassMethods.call(scope:).find { _1.name == method_name }
   end
 end

@@ -38,9 +38,9 @@ module Holistic::Ruby::TypeInference
       scope = reference.located_in_scope
 
       if scope.class_method?
-        Resolver::ClassMethod.resolve(application:, scope: scope.lexical_parent, method_name: method_call_clue.method_name)
+        Resolver::ClassMethod.resolve(scope: scope.lexical_parent, method_name: method_call_clue.method_name)
       elsif scope.instance_method? && scope.lexical_parent.present?
-        Resolver::InstanceMethod.resolve(application:, scope: scope.lexical_parent, method_name: method_call_clue.method_name)
+        Resolver::InstanceMethod.resolve(scope: scope.lexical_parent, method_name: method_call_clue.method_name)
       end
     end
 
@@ -55,7 +55,7 @@ module Holistic::Ruby::TypeInference
 
       referenced_method = application.extensions.dispatch(:resolve_method_call_known_scope, { reference:, referenced_scope:, method_call_clue: })
 
-      referenced_method || Resolver::ClassMethod.resolve(application:, scope: referenced_scope, method_name: method_call_clue.method_name)
+      referenced_method || Resolver::ClassMethod.resolve(scope: referenced_scope, method_name: method_call_clue.method_name)
     end
 
     def solve_method_call(application:, reference:)
