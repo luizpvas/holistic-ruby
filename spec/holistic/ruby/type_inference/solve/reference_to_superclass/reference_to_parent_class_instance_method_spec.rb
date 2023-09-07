@@ -19,7 +19,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
       RUBY
     end
 
-    it "solves the method call reference" do
+    it "resolves the method call reference" do
       parent_method_call = application.references.find_by_code_content("parent_method")
 
       expect(parent_method_call.referenced_scope.fully_qualified_name).to eql("::Parent#parent_method")
@@ -44,7 +44,7 @@ describe ::Holistic::Ruby::TypeInference::Solve do
       RUBY
     end
 
-    it "solves the method call reference" do
+    it "resolves the method call reference" do
       parent_method_call = application.references.find_by_code_content("grandparent_method")
 
       expect(parent_method_call.referenced_scope.fully_qualified_name).to eql("::Grandparent#grandparent_method")
