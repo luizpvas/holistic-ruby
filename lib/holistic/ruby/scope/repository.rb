@@ -34,11 +34,15 @@ module Holistic::Ruby::Scope
 
       return nil if file.nil?
 
-      matching_scopes = file.defines_scopes.filter do |scope|
-        scope.locations.any? { _1.body.contains?(cursor) }
+      matching_scopes = file.defines_scopes.filter_map do |scope|
+        scope.locations.find { |location| location.body.contains?(cursor) }&.then do |location|
+          { location:, scope: }
+        end
       end
 
-      matching_scopes.last
+      inner_most_matching_scope = matching_scopes.sort_by { |match| match[:location].declaration.start_line }.last
+
+      inner_most_matching_scope&.then { _1[:scope] }
     end
 
     def list_scopes_in_file(file_path)

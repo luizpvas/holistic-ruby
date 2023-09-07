@@ -9,7 +9,7 @@ describe ::Holistic::Ruby::Scope::Repository do
     end
   end
 
-  describe "#find_inner_most_scope_by_cursor" do
+  context "when finding scpoe in modules" do
     let(:application) do
       parse_snippet <<~RUBY
       a = 1
@@ -53,6 +53,34 @@ describe ::Holistic::Ruby::Scope::Repository do
         scope = application.scopes.find_inner_most_scope_by_cursor(cursor)
 
         expect(scope.fully_qualified_name).to eql("::MyApplication::MyModule#foo")
+      end
+    end
+  end
+
+  context "when finding scopes in classes" do
+    let(:application) do
+      parse_snippet <<~RUBY
+      module MyApplication
+        class MyClass
+          def foo
+            a = 1
+          end
+
+          def bar
+            b = 2
+          end
+        end
+      end
+      RUBY
+    end
+
+    context "when cursor is inside an instance method" do
+      it "returns the method scope" do
+        cursor = build_cursor(3, 0)
+
+        scope = application.scopes.find_inner_most_scope_by_cursor(cursor)
+
+        expect(scope.fully_qualified_name).to eql("::MyApplication::MyClass#foo")
       end
     end
   end

@@ -12,5 +12,9 @@ module Holistic::Ruby::Reference
     def find_clue(clue_kind)
       clues.find { |clue| clue.is_a?(clue_kind) }
     end
+
+    def inspect
+      "<#{self.class.name} clues=[#{clues}] referenced_scope=#{referenced_scope&.fully_qualified_name}>"
+    end
   end
 end

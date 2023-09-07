@@ -8,8 +8,12 @@ module Holistic::LanguageServer
       cursor = build_cursor_from_request_params(request)
 
       document = request.application.unsaved_documents.find(cursor.file_path)
- 
-      return request.respond_with(nil) if document.nil?
+
+      if document.nil?
+        ::Holistic.logger.info("aborting completion because document was not found for #{cursor.file_path}")
+
+        return request.respond_with(nil) 
+      end
 
       if document.has_unsaved_changes?
         ::Holistic::Ruby::Parser::LiveEditing::ProcessFileChanged.call(
@@ -21,9 +25,15 @@ module Holistic::LanguageServer
 
       code = document.expand_code(cursor)
 
-      return request.respond_with(nil) if code.blank?
+      if code.blank?
+        ::Holistic.logger.info("aborting completion because code under cursor was blank: #{cursor.inspect}")
+
+        return request.respond_with(nil)
+      end
 
       scope = request.application.scopes.find_inner_most_scope_by_cursor(cursor) || request.application.scopes.root
+
+      ::Holistic.logger.info("scope under cursor is: #{scope.fully_qualified_name}")
 
       suggestions = ::Holistic::Ruby::Autocompletion::Suggest.call(code:, scope:)
 

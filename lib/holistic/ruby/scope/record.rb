@@ -18,5 +18,9 @@ module Holistic::Ruby::Scope
     def class_method?    = kind == Kind::CLASS_METHOD
     def instance_method? = kind == Kind::INSTANCE_METHOD
     def method?          = class_method? || instance_method?
+
+    def inspect
+      "<#{self.class.name} kind=#{kind} fully_qualified_name=#{fully_qualified_name}>"
+    end
   end
 end
