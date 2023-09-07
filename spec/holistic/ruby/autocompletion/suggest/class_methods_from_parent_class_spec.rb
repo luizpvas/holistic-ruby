@@ -43,6 +43,7 @@ describe ::Holistic::Ruby::Autocompletion::Suggest do
   it "suggests methods from parent from the fully qualified child scope name" do
     assert_suggestions("::MyApp::Child.", [
       { code: "child_method", kind: :class_method },
+      { code: "new", kind: :class_method },
       { code: "parent_method", kind: :class_method }
     ])
   end
