@@ -11,23 +11,26 @@ module Holistic::Ruby::TypeInference
 
       if referenced_scope
         reference.relation(:referenced_scope).add!(referenced_scope)
+
+        # NOTE: should this be an event that is handled by stdlib? I guess inheritance support with dedicated syntax
+        # is part of the language core, so it makes sense being here. Let me think about this for a bit.
+        reference.find_clue(Clue::ReferenceToSuperclass)&.then do |reference_to_superclass_clue|
+          referenced_scope.relation(:descendants).add!(reference_to_superclass_clue.subclass_scope)
+        end
       end
     end
 
     private
 
     def solve_scope_reference(application:, reference:)
-      has_scope_reference_clue =
-        reference.clues.one? && reference.clues.first.is_a?(Clue::ScopeReference)
+      reference_to_scope_clue = reference.find_clue(Clue::ScopeReference)
 
-      return unless has_scope_reference_clue
+      return if reference_to_scope_clue.nil?
 
-      scope_reference_clue = reference.clues.first
-
-      resolve_scope(
+      Resolver::Scope.resolve(
         application:,
-        nesting: scope_reference_clue.nesting,
-        resolution_possibilities: scope_reference_clue.resolution_possibilities
+        nesting: reference_to_scope_clue.nesting,
+        resolution_possibilities: reference_to_scope_clue.resolution_possibilities
       )
     end
 
@@ -35,14 +38,14 @@ module Holistic::Ruby::TypeInference
       scope = reference.located_in_scope
 
       if scope.class_method?
-        resolve_class_method(application:, scope: scope.lexical_parent, method_name: method_call_clue.method_name)
+        Resolver::ClassMethod.resolve(scope: scope.lexical_parent, method_name: method_call_clue.method_name)
       elsif scope.instance_method? && scope.lexical_parent.present?
-        resolve_instance_method(application:, scope: scope.lexical_parent, method_name: method_call_clue.method_name)
+        Resolver::InstanceMethod.resolve(scope: scope.lexical_parent, method_name: method_call_clue.method_name)
       end
     end
 
     SolveMethodCallInSpecifiedScope = ->(application:, reference:, method_call_clue:) do
-      referenced_scope = resolve_scope(
+      referenced_scope = Resolver::Scope.resolve(
         application:,
         nesting: method_call_clue.nesting,
         resolution_possibilities: method_call_clue.resolution_possibilities
@@ -52,14 +55,7 @@ module Holistic::Ruby::TypeInference
 
       referenced_method = application.extensions.dispatch(:resolve_method_call_known_scope, { reference:, referenced_scope:, method_call_clue: })
 
-      referenced_method || resolve_class_method(application:, scope: referenced_scope, method_name: method_call_clue.method_name)
-    end
-
-    SolveMethodCallInLocalVariable = ->(application:, reference:, method_call_clue:) do
-      # local_variable_name = method_call_clue.nesting.to_s
-      # referenced_scope = guess_scope_for_local_variable(scope: reference.scope, name: local_variable_name)
-
-      nil
+      referenced_method || Resolver::ClassMethod.resolve(scope: referenced_scope, method_name: method_call_clue.method_name)
     end
 
     def solve_method_call(application:, reference:)
@@ -74,39 +70,8 @@ module Holistic::Ruby::TypeInference
       elsif method_call_clue.nesting.constant?
         SolveMethodCallInSpecifiedScope.call(application:, reference:, method_call_clue:)
       else
-        SolveMethodCallInLocalVariable.call(application:, reference:, method_call_clue:)
+        nil # TODO
       end
-    end
-
-    def resolve_scope(application:, nesting:, resolution_possibilities:)
-      resolution_possibilities = ["::"] if nesting.root_scope_resolution?
-
-      resolution_possibilities.each do |resolution_candidate|
-        fully_qualified_scope_name =
-          if resolution_candidate == "::"
-            "::#{nesting.to_s}"
-          else
-            "#{resolution_candidate}::#{nesting.to_s}"
-          end
-
-        scope = application.scopes.find(fully_qualified_scope_name)
-
-        return scope if scope.present?
-      end
-
-      nil
-    end
-
-    def resolve_instance_method(application:, scope:, method_name:)
-      method_fully_qualified_name = "#{scope.fully_qualified_name}##{method_name}"
-
-      application.scopes.find(method_fully_qualified_name)
-    end
-
-    def resolve_class_method(application:, scope:, method_name:)
-      method_fully_qualified_name = "#{scope.fully_qualified_name}.#{method_name}"
-
-      application.scopes.find(method_fully_qualified_name)
     end
   end
 end

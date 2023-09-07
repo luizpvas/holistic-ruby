@@ -27,7 +27,7 @@ module Holistic::Ruby::Parser
         @scope =
           ::Holistic::Ruby::Scope::Store.call(
             database: @scope_repository.database,
-            parent: @scope,
+            lexical_parent: @scope,
             kind: ::Holistic::Ruby::Scope::Kind::MODULE,
             name:,
             location:
@@ -54,7 +54,7 @@ module Holistic::Ruby::Parser
         @scope =
           ::Holistic::Ruby::Scope::Store.call(
             database: @scope_repository.database,
-            parent: @scope,
+            lexical_parent: @scope,
             kind: ::Holistic::Ruby::Scope::Kind::CLASS,
             name:,
             location:
@@ -81,7 +81,7 @@ module Holistic::Ruby::Parser
         @scope =
           ::Holistic::Ruby::Scope::Store.call(
             database: @scope_repository.database,
-            parent: @scope,
+            lexical_parent: @scope,
             kind:,
             name:,
             location:

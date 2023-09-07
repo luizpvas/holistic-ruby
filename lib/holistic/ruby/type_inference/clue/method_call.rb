@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Holistic::Ruby::TypeInference::Clue
+  # TODO: Rename to ReferenceToMethod
   MethodCall = ::Data.define(
     :nesting,
     :method_name,

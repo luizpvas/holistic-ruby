@@ -27,15 +27,30 @@ module Holistic::Ruby::Parser
       def visit_class(node)
         declaration_node, superclass_node, body_statements_node = node.child_nodes
 
-        if superclass_node
-          register_reference(nesting: NestingSyntax.build(superclass_node), location: build_location(superclass_node))
-        end
-
         nesting = NestingSyntax.build(declaration_node)
         location = build_scope_location(declaration_node:, body_node: node)
 
         class_scope = @constant_resolution.register_child_class(nesting:, location:) do
           visit(body_statements_node)
+        end
+
+        if superclass_node
+          reference_to_scope_clue = ::Holistic::Ruby::TypeInference::Clue::ScopeReference.new(
+            nesting: NestingSyntax.build(superclass_node),
+            resolution_possibilities: @constant_resolution.current
+          )
+
+          reference_to_superclass_clue = ::Holistic::Ruby::TypeInference::Clue::ReferenceToSuperclass.new(
+            subclass_scope: class_scope
+          )
+
+          ::Holistic::Ruby::Reference::Store.call(
+            database: @application.database,
+            processing_queue: @application.type_inference_processing_queue,
+            scope: @constant_resolution.scope,
+            clues: [reference_to_scope_clue, reference_to_superclass_clue],
+            location: build_location(superclass_node)
+          )
         end
 
         @application.extensions.dispatch(:class_scope_registered, { class_scope:, location: })
@@ -48,6 +63,27 @@ module Holistic::Ruby::Parser
           is_extending_self = args_node.child_nodes.size == 1 && NestingSyntax.build(args_node.child_nodes.first).to_s == "self"
 
           @constant_resolution.change_method_registration_mode_to_class_methods! if is_extending_self
+        end
+
+        if command_name_node.value == "include"
+          superclass_nesting_syntax = NestingSyntax.build(args_node.child_nodes.first)
+
+          reference_to_scope_clue = ::Holistic::Ruby::TypeInference::Clue::ScopeReference.new(
+            nesting: superclass_nesting_syntax,
+            resolution_possibilities: @constant_resolution.current
+          )
+
+          reference_to_superclass_clue = ::Holistic::Ruby::TypeInference::Clue::ReferenceToSuperclass.new(
+            subclass_scope: @constant_resolution.scope
+          )
+
+          ::Holistic::Ruby::Reference::Store.call(
+            database: @application.database,
+            processing_queue: @application.type_inference_processing_queue,
+            scope: @constant_resolution.scope,
+            clues: [reference_to_scope_clue, reference_to_superclass_clue],
+            location: build_location(node)
+          )
         end
 
         visit(args_node)
@@ -155,7 +191,7 @@ module Holistic::Ruby::Parser
         lambda_scope =
           ::Holistic::Ruby::Scope::Store.call(
             database: @application.database,
-            parent: @constant_resolution.scope,
+            lexical_parent: @constant_resolution.scope,
             kind: ::Holistic::Ruby::Scope::Kind::LAMBDA,
             name: assign_node.child_nodes.first.value,
             location:

@@ -2,8 +2,8 @@
 
 describe ::Holistic::Ruby::Scope::Store do
   context "when a scope with the same name DOES NOT EXIST in the parent scope" do
-    let(:application) { ::Holistic::Application.new(name: "fake", root_directory: ".") }
-    let(:parent)      { application.scopes.root }
+    let(:application)    { ::Holistic::Application.new(name: "fake", root_directory: ".") }
+    let(:lexical_parent) { application.scopes.root }
 
     let(:child_1_location) do
       ::Holistic::Ruby::Scope::Location.new(
@@ -15,7 +15,7 @@ describe ::Holistic::Ruby::Scope::Store do
     let!(:child_1) do
       described_class.call(
         database: application.database,
-        parent:,
+        lexical_parent:,
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
         name: "MyChild1",
         location: child_1_location
@@ -32,7 +32,7 @@ describe ::Holistic::Ruby::Scope::Store do
     let!(:child_2) do
       described_class.call(
         database: application.database,
-        parent:,
+        lexical_parent:,
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
         name: "MyChild2",
         location: child_2_location
@@ -40,9 +40,9 @@ describe ::Holistic::Ruby::Scope::Store do
     end
 
     it "adds new children in the parent scope" do
-      expect(parent.lexical_children).to match_array([child_1, child_2])
+      expect(lexical_parent.lexical_children).to match_array([child_1, child_2])
 
-      expect(child_1.lexical_parent).to be(parent)
+      expect(child_1.lexical_parent).to be(lexical_parent)
       expect(child_1.attributes).to match({
         fully_qualified_name: "::MyChild1",
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
@@ -54,7 +54,7 @@ describe ::Holistic::Ruby::Scope::Store do
         child_1_location
       ])
 
-      expect(child_2.lexical_parent).to be(parent)
+      expect(child_2.lexical_parent).to be(lexical_parent)
       expect(child_2.attributes).to match({
         fully_qualified_name: "::MyChild2",
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
@@ -82,8 +82,8 @@ describe ::Holistic::Ruby::Scope::Store do
   end
 
   context "when a scope with the same name EXISTS in the parent scope" do
-    let(:application) { ::Holistic::Application.new(name: "fake", root_directory: ".") }
-    let(:parent)      { application.scopes.root }
+    let(:application)    { ::Holistic::Application.new(name: "fake", root_directory: ".") }
+    let(:lexical_parent) { application.scopes.root }
 
     let(:location_1) { ::Holistic::Ruby::Scope::Location.new(declaration: application.files.build_fake_location("app_1.rb"), body: application.files.build_fake_location("app_1.rb")) }
     let(:location_2) { ::Holistic::Ruby::Scope::Location.new(declaration: application.files.build_fake_location("app_2.rb"), body: application.files.build_fake_location("app_2.rb")) }
@@ -91,7 +91,7 @@ describe ::Holistic::Ruby::Scope::Store do
     let!(:child_1) do
       described_class.call(
         database: application.database,
-        parent:,
+        lexical_parent:,
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
         name: "MyChild",
         location: location_1
@@ -101,7 +101,7 @@ describe ::Holistic::Ruby::Scope::Store do
     let!(:child_2) do
       described_class.call(
         database: application.database,
-        parent:,
+        lexical_parent:,
         kind: ::Holistic::Ruby::Scope::Kind::MODULE,
         name: "MyChild",
         location: location_2
