@@ -12,5 +12,9 @@ module Holistic::Ruby::Reference
     def find_clue(clue_kind)
       clues.find { |clue| clue.is_a?(clue_kind) }
     end
+
+    def has_clue?(clue_kind)
+      find_clue(clue_kind).present?
+    end
   end
 end
