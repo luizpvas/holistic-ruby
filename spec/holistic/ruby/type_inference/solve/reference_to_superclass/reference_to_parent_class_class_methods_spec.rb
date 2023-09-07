@@ -1,0 +1,53 @@
+# frozen_string_literal: true
+
+describe ::Holistic::Ruby::TypeInference::Solve do
+  include ::Support::SnippetParser
+
+  context "when calling methods defined in the parent class from the child class" do
+    let(:application) do
+      parse_snippet <<~RUBY
+      class Parent
+        def self.parent_method
+        end
+      end
+
+      class Child < Parent
+        def self.child_method
+          parent_method
+        end
+      end
+      RUBY
+    end
+
+    it "solves the method call reference" do
+      parent_method_call = application.references.find_by_code_content("parent_method")
+
+      expect(parent_method_call.referenced_scope.fully_qualified_name).to eql("::Parent.parent_method")
+    end
+  end
+
+  context "when calling methods defined in the grandparent class" do
+    let(:application) do
+      parse_snippet <<~RUBY
+      class Grandparent
+        def self.grandparent_method
+        end
+      end
+
+      class Parent < Grandparent; end
+
+      class Child < Parent
+        def self.child_method
+          grandparent_method
+        end
+      end
+      RUBY
+    end
+
+    it "solves the method call reference" do
+      parent_method_call = application.references.find_by_code_content("grandparent_method")
+
+      expect(parent_method_call.referenced_scope.fully_qualified_name).to eql("::Grandparent.grandparent_method")
+    end
+  end
+end
