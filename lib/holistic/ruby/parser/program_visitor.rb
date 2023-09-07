@@ -65,6 +65,27 @@ module Holistic::Ruby::Parser
           @constant_resolution.change_method_registration_mode_to_class_methods! if is_extending_self
         end
 
+        if command_name_node.value == "include"
+          superclass_nesting_syntax = NestingSyntax.build(args_node.child_nodes.first)
+
+          reference_to_scope_clue = ::Holistic::Ruby::TypeInference::Clue::ScopeReference.new(
+            nesting: superclass_nesting_syntax,
+            resolution_possibilities: @constant_resolution.current
+          )
+
+          reference_to_superclass_clue = ::Holistic::Ruby::TypeInference::Clue::ReferenceToSuperclass.new(
+            subclass_scope: @constant_resolution.scope
+          )
+
+          ::Holistic::Ruby::Reference::Store.call(
+            database: @application.database,
+            processing_queue: @application.type_inference_processing_queue,
+            scope: @constant_resolution.scope,
+            clues: [reference_to_scope_clue, reference_to_superclass_clue],
+            location: build_location(node)
+          )
+        end
+
         visit(args_node)
       end
 
