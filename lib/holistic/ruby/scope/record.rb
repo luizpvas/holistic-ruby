@@ -18,5 +18,22 @@ module Holistic::Ruby::Scope
     def class_method?    = kind == Kind::CLASS_METHOD
     def instance_method? = kind == Kind::INSTANCE_METHOD
     def method?          = class_method? || instance_method?
+
+    def sibling_methods
+      case kind
+      when Kind::CLASS_METHOD
+        query_sibling_class_methods = ->(scope) do
+          class_methods = scope.lexical_children.filter(&:class_method?)
+
+          scope.ancestors.flat_map { |ancestor| query_sibling_class_methods.(ancestor) }.concat(class_methods)
+        end
+
+        query_sibling_class_methods.(lexical_parent)
+      when Kind::INSTANCE_METHOD
+        nil
+      else
+        raise "unexpected scope kind"
+      end
+    end
   end
 end

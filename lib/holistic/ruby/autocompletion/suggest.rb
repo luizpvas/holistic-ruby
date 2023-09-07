@@ -30,26 +30,36 @@ module Holistic::Ruby::Autocompletion
 
     private
 
+    # TODO: is this repeated in some other part of the code? perhaps during type inference
+    FetchClassMethods = ->(scope) do
+      class_methods = scope.lexical_children.filter(&:class_method?)
+
+      class_methods + scope.ancestors.flat_map { |ancestor| FetchClassMethods.(ancestor) }
+    end
+
+    # TODO: is this repeated in some other part of the code? perhaps during type inference
+    FetchInstanceMethods = ->(scope) do
+      instance_methods = scope.lexical_children.filter(&:instance_method?)
+
+      instance_methods + scope.ancestors.flat_map { |ancestor| FetchInstanceMethods.(ancestor) }
+    end
+
     def suggest_local_methods_from_current_scope(code:, scope:)
       suggestions = []
 
-      method_to_autocomplete = code
-
-      if scope.instance_method?
-        sibling_methods = scope.lexical_parent.lexical_children.filter { _1.instance_method? }
-
-        sibling_methods.each do |method_scope|
-          if method_scope.name.start_with?(method_to_autocomplete)
-            suggestions << Suggestion.new(code: method_scope.name, kind: method_scope.kind)
-          end
+      sibling_methods =
+        case scope.kind
+        when ::Holistic::Ruby::Scope::Kind::CLASS_METHOD
+          FetchClassMethods.(method_scope.lexical_parent)
+        when ::Holistic::Ruby::Scope::Kind::INSTANCE_METHOD
+          FetchInstanceMethods.(method_scope.lexical_parent)
+        else
+          raise "unexpected scope kind: #{method_scope.kind}"
         end
-      elsif scope.class_method?
-        sibling_methods = scope.lexical_parent.lexical_children.filter { _1.class_method? }
 
-        sibling_methods.each do |method_scope|
-          if method_scope.name.start_with?(method_to_autocomplete)
-            suggestions << Suggestion.new(code: method_scope.name, kind: method_scope.kind)
-          end
+      sibling_methods.each do |method_scope|
+        if method_scope.name.start_with?(code)
+          suggestions << Suggestion.new(code: method_scope.name, kind: method_scope.kind)
         end
       end
 
@@ -69,7 +79,7 @@ module Holistic::Ruby::Autocompletion
         return suggestions if scope.nil?
       end
 
-      class_methods = scope.lexical_children.filter { _1.class_method? }
+      class_methods = FetchClassMethods.(scope)
 
       class_methods.each do |method_scope|
         if method_scope.name.start_with?(method_to_autocomplete)
