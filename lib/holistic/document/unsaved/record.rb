@@ -54,6 +54,14 @@ module Holistic::Document
       line = 0
       column = 0
 
+      # first edition to the document is special because we can't iterate over the content to find the insert position.
+      # there is nothing to iterate over.
+      if @content.empty? && change.insertion?
+        @content = change.text
+
+        return
+      end
+
       @content.each_char.with_index do |char, index|
         if change.insertion? && change.starts_on?(line, column)
           content.insert(index, change.text)
@@ -73,6 +81,11 @@ module Holistic::Document
         else
           column += 1
         end
+      end
+
+      # off-by-one error to insert at the of the document
+      if change.insertion? && change.starts_on?(line, column)
+        content.insert(@content.length, change.text)
       end
     end
   end
