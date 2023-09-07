@@ -27,7 +27,7 @@ module Holistic::Ruby::TypeInference
 
       return if reference_to_scope_clue.nil?
 
-      Solver::Scope.solve(
+      Resolver::Scope.resolve(
         application:,
         nesting: reference_to_scope_clue.nesting,
         resolution_possibilities: reference_to_scope_clue.resolution_possibilities
@@ -38,14 +38,14 @@ module Holistic::Ruby::TypeInference
       scope = reference.located_in_scope
 
       if scope.class_method?
-        Solver::ClassMethod.solve(application:, scope: scope.lexical_parent, method_name: method_call_clue.method_name)
+        Resolver::ClassMethod.resolve(application:, scope: scope.lexical_parent, method_name: method_call_clue.method_name)
       elsif scope.instance_method? && scope.lexical_parent.present?
-        Solver::InstanceMethod.solve(application:, scope: scope.lexical_parent, method_name: method_call_clue.method_name)
+        Resolver::InstanceMethod.resolve(application:, scope: scope.lexical_parent, method_name: method_call_clue.method_name)
       end
     end
 
     SolveMethodCallInSpecifiedScope = ->(application:, reference:, method_call_clue:) do
-      referenced_scope = Solver::Scope.solve(
+      referenced_scope = Resolver::Scope.resolve(
         application:,
         nesting: method_call_clue.nesting,
         resolution_possibilities: method_call_clue.resolution_possibilities
@@ -55,7 +55,7 @@ module Holistic::Ruby::TypeInference
 
       referenced_method = application.extensions.dispatch(:resolve_method_call_known_scope, { reference:, referenced_scope:, method_call_clue: })
 
-      referenced_method || Solver::ClassMethod.solve(application:, scope: referenced_scope, method_name: method_call_clue.method_name)
+      referenced_method || Resolver::ClassMethod.resolve(application:, scope: referenced_scope, method_name: method_call_clue.method_name)
     end
 
     def solve_method_call(application:, reference:)

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-module Holistic::Ruby::TypeInference::Solver::Scope
+module Holistic::Ruby::TypeInference::Resolver::Scope
   extend self
 
-  def solve(application:, nesting:, resolution_possibilities:)
+  def resolve(application:, nesting:, resolution_possibilities:)
     resolution_possibilities = ["::"] if nesting.root_scope_resolution?
 
     resolution_possibilities.each do |resolution_candidate|
