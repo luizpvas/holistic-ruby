@@ -24,8 +24,19 @@
 ## Features
 
 * Go to definition.
+
+
+https://github.com/luizpvas/holistic-ruby/assets/4276593/52865caa-1bc4-4a96-809e-cb92cc7354ba
+
+
 * Find references.
+
+https://github.com/luizpvas/holistic-ruby/assets/4276593/3d144e7f-ea75-4111-817a-1016e8475bb5
+
 * Autocompletion for namespaces and methods.
+
+https://github.com/luizpvas/holistic-ruby/assets/4276593/f575d401-097d-4830-a10c-96fed50893f5
+
 * (WIP) Outline dependencies.
 * (WIP) Syntax highlighting boundaries based on packwerk.
 * (WIP) Glossary.
