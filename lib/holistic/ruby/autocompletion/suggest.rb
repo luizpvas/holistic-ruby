@@ -39,12 +39,10 @@ module Holistic::Ruby::Autocompletion
           ::Holistic::Ruby::Scope::ListClassMethods.call(scope: scope.lexical_parent)
         when ::Holistic::Ruby::Scope::Kind::INSTANCE_METHOD
           ::Holistic::Ruby::Scope::ListInstanceMethods.call(scope: scope.lexical_parent)
-        when ::Holistic::Ruby::Scope::Kind::ROOT
+        else
           # TODO: global functions?
 
           return []
-        else
-          raise "unexpected scope kind: #{scope.kind}"
         end
 
       sibling_methods.each do |method_scope|
