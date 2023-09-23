@@ -37,7 +37,10 @@ module Holistic::Document
     end
 
     def mark_as_saved!
-      @original_content = @content.dup
+      ::File.read(path).tap do |content_from_disk|
+        @original_content = content_from_disk
+        @content = content_from_disk
+      end
     end
 
     def restore_original_content!

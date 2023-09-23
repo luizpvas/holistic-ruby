@@ -13,6 +13,7 @@ describe ::Holistic::Document::Unsaved::Record do
 
       expect(document.has_unsaved_changes?).to be(true)
 
+      expect(::File).to receive(:read).and_return("acontent")
       document.mark_as_saved!
 
       expect(document.has_unsaved_changes?).to be(false)

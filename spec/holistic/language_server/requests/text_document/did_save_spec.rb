@@ -20,13 +20,18 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::DidSave do
   end
 
   context "when document exists in the :unsaved_documents collection" do
-    before(:each) do
+    let!(:unsaved_document) do
       application.unsaved_documents.add(path: file_path, content: ::String.new("content"))
     end
 
-    it "returns an empty response" do
-      request = ::Holistic::LanguageServer::Request.new(application:, message:)
+    it "marks the document as saved" do
+      expect(unsaved_document).to receive(:mark_as_saved!)
 
+      unsaved_document = application.unsaved_documents.find(file_path)
+
+      insert_text_on_document(document: unsaved_document, text: "a", line: 0, column: 0)
+
+      request = ::Holistic::LanguageServer::Request.new(application:, message:)
       response = described_class.call(request)
 
       expect(response).to have_attributes(
@@ -35,18 +40,9 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::DidSave do
       )
     end
 
-    it "marks the document as saved" do
-      unsaved_document = application.unsaved_documents.find(file_path)
-
-      insert_text_on_document(document: unsaved_document, text: "a", line: 0, column: 0)
-
-      request = ::Holistic::LanguageServer::Request.new(application:, message:)
-      response = described_class.call(request)
-
-      expect(unsaved_document.has_unsaved_changes?).to be(false)
-    end
-
     it "parses unsaved changes in background" do
+      expect(unsaved_document).to receive(:mark_as_saved!)
+
       expect(::Holistic::Ruby::Parser::LiveEditing::ProcessFileChanged)
         .to receive(:call)
         .with(application:, file_path:, content: "content")
