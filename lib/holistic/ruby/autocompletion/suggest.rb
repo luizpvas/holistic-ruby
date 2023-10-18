@@ -6,25 +6,21 @@ module Holistic::Ruby::Autocompletion
 
     Suggestion = ::Data.define(:code, :kind)
 
-    StartsWithLowerCaseLetter = ->(code) do
-      return false if [".", ":", "@"].include?(code[0])
-
-      code[0] == code[0].downcase
-    end
-
-    def call(code:, scope:)
+    def call(piece_of_code:, scope:)
       lookup_scope = scope
 
-      if code.start_with?("::")
+      if piece_of_code.root_scope?
         lookup_scope = lookup_scope.lexical_parent until lookup_scope.root?
       end
 
-      if StartsWithLowerCaseLetter[code]
-        suggest_local_methods_from_current_scope(code:, scope: lookup_scope)
-      elsif code.include?(".")
-        suggest_methods_from_scope(code:, scope: lookup_scope)
+      if piece_of_code.suggest_methods_from_current_scope?
+        suggest_local_methods_from_current_scope(code: piece_of_code.value, scope: lookup_scope)
+      elsif piece_of_code.suggest_methods_from_scope?
+        suggest_methods_from_scope(code: piece_of_code.value, scope: lookup_scope)
+      elsif piece_of_code.suggest_namespaces?
+        suggest_namespaces_from_scope(code: piece_of_code.value, scope: lookup_scope)
       else
-        suggest_namespaces_from_scope(code:, scope: lookup_scope)
+        [] # ??
       end
     end
 

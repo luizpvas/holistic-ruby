@@ -7,7 +7,8 @@ describe ::Holistic::Ruby::Autocompletion::Suggest do
     def assert_suggestions(code, suggestions)
       scope = application.scopes.find("::MyApp::EventsController#index")
 
-      actual_suggestions = described_class.call(code:, scope:)
+      piece_of_code = ::Holistic::Ruby::Autocompletion::PieceOfCode.new(code)
+      actual_suggestions = described_class.call(piece_of_code:, scope:)
 
       expected_suggestions = suggestions.map do |suggestion|
         described_class::Suggestion.new(code: suggestion[:code], kind: suggestion[:kind])

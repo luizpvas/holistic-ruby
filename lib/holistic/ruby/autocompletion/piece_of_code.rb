@@ -2,6 +2,8 @@
 
 module Holistic::Ruby::Autocompletion
   class PieceOfCode
+    attr_reader :value
+
     def initialize(value)
       @value = value
     end

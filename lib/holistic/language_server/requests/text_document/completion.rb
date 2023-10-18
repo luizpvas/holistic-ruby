@@ -31,11 +31,13 @@ module Holistic::LanguageServer
         return request.respond_with(nil)
       end
 
+      piece_of_code = ::Holistic::Ruby::Autocompletion::PieceOfCode.new(code)
+
       scope = request.application.scopes.find_inner_most_scope_by_cursor(cursor) || request.application.scopes.root
 
       ::Holistic.logger.info("scope under cursor is: #{scope.fully_qualified_name}")
 
-      suggestions = ::Holistic::Ruby::Autocompletion::Suggest.call(code:, scope:)
+      suggestions = ::Holistic::Ruby::Autocompletion::Suggest.call(piece_of_code:, scope:)
 
       respond_with_suggestions(request, suggestions)
     end
