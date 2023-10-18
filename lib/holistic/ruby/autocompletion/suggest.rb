@@ -19,7 +19,7 @@ module Holistic::Ruby::Autocompletion
       when :suggest_methods_from_scope
         suggest_methods_from_scope(code: piece_of_code.value, scope: lookup_scope)
       when :suggest_namespaces
-        suggest_namespaces_from_scope(code: piece_of_code.value, scope: lookup_scope)
+        suggest_namespaces(code: piece_of_code.value, scope: lookup_scope)
       else
         ::Holistic.logger.info("unknown code kind: #{piece_of_code}")
 
@@ -77,7 +77,7 @@ module Holistic::Ruby::Autocompletion
       suggestions
     end
 
-    def suggest_namespaces_from_scope(code:, scope:)
+    def suggest_namespaces(code:, scope:)
       suggestions = []
 
       partial_namespaces = code.split(/(::)/).compact_blank
