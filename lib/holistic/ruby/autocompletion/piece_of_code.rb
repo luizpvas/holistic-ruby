@@ -7,6 +7,14 @@ module Holistic::Ruby::Autocompletion
     def initialize(value)
       @value = value
     end
+  
+    def kind
+      return :suggest_methods_from_current_scope if suggest_methods_from_current_scope?
+      return :suggest_methods_from_scope if suggest_methods_from_scope?
+      return :suggest_namespaces if suggest_namespaces?
+
+      :unknown
+    end
 
     def suggest_methods_from_current_scope?
       starts_with_lower_case_letter? || (looks_like_method_call? && !has_dot?)
@@ -22,6 +30,10 @@ module Holistic::Ruby::Autocompletion
 
     def root_scope?
       @value.start_with? "::"
+    end
+
+    def to_s
+      @value
     end
 
     private

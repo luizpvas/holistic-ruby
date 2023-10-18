@@ -13,14 +13,17 @@ module Holistic::Ruby::Autocompletion
         lookup_scope = lookup_scope.lexical_parent until lookup_scope.root?
       end
 
-      if piece_of_code.suggest_methods_from_current_scope?
+      case piece_of_code.kind
+      when :suggest_methods_from_current_scope
         suggest_local_methods_from_current_scope(code: piece_of_code.value, scope: lookup_scope)
-      elsif piece_of_code.suggest_methods_from_scope?
+      when :suggest_methods_from_scope
         suggest_methods_from_scope(code: piece_of_code.value, scope: lookup_scope)
-      elsif piece_of_code.suggest_namespaces?
+      when :suggest_namespaces
         suggest_namespaces_from_scope(code: piece_of_code.value, scope: lookup_scope)
       else
-        [] # ??
+        ::Holistic.logger.info("unknown code kind: #{piece_of_code}")
+
+        []
       end
     end
 
