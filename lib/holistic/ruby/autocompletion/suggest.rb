@@ -15,11 +15,11 @@ module Holistic::Ruby::Autocompletion
 
       case piece_of_code.kind
       when :suggest_methods_from_current_scope
-        suggest_local_methods_from_current_scope(code: piece_of_code.value, scope: lookup_scope)
+        suggest_local_methods_from_current_scope(piece_of_code:, scope: lookup_scope)
       when :suggest_methods_from_scope
         suggest_methods_from_scope(piece_of_code:, scope: lookup_scope)
       when :suggest_namespaces
-        suggest_namespaces(code: piece_of_code.value, scope: lookup_scope)
+        suggest_namespaces(piece_of_code:, scope: lookup_scope)
       else
         ::Holistic.logger.info("unknown code kind: #{piece_of_code}")
 
@@ -29,7 +29,7 @@ module Holistic::Ruby::Autocompletion
 
     private
 
-    def suggest_local_methods_from_current_scope(code:, scope:)
+    def suggest_local_methods_from_current_scope(piece_of_code:, scope:)
       suggestions = []
 
       sibling_methods =
@@ -45,7 +45,7 @@ module Holistic::Ruby::Autocompletion
         end
 
       sibling_methods.each do |method_scope|
-        if method_scope.name.start_with?(code)
+        if method_scope.name.start_with?(piece_of_code.word_to_autocomplete)
           suggestions << Suggestion.new(code: method_scope.name, kind: method_scope.kind)
         end
       end
@@ -56,15 +56,7 @@ module Holistic::Ruby::Autocompletion
     def suggest_methods_from_scope(piece_of_code:, scope:)
       suggestions = []
 
-      code = piece_of_code.value
-
-      partial_namespaces = code.split(/(::|\.)/).compact_blank
-      method_to_autocomplete = partial_namespaces.pop.then { _1 == "." ? "" : _1 }
-      namespaces_to_resolve = partial_namespaces.reject { _1 == "::" || _1 == "." }
-
-      binding.irb
-
-      namespaces_to_resolve.each do |namespace_name|
+      piece_of_code.namespaces.each do |namespace_name|
         scope = resolve_scope(name: namespace_name, from_scope: scope)
 
         return suggestions if scope.nil?
@@ -73,7 +65,7 @@ module Holistic::Ruby::Autocompletion
       class_methods = ::Holistic::Ruby::Scope::ListClassMethods.call(scope:)
 
       class_methods.each do |method_scope|
-        if method_scope.name.start_with?(method_to_autocomplete)
+        if method_scope.name.start_with?(piece_of_code.word_to_autocomplete)
           suggestions << Suggestion.new(code: method_scope.name, kind: method_scope.kind)
         end
       end
@@ -81,26 +73,22 @@ module Holistic::Ruby::Autocompletion
       suggestions
     end
 
-    def suggest_namespaces(code:, scope:)
+    def suggest_namespaces(piece_of_code:, scope:)
       suggestions = []
 
-      partial_namespaces = code.split(/(::)/).compact_blank
-      namespace_to_autocomplete = partial_namespaces.pop.then { _1 == "::" ? "" : _1 }
-      namespaces_to_resolve = partial_namespaces.reject { _1 == "::" }
-
-      namespaces_to_resolve.each do |namespace_name|
+      piece_of_code.namespaces.each do |namespace_name|
         scope = resolve_scope(name: namespace_name, from_scope: scope)
 
         return suggestions if scope.nil?
       end
 
-      should_search_upwards = namespaces_to_resolve.empty?
+      should_search_upwards = piece_of_code.namespaces.empty?
 
       search = ->(scope) do
         scope.lexical_children.each do |child_scope|
           next if child_scope.method?
 
-          if child_scope.name.start_with?(namespace_to_autocomplete)
+          if child_scope.name.start_with?(piece_of_code.word_to_autocomplete)
             suggestions << Suggestion.new(code: child_scope.name, kind: child_scope.kind)
           end
         end
