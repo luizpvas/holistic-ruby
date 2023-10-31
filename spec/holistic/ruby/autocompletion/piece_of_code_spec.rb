@@ -97,4 +97,41 @@ describe ::Holistic::Ruby::Autocompletion::PieceOfCode do
       end
     end
   end
+
+  describe "#namespaces" do
+    it "returns the list of complete namespaces present in the code" do
+      examples = [
+        { code: "Foo::Bar",        expected: ["Foo"] },
+        { code: "::Foo::Bar",      expected: ["Foo"] },
+        { code: "::Foo::Bar::Qux", expected: ["Foo", "Bar"] },
+        { code: "::Foo::Bar.qux",  expected: ["Foo", "Bar"] },
+        { code: "::Foo::Bar:",     expected: ["Foo", "Bar"] },
+        { code: "::Foo::Bar::",    expected: ["Foo", "Bar"] },
+        { code: "::Foo::Bar.",     expected: ["Foo", "Bar"] },
+        { code: "Foo::",           expected: ["Foo"] },
+        { code: "Foo.",            expected: ["Foo"] },
+        { code: "::",              expected: [] },
+        { code: "Foo",             expected: [] },
+        { code: "foo",             expected: [] },
+        { code: "foo.bar",         expected: [] }
+      ]
+
+      examples.each do |example|
+        namespaces = code(example[:code]).namespaces
+
+        expect(namespaces).to(
+          eql(example[:expected]),
+          "expected #{example[:code]} namespaces to eql #{example[:expected].inspect}, got: #{namespaces.inspect}"
+        )
+      end
+    end
+  end
+
+  describe "#word_to_autocomplete" do
+    it "returns the namespace or method name at the end of the piece of code" do
+      examples = [
+        { code: "Foo", expected: "Foo" }
+      ]
+    end
+  end
 end

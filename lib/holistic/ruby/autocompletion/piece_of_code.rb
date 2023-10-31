@@ -36,6 +36,18 @@ module Holistic::Ruby::Autocompletion
       @value
     end
 
+    def namespaces
+      return [] if starts_with_lower_case_letter?
+
+      @value.split(/(:|\.)/)
+        .compact_blank.tap { _1.pop }
+        .reject { _1 == ":" || _1 == "." }
+    end
+
+    def word_to_autocomplete
+      @value.split(/(:|\.)/).compact_blank.pop
+    end
+
     private
 
     def starts_with_lower_case_letter?
