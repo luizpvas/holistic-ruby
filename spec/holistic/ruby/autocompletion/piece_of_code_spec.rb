@@ -32,8 +32,7 @@ describe ::Holistic::Ruby::Autocompletion::PieceOfCode do
       end
     end
   end
-
-  describe "#suggest_methods_from_current_scope?" do
+describe "#suggest_methods_from_current_scope?" do
     it "returns true for local method calls, false otherwise" do
       examples = [
         { code: "foo",       expected: true },
@@ -130,8 +129,22 @@ describe ::Holistic::Ruby::Autocompletion::PieceOfCode do
   describe "#word_to_autocomplete" do
     it "returns the namespace or method name at the end of the piece of code" do
       examples = [
-        { code: "Foo", expected: "Foo" }
+        { code: "Foo", expected: "Foo" },
+        { code: "Foo::Bar", expected: "Bar" },
+        { code: "Foo.", expected: "" },
+        { code: "foo", expected: "foo" },
+        { code: "Foo::Bar.qux", expected: "qux" },
+        { code: "Foo:", expected: "" },
       ]
+
+      examples.each do |example|
+        word_to_autocomplete = code(example[:code]).word_to_autocomplete
+
+        expect(word_to_autocomplete).to(
+          eql(example[:expected]),
+          "expected #{example[:code]} word to autocomplete to eql #{example[:expected].inspect}, got: #{word_to_autocomplete.inspect}"
+        )
+      end
     end
   end
 end

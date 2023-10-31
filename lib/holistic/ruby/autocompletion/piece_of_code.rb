@@ -36,16 +36,20 @@ module Holistic::Ruby::Autocompletion
       @value
     end
 
+    IsSeparator = ->(str) { str == ":" || str == "." }
+
     def namespaces
       return [] if starts_with_lower_case_letter?
 
       @value.split(/(:|\.)/)
         .compact_blank.tap { _1.pop }
-        .reject { _1 == ":" || _1 == "." }
+        .reject(&IsSeparator)
     end
 
     def word_to_autocomplete
-      @value.split(/(:|\.)/).compact_blank.pop
+      @value.split(/(:|\.)/).compact_blank.pop.then do |value|
+        IsSeparator[value] ? "" : value
+      end
     end
 
     private

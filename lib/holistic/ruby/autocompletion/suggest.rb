@@ -17,7 +17,7 @@ module Holistic::Ruby::Autocompletion
       when :suggest_methods_from_current_scope
         suggest_local_methods_from_current_scope(code: piece_of_code.value, scope: lookup_scope)
       when :suggest_methods_from_scope
-        suggest_methods_from_scope(code: piece_of_code.value, scope: lookup_scope)
+        suggest_methods_from_scope(piece_of_code:, scope: lookup_scope)
       when :suggest_namespaces
         suggest_namespaces(code: piece_of_code.value, scope: lookup_scope)
       else
@@ -53,12 +53,16 @@ module Holistic::Ruby::Autocompletion
       suggestions
     end
 
-    def suggest_methods_from_scope(code:, scope:)
+    def suggest_methods_from_scope(piece_of_code:, scope:)
       suggestions = []
+
+      code = piece_of_code.value
 
       partial_namespaces = code.split(/(::|\.)/).compact_blank
       method_to_autocomplete = partial_namespaces.pop.then { _1 == "." ? "" : _1 }
       namespaces_to_resolve = partial_namespaces.reject { _1 == "::" || _1 == "." }
+
+      binding.irb
 
       namespaces_to_resolve.each do |namespace_name|
         scope = resolve_scope(name: namespace_name, from_scope: scope)
