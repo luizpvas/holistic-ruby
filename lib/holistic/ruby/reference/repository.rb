@@ -9,10 +9,8 @@ module Holistic::Ruby::Reference
     end
 
     def find_by_cursor(cursor)
-      @database.find(cursor.file_path)&.then do |file|
-        file.defines_references.find do |reference|
-          reference.location.contains?(cursor)
-        end
+      list_references_in_file(cursor.file_path).find do |reference|
+        reference.location.contains?(cursor)
       end
     end
 
