@@ -10,32 +10,16 @@ module Holistic::Document
       @original_content = content.dup
     end
 
-    LINE_BREAK = "\n"
-
     def expand_code(cursor)
-      line = 0
-      column = 0
+      scanner = Scanner.new(@content)
+      index = scanner.find_index(cursor.line, cursor.column)
+      token_index = index - 1
 
-      @content.each_char.with_index do |char, index|
-        if cursor.line == line && cursor.column == column + 1
-          token_index = index
-
-          while @content[token_index].match?(/[a-zA-Z0-9_\.:]/)
-            token_index -= 1
-          end
-
-          return @content[token_index+1..index]
-        end
-
-        if char == LINE_BREAK
-          line += 1
-          column = 0
-        else
-          column += 1
-        end
+      while @content[token_index].match?(/[a-zA-Z0-9_\.:]/)
+        token_index -= 1
       end
 
-      nil
+      @content[token_index+1...index]
     end
 
     def mark_as_saved!
