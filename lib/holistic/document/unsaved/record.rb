@@ -10,18 +10,6 @@ module Holistic::Document
       @original_content = content.dup
     end
 
-    def expand_code(cursor)
-      scanner = Scanner.new(@content)
-      index = scanner.find_index(cursor.line, cursor.column)
-      token_index = index - 1
-
-      while @content[token_index].match?(/[a-zA-Z0-9_\.:]/)
-        token_index -= 1
-      end
-
-      @content[token_index+1...index]
-    end
-
     def mark_as_saved!
       ::File.read(path).tap do |content_from_disk|
         @original_content = content_from_disk
@@ -35,6 +23,18 @@ module Holistic::Document
 
     def has_unsaved_changes?
       @original_content != @content
+    end
+
+    def expand_code(cursor)
+      scanner = Scanner.new(@content)
+      index = scanner.find_index(cursor.line, cursor.column)
+      token_index = index - 1
+
+      while @content[token_index].match?(/[a-zA-Z0-9_\.:]/)
+        token_index -= 1
+      end
+
+      @content[token_index+1...index]
     end
 
     def push_changes(changes)
