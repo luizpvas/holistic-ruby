@@ -10,6 +10,8 @@ module Holistic::Document
       @original_content = content.dup
     end
 
+    LINE_BREAK = "\n"
+
     def expand_code(cursor)
       line = 0
       column = 0
@@ -51,44 +53,14 @@ module Holistic::Document
       @original_content != @content
     end
 
-    LINE_BREAK = "\n"
+    def push_changes(changes)
+      changes.each do |change|
+        scanner = Scanner.new(@content)
 
-    def apply_change(change)
-      line = 0
-      column = 0
+        start_index = scanner.find_index(change.start_line, change.start_column)
+        end_index = scanner.find_index(change.end_line, change.end_column)
 
-      # first edition to the document is special because we can't iterate over the content to find the insert position.
-      # there is nothing to iterate over.
-      if @content.empty? && change.insertion?
-        @content = change.text
-
-        return
-      end
-
-      @content.each_char.with_index do |char, index|
-        if change.insertion? && change.starts_on?(line, column)
-          content.insert(index, change.text)
-
-          return
-        end
-
-        if change.deletion? && change.starts_on?(line, column)
-          content[index..index + change.range_length - 1] = ""
-
-          return
-        end
-
-        if char == LINE_BREAK
-          line += 1
-          column = 0
-        else
-          column += 1
-        end
-      end
-
-      # off-by-one error to insert at the of the document
-      if change.insertion? && change.starts_on?(line, column)
-        content.insert(@content.length, change.text)
+        @content[start_index...end_index] = change.text
       end
     end
   end

@@ -20,9 +20,9 @@ module Holistic::LanguageServer
 
       unsaved_document = request.application.unsaved_documents.find(file_path)
 
-      request.param("contentChanges").map(&BuildDocumentChange).each do |change|
-        unsaved_document.apply_change(change)
-      end
+      changes = request.param("contentChanges").map(&BuildDocumentChange)
+
+      unsaved_document.push_changes(changes)
 
       request.respond_with(nil)
     end

@@ -2,8 +2,8 @@
 
 module Support
   module Document
-    module ApplyChange
-      def insert_text_on_document(document:, text:, line:, column:)
+    module EditOperations
+      def write_to_document(document:, text:, line:, column:)
         change =
           ::Holistic::Document::Unsaved::Change.new(
             range_length: text.length,
@@ -14,13 +14,13 @@ module Support
             end_column: column
           )
         
-        document.apply_change(change)
+        document.push_changes [change]
       end
 
-      def insert_new_line_on_document(document:, after_line:)
+      def write_new_line_to_document(document:, after_line:)
         column = document.content.split("\n")[after_line].length
 
-        insert_text_on_document(document:, text: "\n", line: after_line, column:)
+        write_to_document(document:, text: "\n", line: after_line, column:)
       end
     end
   end

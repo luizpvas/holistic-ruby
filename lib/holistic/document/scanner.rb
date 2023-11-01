@@ -10,17 +10,17 @@ module Holistic::Document
       @source = source
     end
 
-    def find_index(cursor)
-      index = 0
-      line = 0
+    def find_index(line, column)
+      current_index = 0
+      current_line = 0
 
-      until line == cursor.line
-        index += 1 until source[index] == LINE_BREAK
-        index += 1
-        line += 1
+      until current_line == line
+        current_index += 1 until source[current_index] == LINE_BREAK
+        current_index += 1
+        current_line += 1
       end
 
-      index + cursor.column
+      current_index + column
     end
   end
 end

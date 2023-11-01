@@ -3,7 +3,7 @@
 describe ::Holistic::LanguageServer::Requests::TextDocument::GoToDefinition do
   include ::Support::SnippetParser
   include ::Support::LanguageServer::Factory
-  include ::Support::Document::ApplyChange
+  include ::Support::Document::EditOperations
 
   let(:source_code) do
     <<~RUBY
@@ -100,7 +100,7 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::GoToDefinition do
     it "parses the document before finding definition" do
       # add a new line after `module Example; end`, shifting the references down a line
       document = application.unsaved_documents.add(path: "/snippet.rb", content: ::String.new(source_code))
-      insert_new_line_on_document(document:, after_line: 1)
+      write_new_line_to_document(document:, after_line: 1)
 
       # Example.call is now on line 4 instead of 3
       message = build_definition_message(file_path: "/snippet.rb", line: 4, column: 9)

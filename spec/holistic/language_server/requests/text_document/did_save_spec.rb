@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe ::Holistic::LanguageServer::Requests::TextDocument::DidSave do
-  include ::Support::Document::ApplyChange
+  include ::Support::Document::EditOperations
 
   let(:application) { ::Holistic::Application.new(name: "dummy", root_directory: ".") }
 
@@ -29,7 +29,7 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::DidSave do
 
       unsaved_document = application.unsaved_documents.find(file_path)
 
-      insert_text_on_document(document: unsaved_document, text: "a", line: 0, column: 0)
+      write_to_document(document: unsaved_document, text: "a", line: 0, column: 0)
 
       request = ::Holistic::LanguageServer::Request.new(application:, message:)
       response = described_class.call(request)

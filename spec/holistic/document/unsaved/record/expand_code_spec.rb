@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe ::Holistic::Document::Unsaved::Record do
-  include ::Support::Document::ApplyChange
+  include ::Support::Document::EditOperations
 
   describe "#expand_code" do
     let(:content) do

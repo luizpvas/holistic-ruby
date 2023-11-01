@@ -3,7 +3,7 @@
 describe ::Holistic::LanguageServer::Requests::TextDocument::Completion do
   include ::Support::SnippetParser
   include ::Support::LanguageServer::Factory
-  include ::Support::Document::ApplyChange
+  include ::Support::Document::EditOperations
 
   let(:source_code) do
     <<~RUBY
@@ -107,7 +107,7 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::Completion do
     it "parses the document before running completion" do
       # change module name from "Payment" to "Payments"
       document = application.unsaved_documents.add(path: "/snippet.rb", content: ::String.new(source_code))
-      insert_text_on_document(document:, text: "s", line: 1, column: 16)
+      write_to_document(document:, text: "s", line: 1, column: 16)
 
       message = build_completion_message(file_path: "/snippet.rb", line: 5, column: 8)
 

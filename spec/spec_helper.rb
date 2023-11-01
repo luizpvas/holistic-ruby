@@ -4,7 +4,7 @@ require "holistic"
 
 require_relative "support/snippet_parser"
 require_relative "support/language_server/factory"
-require_relative "support/document/apply_change"
+require_relative "support/document/edit_operations"
 require_relative "support/ruby/serializer"
 
 ::RSpec.configure do |config|

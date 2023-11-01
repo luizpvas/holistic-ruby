@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe ::Holistic::LanguageServer::Requests::TextDocument::DidClose do
-  include ::Support::Document::ApplyChange
+  include ::Support::Document::EditOperations
 
   let(:application) { ::Holistic::Application.new(name: "dummy", root_directory: ".") }
 
@@ -56,7 +56,7 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::DidClose do
     end
 
     it "calls the parser with the original content" do
-      insert_text_on_document(document: unsaved_document, text: "a", line: 0, column: 0)
+      write_to_document(document: unsaved_document, text: "a", line: 0, column: 0)
 
       expect(::Holistic::Ruby::Parser::LiveEditing::ProcessFileChanged)
         .to receive(:call)

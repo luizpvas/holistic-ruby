@@ -3,7 +3,7 @@
 describe ::Holistic::LanguageServer::Requests::TextDocument::FindReferences do
   include ::Support::SnippetParser
   include ::Support::LanguageServer::Factory
-  include ::Support::Document::ApplyChange
+  include ::Support::Document::EditOperations
 
   let(:source_code) do
     <<~RUBY
@@ -78,7 +78,7 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::FindReferences do
     it "parses the document before attempting to find references" do
       # add a new line after `module MyApp`, shifting the code down a line
       document = application.unsaved_documents.add(path: "/snippet.rb", content: ::String.new(source_code))
-      insert_new_line_on_document(document:, after_line: 0)
+      write_new_line_to_document(document:, after_line: 0)
 
       # Example.call is now on line 2 instead of 1
       message = build_definition_message(file_path: "/snippet.rb", line: 2, column: 10)
