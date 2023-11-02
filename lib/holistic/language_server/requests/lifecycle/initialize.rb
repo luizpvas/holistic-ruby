@@ -36,7 +36,7 @@ module Holistic::LanguageServer
       ::Holistic::BackgroundProcess.run do
         ::Holistic::Ruby::Parser::ParseDirectory.call(application:, directory_path: application.root_directory)
 
-        ::Holistic::Ruby::TypeInference::SolvePendingReferences.call(application:)
+        ::Holistic::Ruby::TypeInference::ResolvePendingReferences.call(application:)
       end
     end
 

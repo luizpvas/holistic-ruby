@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-describe ::Holistic::Ruby::TypeInference::Solve do
+describe ::Holistic::Ruby::TypeInference::Resolve do
   include ::Support::SnippetParser
 
-  context "when calling class methods defined in `Struct.new`" do
+  context "when calling class methods defined in a `Data.define`" do
     let(:application) do
       parse_snippet <<~RUBY
-      Status = ::Struct.new(:value) do
+      Status = ::Data.define(:value) do
         def self.ready
-          new("ready")
+          new(value: "ready")
         end
       end
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe ::Holistic::Ruby::TypeInference::Solve do
+describe ::Holistic::Ruby::TypeInference::Resolve do
   include ::Support::SnippetParser
 
   context "when calling a method in the same class" do

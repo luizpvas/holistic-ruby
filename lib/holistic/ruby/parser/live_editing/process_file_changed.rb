@@ -51,14 +51,14 @@ module Holistic::Ruby::Parser
     def parse_again(application:, file_path:, content:)
       ParseFile.call(application:, file_path:, content:)
 
-      ::Holistic::Ruby::TypeInference::SolvePendingReferences.call(application:)
+      ::Holistic::Ruby::TypeInference::ResolvePendingReferences.call(application:)
     end
 
     def recalculate_type_inference(application:, references:)
       references.each do |reference|
         reference.relation(:referenced_scope).delete!(reference.referenced_scope)
 
-        ::Holistic::Ruby::TypeInference::Solve.call(application:, reference:)
+        ::Holistic::Ruby::TypeInference::Resolve.call(application:, reference:)
       end
     end
   end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Holistic::Ruby::TypeInference
-  module Solve
+  module Resolve
     extend self
 
     def call(application:, reference:)
