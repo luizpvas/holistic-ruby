@@ -2,8 +2,9 @@
 
 class Holistic::Extensions::Events
   TOPICS = {
+    # TODO: remove
     resolve_method_call_known_scope: {
-      params: [:reference, :referenced_scope, :method_call_clue],
+      params: [:referenced_scope, :method_call_clue],
       output: ::Holistic::Ruby::Scope::Record
     },
     class_scope_registered: {

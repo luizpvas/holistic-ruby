@@ -21,7 +21,7 @@ module Holistic::Extensions::Ruby
 
       has_overridden_new_method = class_scope.lexical_children.find { _1.instance_method? && _1.name == "initialize" }
 
-      unless has_overridden_new_method
+      if !has_overridden_new_method
         ::Holistic::Ruby::Scope::Store.call(
           database: application.database,
           lexical_parent: class_scope,
