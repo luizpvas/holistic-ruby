@@ -36,6 +36,7 @@ describe ::Holistic::Ruby::Autocompletion::PieceOfCode do
   describe "#suggest_methods_from_current_scope?" do
     it "returns true for local method calls, false otherwise" do
       examples = [
+        { code: "",          expected: true },
         { code: "foo",       expected: true },
         { code: "foo.bar",   expected: true },
         { code: "foo(",      expected: true },
@@ -136,6 +137,7 @@ describe ::Holistic::Ruby::Autocompletion::PieceOfCode do
         { code: "foo", expected: "foo" },
         { code: "Foo::Bar.qux", expected: "qux" },
         { code: "Foo:", expected: "" },
+        { code: "", expected: "" }
       ]
 
       examples.each do |example|

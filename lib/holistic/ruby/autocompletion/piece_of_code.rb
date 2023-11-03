@@ -17,7 +17,7 @@ module Holistic::Ruby::Autocompletion
     end
 
     def suggest_methods_from_current_scope?
-      starts_with_lower_case_letter? || (looks_like_method_call? && !has_dot?)
+      empty? || starts_with_lower_case_letter? || (looks_like_method_call? && !has_dot?)
     end
 
     def suggest_methods_from_scope?
@@ -47,12 +47,18 @@ module Holistic::Ruby::Autocompletion
     end
 
     def word_to_autocomplete
+      return "" if empty?
+
       @value.split(/(:|\.)/).compact_blank.pop.then do |value|
         IsSeparator[value] ? "" : value
       end
     end
 
     private
+
+    def empty?
+      @value.empty?
+    end
 
     def starts_with_lower_case_letter?
       return false if [".", ":", "@"].include? @value[0]
