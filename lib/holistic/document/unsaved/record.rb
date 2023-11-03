@@ -12,7 +12,7 @@ module Holistic::Document
 
     def mark_as_saved!
       ::File.read(path).tap do |content_from_disk|
-        @original_content = content_from_disk
+        @original_content = content_from_disk.dup
         @content = content_from_disk
       end
     end

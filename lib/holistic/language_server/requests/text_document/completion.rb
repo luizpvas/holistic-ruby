@@ -16,6 +16,8 @@ module Holistic::LanguageServer
       end
 
       if document.has_unsaved_changes?
+        ::Holistic.logger.info "SYNC CHANGES!!!!!!"
+
         ::Holistic::Ruby::Parser::LiveEditing::ProcessFileChanged.call(
           application: request.application,
           file_path: document.path,
@@ -23,18 +25,11 @@ module Holistic::LanguageServer
         )
       end
 
-      code = document.expand_code(cursor)
-
-      if code.blank?
-        ::Holistic.logger.info("aborting completion because code under cursor was blank: #{cursor.inspect}")
-
-        return request.respond_with(nil)
-      end
-
-      piece_of_code = ::Holistic::Ruby::Autocompletion::PieceOfCode.new(code)
+      piece_of_code = ::Holistic::Ruby::Autocompletion::PieceOfCode.new(document.expand_code(cursor))
 
       scope = request.application.scopes.find_inner_most_scope_by_cursor(cursor) || request.application.scopes.root
 
+      ::Holistic.logger.info("code is: #{piece_of_code.value}")
       ::Holistic.logger.info("scope under cursor is: #{scope.fully_qualified_name}")
 
       suggestions = ::Holistic::Ruby::Autocompletion::Suggest.call(piece_of_code:, scope:)

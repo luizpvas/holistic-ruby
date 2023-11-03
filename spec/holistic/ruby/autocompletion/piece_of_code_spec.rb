@@ -33,10 +33,28 @@ describe ::Holistic::Ruby::Autocompletion::PieceOfCode do
     end
   end
 
+  describe "#suggest_everything_from_current_scope?" do
+    it "returns true if code under cursor is empty" do
+      examples = [
+        { code: "", expected: true },
+        { code: " ", expected: true },
+        { code: "foo", expected: false },
+        { code: "Foo", expected: false },
+        { code: "::", expected: false }
+      ]
+
+      examples.each do |example|
+        expect(code(example[:code]).suggest_everything_from_current_scope?).to(
+          eql(example[:expected]),
+          "#{example[:code]}.suggest_everything_from_current_scope? = #{example[:expected]}"
+        )
+      end
+    end
+  end
+
   describe "#suggest_methods_from_current_scope?" do
     it "returns true for local method calls, false otherwise" do
       examples = [
-        { code: "",          expected: true },
         { code: "foo",       expected: true },
         { code: "foo.bar",   expected: true },
         { code: "foo(",      expected: true },
@@ -44,7 +62,8 @@ describe ::Holistic::Ruby::Autocompletion::PieceOfCode do
         { code: "Foo.bar",   expected: false },
         { code: "::Foo.bar", expected: false },
         { code: "Foo::Bar",  expected: false },
-        { code: "Foo.bar(",  expected: false }
+        { code: "Foo.bar(",  expected: false },
+        { code: "",          expected: false },
       ]
 
       examples.each do |example|

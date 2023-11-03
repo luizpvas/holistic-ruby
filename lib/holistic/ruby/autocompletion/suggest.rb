@@ -44,6 +44,12 @@ module Holistic::Ruby::Autocompletion
           return []
         end
 
+
+      ::Holistic.logger.info "++++++++"
+      candidates = sibling_methods.map { _1.name }
+      ::Holistic.logger.info "candidates: #{candidates}"
+      ::Holistic.logger.info "++++++++"
+
       sibling_methods.each do |method_scope|
         if method_scope.name.start_with?(piece_of_code.word_to_autocomplete)
           suggestions << Suggestion.new(code: method_scope.name, kind: method_scope.kind)

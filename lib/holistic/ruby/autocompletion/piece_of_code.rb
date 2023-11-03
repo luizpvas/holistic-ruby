@@ -9,6 +9,7 @@ module Holistic::Ruby::Autocompletion
     end
   
     def kind
+      return :suggest_everything_from_current_scope if suggest_everything_from_current_scope?
       return :suggest_methods_from_current_scope if suggest_methods_from_current_scope?
       return :suggest_methods_from_scope if suggest_methods_from_scope?
       return :suggest_namespaces if suggest_namespaces?
@@ -16,16 +17,20 @@ module Holistic::Ruby::Autocompletion
       :unknown
     end
 
+    def suggest_everything_from_current_scope?
+      empty?
+    end
+
     def suggest_methods_from_current_scope?
-      empty? || starts_with_lower_case_letter? || (looks_like_method_call? && !has_dot?)
+      !empty? && starts_with_lower_case_letter? || (looks_like_method_call? && !has_dot?)
     end
 
     def suggest_methods_from_scope?
-      !suggest_methods_from_current_scope? && has_dot?
+      !empty? && !suggest_methods_from_current_scope? && has_dot?
     end
 
     def suggest_namespaces?
-      !starts_with_lower_case_letter? && !has_dot?
+      !empty? && !starts_with_lower_case_letter? && !has_dot?
     end
 
     def root_scope?
@@ -57,7 +62,7 @@ module Holistic::Ruby::Autocompletion
     private
 
     def empty?
-      @value.empty?
+      @value.strip.empty?
     end
 
     def starts_with_lower_case_letter?
