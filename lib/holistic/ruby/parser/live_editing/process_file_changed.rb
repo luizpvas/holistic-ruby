@@ -8,25 +8,34 @@ module Holistic::Ruby::Parser
       # TODO: do not build the AST twice
       return unless HasValidSyntax[content]
 
-      references_to_recalculate = identify_references_to_recalculate(application:, file_path:)
+      enqueue_references_to_reresolve!(application:, file_path:)
 
       delete_scopes_in_file(application:, file_path:)
       delete_references_in_file(application:, file_path:)
 
-      parse_again(application:, file_path:, content:)
+      ParseFile.call(application:, file_path:, content:)
 
-      recalculate_type_inference(application:, references: references_to_recalculate)
+      ::Holistic::Ruby::Reference::TypeInference::ResolveEnqueued.call(application:)
     end
 
     private
 
-    def identify_references_to_recalculate(application:, file_path:)
+    def enqueue_references_to_reresolve!(application:, file_path:)
       # we need to reject references declared in the same because they're already going to be
-      # reparsed. If we don't do that, we'll end up with duplicated reference records. 
-
-      application.references
+      # reparsed. If we don't do that, we'll end up resolving the same reference twice.
+      references_to_reresolve = application.references
         .list_references_to_scopes_in_file(scopes: application.scopes, file_path: file_path)
         .reject { _1.location.file.path == file_path }
+
+      references_to_reresolve.each do |reference|
+        reference.relation(:referenced_scope).delete!(reference.referenced_scope)
+
+        if reference.resolve_type_inference_with_high_priority?
+          application.type_inference_resolving_queue.push_with_high_priority(reference)
+        else
+          application.type_inference_resolving_queue.push(reference)
+        end
+      end
     end
 
     def delete_scopes_in_file(application:, file_path:)
@@ -45,20 +54,6 @@ module Holistic::Ruby::Parser
           database: application.database,
           reference: reference
         )
-      end
-    end
-
-    def parse_again(application:, file_path:, content:)
-      ParseFile.call(application:, file_path:, content:)
-
-      ::Holistic::Ruby::TypeInference::ResolvePendingReferences.call(application:)
-    end
-
-    def recalculate_type_inference(application:, references:)
-      references.each do |reference|
-        reference.relation(:referenced_scope).delete!(reference.referenced_scope)
-
-        ::Holistic::Ruby::TypeInference::Resolve.call(application:, reference:)
       end
     end
   end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe ::Holistic::Ruby::TypeInference::Resolve do
+describe ::Holistic::Ruby::Reference::TypeInference::ResolveEnqueued do
   include ::Support::SnippetParser
 
   context "when calling instance methods defined in the parent class from the child class" do

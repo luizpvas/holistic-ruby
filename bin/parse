@@ -11,7 +11,7 @@ application = ::Holistic::Application.new(name:, root_directory:)
 
 performance_metrics = ::Holistic::Ruby::Parser::ParseDirectory.call(application:, directory_path: application.root_directory)
 
-total_type_inference_type = ::Benchmark.realtime { ::Holistic::Ruby::TypeInference::ResolvePendingReferences.call(application:) }
+total_type_inference_type = ::Benchmark.realtime { ::Holistic::Ruby::Reference::TypeInference::ResolveEnqueued.call(application:) }
 
 summary = { amount_of_records: application.database.size, total_type_inference_type: }
 

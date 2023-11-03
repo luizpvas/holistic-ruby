@@ -8,7 +8,7 @@ module Support
 
       ::Holistic::Ruby::Parser::ParseFile.call(application:, file_path: "/snippet.rb", content: code)
 
-      ::Holistic::Ruby::TypeInference::ResolvePendingReferences.call(application:)
+      ::Holistic::Ruby::Reference::TypeInference::ResolveEnqueued.call(application:)
 
       application
     end
@@ -25,7 +25,7 @@ module Support
 
       block.call(files)
 
-      ::Holistic::Ruby::TypeInference::ResolvePendingReferences.call(application:)
+      ::Holistic::Ruby::Reference::TypeInference::ResolveEnqueued.call(application:)
 
       application
     end

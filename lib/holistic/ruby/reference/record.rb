@@ -9,8 +9,8 @@ module Holistic::Ruby::Reference
     def referenced_scope = has_one(:referenced_scope)
     def located_in_scope = has_one(:located_in_scope)
 
-    def find_clue(clue_kind)
-      clues.find { |clue| clue.is_a?(clue_kind) }
+    def resolve_type_inference_with_high_priority?
+      clues.find { |clue| clue.is_a?(::Holistic::Ruby::TypeInference::Clue::ReferenceToSuperclass) }
     end
 
     def inspect

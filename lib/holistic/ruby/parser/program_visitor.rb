@@ -46,7 +46,7 @@ module Holistic::Ruby::Parser
 
           ::Holistic::Ruby::Reference::Store.call(
             database: @application.database,
-            processing_queue: @application.type_inference_processing_queue,
+            processing_queue: @application.type_inference_resolving_queue,
             scope: @constant_resolution.scope,
             clues: [reference_to_scope_clue, reference_to_superclass_clue],
             location: build_location(superclass_node)
@@ -79,7 +79,7 @@ module Holistic::Ruby::Parser
 
           ::Holistic::Ruby::Reference::Store.call(
             database: @application.database,
-            processing_queue: @application.type_inference_processing_queue,
+            processing_queue: @application.type_inference_resolving_queue,
             scope: @constant_resolution.scope,
             clues: [reference_to_scope_clue, reference_to_superclass_clue],
             location: build_location(node)
@@ -118,7 +118,7 @@ module Holistic::Ruby::Parser
 
         ::Holistic::Ruby::Reference::Store.call(
           database: @application.database,
-          processing_queue: @application.type_inference_processing_queue,
+          processing_queue: @application.type_inference_resolving_queue,
           scope: @constant_resolution.scope,
           clues: [method_call_clue],
           location: build_location(node)
@@ -153,7 +153,7 @@ module Holistic::Ruby::Parser
 
         ::Holistic::Ruby::Reference::Store.call(
           database: @application.database,
-          processing_queue: @application.type_inference_processing_queue,
+          processing_queue: @application.type_inference_resolving_queue,
           scope: @constant_resolution.scope,
           clues: [method_call_clue],
           location: build_location(method_name_node || instance_node)
@@ -225,7 +225,7 @@ module Holistic::Ruby::Parser
 
       ::Holistic::Ruby::Reference::Store.call(
         database: @application.database,
-        processing_queue: @application.type_inference_processing_queue,
+        processing_queue: @application.type_inference_resolving_queue,
         scope: @constant_resolution.scope,
         clues: [clue],
         location:

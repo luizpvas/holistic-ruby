@@ -26,8 +26,8 @@ module Holistic
       @files ||= Document::File::Repository.new(database:)
     end
 
-    def type_inference_processing_queue
-      @type_inference_processing_queue ||= Ruby::TypeInference::ProcessingQueue.new
+    def type_inference_resolving_queue
+      @type_inference_resolving_queue ||= Ruby::Reference::TypeInference::Queue.new
     end
 
     def unsaved_documents

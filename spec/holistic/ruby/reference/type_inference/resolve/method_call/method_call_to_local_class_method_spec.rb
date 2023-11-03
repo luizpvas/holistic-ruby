@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe ::Holistic::Ruby::TypeInference::Resolve do
+describe ::Holistic::Ruby::Reference::TypeInference::ResolveEnqueued do
   include ::Support::SnippetParser
 
   context "when solving method call to local class method" do
