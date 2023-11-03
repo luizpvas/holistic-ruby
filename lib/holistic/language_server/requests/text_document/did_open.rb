@@ -11,7 +11,7 @@ module Holistic::LanguageServer
       request.application.unsaved_documents.add(path:, content:)
       ::Holistic::Document::File::Store.call(database: request.application.database, file_path: path)
 
-      request.respond_with(nil)
+      request.drop
     end
   end
 end

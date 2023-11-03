@@ -34,10 +34,7 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::DidSave do
       request = ::Holistic::LanguageServer::Request.new(application:, message:)
       response = described_class.call(request)
 
-      expect(response).to have_attributes(
-        itself: be_a(::Holistic::LanguageServer::Response::Success),
-        result: nil
-      )
+      expect(response).to be_a(::Holistic::LanguageServer::Response::Drop)
     end
 
     it "parses unsaved changes in background" do

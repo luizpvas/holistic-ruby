@@ -24,7 +24,7 @@ module Holistic::LanguageServer
 
       unsaved_document.push_changes(changes)
 
-      request.respond_with(nil)
+      request.drop
     end
   end
 end

@@ -23,7 +23,7 @@ module Holistic::LanguageServer
         content: unsaved_document.content
       )
 
-      request.respond_with(nil)
+      request.drop
     end
   end
 end

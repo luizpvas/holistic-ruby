@@ -29,10 +29,7 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::DidClose do
 
       response = described_class.call(request)
 
-      expect(response).to have_attributes(
-        itself: be_a(::Holistic::LanguageServer::Response::Success),
-        result: nil
-      )
+      expect(response).to be_a(::Holistic::LanguageServer::Response::Drop)
     end
     
     it "deletes the document buffer from the application" do
@@ -49,10 +46,7 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::DidClose do
 
       response = described_class.call(request)
 
-      expect(response).to have_attributes(
-        itself: be_a(::Holistic::LanguageServer::Response::Success),
-        result: nil
-      )
+      expect(response).to be_a(::Holistic::LanguageServer::Response::Drop)
     end
 
     it "calls the parser with the original content" do

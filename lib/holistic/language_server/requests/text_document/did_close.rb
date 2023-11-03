@@ -21,7 +21,7 @@ module Holistic::LanguageServer
         end
       end
 
-      request.respond_with(nil)
+      request.drop
     end
   end
 end

@@ -27,10 +27,7 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::DidOpen do
 
     response = described_class.call(request)
 
-    expect(response).to have_attributes(
-      itself: be_a(::Holistic::LanguageServer::Response::Success),
-      result: nil
-    )
+    expect(response).to be_a(::Holistic::LanguageServer::Response::Drop)
   end
   
   it "registers a file and adds a document buffer to the application" do
