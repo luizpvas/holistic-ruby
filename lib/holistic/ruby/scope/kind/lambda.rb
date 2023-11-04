@@ -8,8 +8,16 @@ module Holistic::Ruby::Scope
       @scope = scope
     end
 
+    def kind
+      Kind::LAMBDA
+    end
+
     def surrounding_class
       @scope.lexical_parent
+    end
+
+    def visible_to?(_other_scope)
+      true
     end
   end
 end

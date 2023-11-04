@@ -29,5 +29,6 @@ module Holistic::Ruby::Scope
     end
 
     delegate :surrounding_class, to: :subkind
+    delegate :visible_to?, to: :subkind
   end
 end

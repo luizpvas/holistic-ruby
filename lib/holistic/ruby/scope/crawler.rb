@@ -7,10 +7,9 @@ module Holistic::Ruby::Scope
       @scope = scope
     end
 
-    def sibling_methods
-      if @scope.instance_method?
-      elsif @scope.class_method?
-      else
+    def visible_scopes
+      ancestors.flat_map { [_1] + _1.lexical_children }.filter do |scope|
+        scope.visible_to?(@scope)
       end
     end
 
