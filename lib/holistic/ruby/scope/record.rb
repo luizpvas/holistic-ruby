@@ -19,8 +19,15 @@ module Holistic::Ruby::Scope
     def instance_method? = kind == Kind::INSTANCE_METHOD
     def method?          = class_method? || instance_method?
 
+    # TODO: rename to something more descriptive.
+    def subkind
+      @subkind ||= Kind.build(self)
+    end
+
     def inspect
       "<#{self.class.name} kind=#{kind} fully_qualified_name=#{fully_qualified_name}>"
     end
+
+    delegate :surrounding_class, to: :subkind
   end
 end
