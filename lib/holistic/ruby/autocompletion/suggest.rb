@@ -14,6 +14,8 @@ module Holistic::Ruby::Autocompletion
       end
 
       case piece_of_code.kind
+      when :suggest_everything_from_current_scope
+        suggest_everything_from_current_scope(piece_of_code:, scope: lookup_scope)
       when :suggest_methods_from_current_scope
         suggest_local_methods_from_current_scope(piece_of_code:, scope: lookup_scope)
       when :suggest_methods_from_scope
@@ -29,6 +31,30 @@ module Holistic::Ruby::Autocompletion
 
     private
 
+    def suggest_everything_from_current_scope(piece_of_code:, scope:)
+      suggestions = []
+
+      sibling_methods =
+        case scope.kind
+        when ::Holistic::Ruby::Scope::Kind::CLASS_METHOD
+          ::Holistic::Ruby::Scope::ListClassMethods.call(scope: scope.lexical_parent)
+        when ::Holistic::Ruby::Scope::Kind::INSTANCE_METHOD
+          ::Holistic::Ruby::Scope::ListInstanceMethods.call(scope: scope.lexical_parent)
+        else
+          return [] # TODO
+        end
+
+      sibling_methods.each do |method_scope|
+        suggestions << Suggestion.new(code: method_scope.name, kind: method_scope.kind)
+      end
+
+      scope.lexical_parent.lexical_children.reject(&:method?).each do |child_scope|
+        suggestions << Suggestion.new(code: child_scope.name, kind: child_scope.kind)
+      end
+
+      suggestions
+    end
+
     def suggest_local_methods_from_current_scope(piece_of_code:, scope:)
       suggestions = []
 
@@ -43,12 +69,6 @@ module Holistic::Ruby::Autocompletion
 
           return []
         end
-
-
-      ::Holistic.logger.info "++++++++"
-      candidates = sibling_methods.map { _1.name }
-      ::Holistic.logger.info "candidates: #{candidates}"
-      ::Holistic.logger.info "++++++++"
 
       sibling_methods.each do |method_scope|
         if method_scope.name.start_with?(piece_of_code.word_to_autocomplete)

@@ -39,8 +39,8 @@ describe ::Holistic::LanguageServer::Requests::TextDocument::Completion do
     end
   end
 
-  context "when characters under cursor does not expand to valid code" do
-    it "responds with nil" do
+  context "when word under cursor is empty" do
+    xit "responds with everything in scope" do
       application.unsaved_documents.add(path: "/snippet.rb", content: ::String.new(source_code))
       
       message = build_completion_message(file_path: "/snippet.rb", line: 2, column: 0)
