@@ -2,6 +2,18 @@
 
 module Holistic::Ruby::Autocompletion
   module Suggester
+    ResolveCrawler = ->(crawler, piece_of_code) do
+      piece_of_code.namespaces.each do |namespace_name|
+        constant = crawler.resolve_constant(namespace_name)
+
+        return crawler if constant.nil?
+
+        crawler = ::Holistic::Ruby::Scope::Crawler.new(application: crawler.application, scope: constant)
+      end
+
+      crawler
+    end
+
     class Everything
       def initialize(piece_of_code)
         @piece_of_code = piece_of_code
@@ -22,17 +34,16 @@ module Holistic::Ruby::Autocompletion
       def suggest(crawler:)
         suggestions = []
 
-        piece_of_code.namespaces.each do |namespace_name|
-          constant = crawler.resolve_constant(namespace_name)
+        crawler = ResolveCrawler.(crawler, piece_of_code)
 
-          return [] if constant.nil?
+        lookup_scopes =
+          if piece_of_code.namespaces.any?
+            [crawler.scope]
+          else
+            crawler.lexical_parents
+          end
 
-          crawler = ::Holistic::Ruby::Scope::Crawler.new(application: crawler.application, scope: constant)
-        end
-
-        should_search_upwards = piece_of_code.namespaces.empty?
-
-        search = ->(scope) do
+        lookup_scopes.each do |scope|
           scope.lexical_children.each do |child_scope|
             next if child_scope.method?
 
@@ -40,11 +51,7 @@ module Holistic::Ruby::Autocompletion
               suggestions << Suggestion.new(code: child_scope.name, kind: child_scope.kind)
             end
           end
-
-          search.(scope.lexical_parent) if scope.lexical_parent.present? && should_search_upwards
         end
-
-        search.(crawler.scope)
 
         suggestions
       end
@@ -94,13 +101,7 @@ module Holistic::Ruby::Autocompletion
       def suggest(crawler:)
         suggestions = []
 
-        piece_of_code.namespaces.each do |namespace_name|
-          constant = crawler.resolve_constant(namespace_name)
-
-          return [] if constant.nil?
-
-          crawler = ::Holistic::Ruby::Scope::Crawler.new(application: crawler.application, scope: constant)
-        end
+        crawler = ResolveCrawler.(crawler, piece_of_code)
 
         class_methods = ::Holistic::Ruby::Scope::ListClassMethods.call(scope: crawler.scope)
 

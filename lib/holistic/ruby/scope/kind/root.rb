@@ -13,7 +13,7 @@ module Holistic::Ruby::Scope
     end
 
     def closest_namespace
-      nil
+      @scope
     end
 
     def visible_to?(_other_scope)
