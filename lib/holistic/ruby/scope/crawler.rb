@@ -34,5 +34,21 @@ module Holistic::Ruby::Scope
 
       lexical_parents
     end
+
+    def resolve_constant(name)
+      lexical_parents.each do |parent_scope|
+        constant = parent_scope.lexical_children.find { _1.name == name }
+
+        return constant if constant
+      end
+
+      ancestors.each do |ancestor_scope|
+        constant = ancestor_scope.lexical_children.find { _1.name == name }
+
+        return constant if constant
+      end
+
+      nil
+    end
   end
 end
