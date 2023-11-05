@@ -12,7 +12,7 @@ module Holistic::Ruby::Scope
       Kind::CLASS
     end
 
-    def surrounding_class
+    def closest_namespace
       @scope
     end
 

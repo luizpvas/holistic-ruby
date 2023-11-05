@@ -12,7 +12,7 @@ module Holistic::Ruby::Scope
       Kind::LAMBDA
     end
 
-    def surrounding_class
+    def closest_namespace
       @scope.lexical_parent
     end
 

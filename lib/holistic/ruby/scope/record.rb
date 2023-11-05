@@ -28,7 +28,7 @@ module Holistic::Ruby::Scope
       "<#{self.class.name} kind=#{kind} fully_qualified_name=#{fully_qualified_name}>"
     end
 
-    delegate :surrounding_class, to: :subkind
+    delegate :closest_namespace, to: :subkind
     delegate :visible_to?, to: :subkind
   end
 end

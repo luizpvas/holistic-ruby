@@ -20,9 +20,19 @@ module Holistic::Ruby::Scope
     end
 
     def ancestors
-      target_class = @scope.surrounding_class
+      class_or_module = @scope.closest_namespace
 
-      [target_class] + Ancestors[target_class]
+      [class_or_module] + Ancestors[class_or_module]
+    end
+
+    def lexical_parents
+      lexical_parents = [@scope.closest_namespace]
+
+      while (parent = lexical_parents.last.lexical_parent)
+        lexical_parents << parent
+      end
+
+      lexical_parents
     end
   end
 end
