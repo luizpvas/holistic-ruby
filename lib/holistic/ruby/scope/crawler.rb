@@ -2,6 +2,8 @@
 
 module Holistic::Ruby::Scope
   class Crawler
+    attr_reader :application, :scope
+
     def initialize(application:, scope:)
       @application = application
       @scope = scope

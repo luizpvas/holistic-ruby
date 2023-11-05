@@ -17,7 +17,7 @@ module Holistic::Ruby::Autocompletion
         @piece_of_code = piece_of_code
       end
 
-      def suggest(scope:)
+      def suggest(crawler:)
         raise "todo"
       end
     end
@@ -29,8 +29,10 @@ module Holistic::Ruby::Autocompletion
         @piece_of_code = piece_of_code
       end
 
-      def suggest(scope:)
+      def suggest(crawler:)
         suggestions = []
+
+        scope = crawler.scope
 
         piece_of_code.namespaces.each do |namespace_name|
           scope = ResolveScope.(name: namespace_name, from_scope: scope)
@@ -65,8 +67,10 @@ module Holistic::Ruby::Autocompletion
         @piece_of_code = piece_of_code
       end
 
-      def suggest(scope:)
+      def suggest(crawler:)
         suggestions = []
+
+        scope = crawler.scope
 
         sibling_methods =
           case scope.kind
@@ -97,8 +101,10 @@ module Holistic::Ruby::Autocompletion
         @piece_of_code = piece_of_code
       end
 
-      def suggest(scope:)
+      def suggest(crawler:)
         suggestions = []
+
+        scope = crawler.scope
 
         piece_of_code.namespaces.each do |namespace_name|
           scope = ResolveScope.(name: namespace_name, from_scope: scope)

@@ -27,7 +27,9 @@ module Holistic::LanguageServer
 
       scope = request.application.scopes.find_inner_most_scope_by_cursor(cursor) || request.application.scopes.root
 
-      suggestions = piece_of_code.suggester.suggest(scope:)
+      crawler = ::Holistic::Ruby::Scope::Crawler.new(application: request.application, scope:)
+
+      suggestions = piece_of_code.suggester.suggest(crawler:)
 
       respond_with_suggestions(request, suggestions)
     end
