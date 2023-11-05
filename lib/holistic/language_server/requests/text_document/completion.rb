@@ -27,7 +27,7 @@ module Holistic::LanguageServer
 
       scope = request.application.scopes.find_inner_most_scope_by_cursor(cursor) || request.application.scopes.root
 
-      suggestions = ::Holistic::Ruby::Autocompletion::Suggest.call(piece_of_code:, scope:)
+      suggestions = piece_of_code.suggester.suggest(scope:)
 
       respond_with_suggestions(request, suggestions)
     end

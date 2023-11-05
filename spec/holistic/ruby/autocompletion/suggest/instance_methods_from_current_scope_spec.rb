@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-describe ::Holistic::Ruby::Autocompletion::Suggest do
+require "spec_helper"
+
+describe ::Holistic::Ruby::Autocompletion::Suggester do
   concerning :Helpers do
     include ::Support::SnippetParser
 
@@ -8,7 +10,7 @@ describe ::Holistic::Ruby::Autocompletion::Suggest do
       scope = application.scopes.find("::MyApp::EventsController#index")
 
       piece_of_code = ::Holistic::Ruby::Autocompletion::PieceOfCode.new(code)
-      actual_suggestions = described_class.call(piece_of_code:, scope:).map do |suggestion|
+      actual_suggestions = piece_of_code.suggester.suggest(scope:).map do |suggestion|
         { code: suggestion.code, kind: suggestion.kind }
       end
 
@@ -16,38 +18,40 @@ describe ::Holistic::Ruby::Autocompletion::Suggest do
     end
   end
 
-  let(:application) do
-    parse_snippet <<~RUBY
-    module MyApp
-      class EventsController
-        Lambda1 = ->{ nil }
+  context "when suggesting instance methods from current scope" do
+    let(:application) do
+      parse_snippet <<~RUBY
+      module MyApp
+        class EventsController
+          Lambda1 = ->{ nil }
 
-        def index
-          # autocomplete here
-        end
+          def index
+            # autocomplete here
+          end
 
-        def method_1
-        end
+          def method_1
+          end
 
-        private
+          private
 
-        def method_2
+          def method_2
+          end
         end
       end
+      RUBY
     end
-    RUBY
-  end
 
-  it "suggests met" do
-    assert_suggestions("met", [
-      { code: "method_1", kind: :instance_method },
-      { code: "method_2", kind: :instance_method }
-    ])
-  end
+    it "suggests met" do
+      assert_suggestions("met", [
+        { code: "method_1", kind: :instance_method },
+        { code: "method_2", kind: :instance_method }
+      ])
+    end
 
-  it "suggests Lam" do
-    assert_suggestions("Lam", [
-      { code: "Lambda1", kind: :lambda }
-    ])
+    it "suggests Lam" do
+      assert_suggestions("Lam", [
+        { code: "Lambda1", kind: :lambda }
+      ])
+    end
   end
 end

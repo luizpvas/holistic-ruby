@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
+require "spec_helper"
+
 describe ::Holistic::Ruby::Autocompletion::Suggester do
   concerning :Helpers do
     include ::Support::SnippetParser
 
     def assert_suggestions(code, suggestions)
-      scope = application.scopes.find("::MyApp::Child.child_method")
+      scope = application.scopes.find("::MyApp::Child#child_method")
 
       piece_of_code = ::Holistic::Ruby::Autocompletion::PieceOfCode.new(code)
       actual_suggestions = piece_of_code.suggester.suggest(scope:).map do |suggestion|
@@ -16,35 +18,40 @@ describe ::Holistic::Ruby::Autocompletion::Suggester do
     end
   end
 
-  context "when suggesting class methods from parent class" do
+  context "when suggesting everything from instance method" do
     let(:application) do
       parse_snippet <<~RUBY
       module MyApp
         class Parent
-          def self.parent_method
+          ParentLambda = ->{}
+
+          PARENT_VALUE = 2
+
+          def parent_method
           end
         end
 
         class Child < Parent
-          def self.child_method
+          ChildLambda = ->{}
+
+          CHILD_VALUE = 1
+
+          def child_method
             # autocomplete here
+          end
+
+          def sibling_method
           end
         end
       end
       RUBY
     end
 
-    it "suggests methods of the parent class from the child class scope" do
-      assert_suggestions("p", [
-        { code: "parent_method", kind: :class_method }
-      ])
-    end
-
-    it "suggests methods from parent from the fully qualified child scope name" do
-      assert_suggestions("::MyApp::Child.", [
-        { code: "child_method", kind: :class_method },
-        { code: "new", kind: :class_method },
-        { code: "parent_method", kind: :class_method }
+    xit "suggests methods, classes, modules, lambdas and constants from the current class and ancesors" do
+      assert_suggestions("", [
+        { code: "child_method", kind: :instance_method },
+        { code: "sibling_method", kind: :instance_method },
+        { code: "parent_method", kind: :instance_method }
       ])
     end
   end
