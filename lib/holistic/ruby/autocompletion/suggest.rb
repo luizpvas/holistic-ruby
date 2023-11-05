@@ -4,8 +4,6 @@ module Holistic::Ruby::Autocompletion
   module Suggest
     extend self
 
-    Suggestion = ::Data.define(:code, :kind)
-
     def call(piece_of_code:, scope:)
       lookup_scope = scope
 

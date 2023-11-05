@@ -8,13 +8,11 @@ describe ::Holistic::Ruby::Autocompletion::Suggest do
       scope = application.scopes.find("::MyApp::EventsController#index")
 
       piece_of_code = ::Holistic::Ruby::Autocompletion::PieceOfCode.new(code)
-      actual_suggestions = described_class.call(piece_of_code:, scope:)
-
-      expected_suggestions = suggestions.map do |suggestion|
-        described_class::Suggestion.new(code: suggestion[:code], kind: suggestion[:kind])
+      actual_suggestions = described_class.call(piece_of_code:, scope:).map do |suggestion|
+        { code: suggestion.code, kind: suggestion.kind }
       end
 
-      expect(actual_suggestions).to eql(expected_suggestions)
+      expect(actual_suggestions).to eql(suggestions)
     end
   end
 
