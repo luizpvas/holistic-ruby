@@ -7,6 +7,22 @@ module Holistic::Ruby::Autocompletion
     def initialize(value)
       @value = value
     end
+
+    def suggester
+      if empty?
+        return Suggester::Everything.new(self)
+      end
+
+      if starts_with_lower_case_letter? || (looks_like_method_call? && !has_dot?)
+        return Suggester::MethodsFromCurrentScope.new(self)
+      end
+
+      if has_dot?
+        return Suggester::MethodsFromScope.new(self)
+      end
+
+      Suggester::Constants.new(self)
+    end
   
     def kind
       return :suggest_everything_from_current_scope if suggest_everything_from_current_scope?

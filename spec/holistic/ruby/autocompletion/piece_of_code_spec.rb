@@ -33,6 +33,39 @@ describe ::Holistic::Ruby::Autocompletion::PieceOfCode do
     end
   end
 
+  describe "#suggester" do
+    Everything              = ::Holistic::Ruby::Autocompletion::Suggester::Everything
+    MethodsFromCurrentScope = ::Holistic::Ruby::Autocompletion::Suggester::MethodsFromCurrentScope
+    MethodsFromScope        = ::Holistic::Ruby::Autocompletion::Suggester::MethodsFromScope
+    Constants               = ::Holistic::Ruby::Autocompletion::Suggester::Constants
+
+    it "returns the suggester for the code under cursor" do
+      examples = [
+        { code: "",             suggester: Everything },
+        { code: " ",            suggester: Everything },
+        { code: "foo",          suggester: MethodsFromCurrentScope },
+        { code: "foo.bar",      suggester: MethodsFromCurrentScope },
+        { code: "foo(",         suggester: MethodsFromCurrentScope },
+        { code: "Success(",     suggester: MethodsFromCurrentScope },
+        { code: "Foo.bar",      suggester: MethodsFromScope },
+        { code: "Foo::Bar.qux", suggester: MethodsFromScope },
+        { code: "Foo.Success",  suggester: MethodsFromScope },
+        { code: "::Foo.bar",    suggester: MethodsFromScope },
+        { code: "::Foo",        suggester: Constants },
+        { code: "::Foo::",      suggester: Constants },
+        { code: "::Foo::Bar",   suggester: Constants },
+        { code: "Foo",          suggester: Constants }
+      ]
+
+      examples.each do |example|
+        expect(code(example[:code]).suggester).to(
+          be_a(example[:suggester]),
+          "#{example[:code]}.suggester = #{example[:suggester]}"
+        )
+      end
+    end
+  end
+
   describe "#suggest_everything_from_current_scope?" do
     it "returns true if code under cursor is empty" do
       examples = [
