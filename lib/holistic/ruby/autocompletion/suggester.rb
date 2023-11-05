@@ -2,16 +2,6 @@
 
 module Holistic::Ruby::Autocompletion
   module Suggester
-    ResolveScope = ->(name:, from_scope:) do
-      resolved_scope = from_scope.lexical_children.find { |scope| scope.name == name }
-
-      if resolved_scope.nil? && from_scope.lexical_parent.present?
-        resolved_scope = ResolveScope.(name:, from_scope: from_scope.lexical_parent)
-      end
-
-      resolved_scope
-    end
-
     class Everything
       def initialize(piece_of_code)
         @piece_of_code = piece_of_code
@@ -32,12 +22,12 @@ module Holistic::Ruby::Autocompletion
       def suggest(crawler:)
         suggestions = []
 
-        scope = crawler.scope
-
         piece_of_code.namespaces.each do |namespace_name|
-          scope = ResolveScope.(name: namespace_name, from_scope: scope)
+          constant = crawler.resolve_constant(namespace_name)
 
-          return suggestions if scope.nil?
+          return [] if constant.nil?
+
+          crawler = ::Holistic::Ruby::Scope::Crawler.new(application: crawler.application, scope: constant)
         end
 
         should_search_upwards = piece_of_code.namespaces.empty?
@@ -54,7 +44,7 @@ module Holistic::Ruby::Autocompletion
           search.(scope.lexical_parent) if scope.lexical_parent.present? && should_search_upwards
         end
 
-        search.(scope)
+        search.(crawler.scope)
 
         suggestions
       end
@@ -104,15 +94,15 @@ module Holistic::Ruby::Autocompletion
       def suggest(crawler:)
         suggestions = []
 
-        scope = crawler.scope
-
         piece_of_code.namespaces.each do |namespace_name|
-          scope = ResolveScope.(name: namespace_name, from_scope: scope)
+          constant = crawler.resolve_constant(namespace_name)
 
-          return suggestions if scope.nil?
+          return [] if constant.nil?
+
+          crawler = ::Holistic::Ruby::Scope::Crawler.new(application: crawler.application, scope: constant)
         end
 
-        class_methods = ::Holistic::Ruby::Scope::ListClassMethods.call(scope:)
+        class_methods = ::Holistic::Ruby::Scope::ListClassMethods.call(scope: crawler.scope)
 
         class_methods.each do |method_scope|
           if method_scope.name.start_with?(piece_of_code.word_to_autocomplete)
