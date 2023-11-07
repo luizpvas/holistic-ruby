@@ -32,7 +32,7 @@ describe Holistic::Ruby::Scope::Crawler do
 
     context "when scope is a class" do
       it "identifies ancestors of the scope" do
-        crawler = described_class.new(application:, scope: application.scopes.find("::Child"))
+        crawler = described_class.new(scope: application.scopes.find("::Child"))
 
         ancestors_names = crawler.ancestors.map { _1.fully_qualified_name }
 
@@ -50,7 +50,7 @@ describe Holistic::Ruby::Scope::Crawler do
 
     context "when scope is an instance method" do
       it "identifies ancestors of the surrounding class" do
-        crawler = described_class.new(application:, scope: application.scopes.find("::Child#instance_child_method"))
+        crawler = described_class.new(scope: application.scopes.find("::Child#instance_child_method"))
 
         ancestors_names = crawler.ancestors.map { _1.fully_qualified_name }
 
@@ -68,7 +68,7 @@ describe Holistic::Ruby::Scope::Crawler do
 
     context "when scope is a class method" do
       it "identifies ancestors of the surrounding class" do
-        crawler = described_class.new(application:, scope: application.scopes.find("::Child.class_child_method"))
+        crawler = described_class.new(scope: application.scopes.find("::Child.class_child_method"))
 
         ancestors_names = crawler.ancestors.map { _1.fully_qualified_name }
 
@@ -86,7 +86,7 @@ describe Holistic::Ruby::Scope::Crawler do
 
     context "when scope is a module" do
       it "identifies ancestors of the surrounding class" do
-        crawler = described_class.new(application:, scope: application.scopes.find("::Mod2"))
+        crawler = described_class.new(scope: application.scopes.find("::Mod2"))
 
         ancestors_names = crawler.ancestors.map { _1.fully_qualified_name }
 

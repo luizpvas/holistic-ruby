@@ -35,7 +35,7 @@ describe ::Holistic::Ruby::Scope::Crawler do
     let(:crawler) do
       scope = application.scopes.find("::MyApp::Child#method")
 
-      described_class.new(application:, scope:)
+      described_class.new(scope:)
     end
 
     context "when resolving a constant defined in the class and parent class" do

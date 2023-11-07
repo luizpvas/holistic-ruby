@@ -8,7 +8,7 @@ module Holistic::Ruby::Autocompletion
 
         return crawler if constant.nil?
 
-        crawler = ::Holistic::Ruby::Scope::Crawler.new(application: crawler.application, scope: constant)
+        crawler = ::Holistic::Ruby::Scope::Crawler.new(scope: constant)
       end
 
       crawler

@@ -28,7 +28,7 @@ describe ::Holistic::Ruby::Scope::Crawler do
 
     context "when scope is an instance method" do
       it "lists instance methods" do
-        crawler = described_class.new(application:, scope: application.scopes.find("::Child#child_method_1"))
+        crawler = described_class.new(scope: application.scopes.find("::Child#child_method_1"))
 
         sibling_methods = crawler.visible_scopes.map { _1.fully_qualified_name }
 
@@ -45,7 +45,7 @@ describe ::Holistic::Ruby::Scope::Crawler do
 
     context "when scope is a class method" do
       it "lists class methods" do
-        crawler = described_class.new(application:, scope: application.scopes.find("::Child.child_class_method_1"))
+        crawler = described_class.new(scope: application.scopes.find("::Child.child_class_method_1"))
 
         sibling_methods = crawler.visible_scopes.map { _1.fully_qualified_name }
 

@@ -8,7 +8,7 @@ describe ::Holistic::Ruby::Autocompletion::Suggester do
       scope = application.scopes.find("::MyApp::Child.child_method")
 
       piece_of_code = ::Holistic::Ruby::Autocompletion::PieceOfCode.new(code)
-      crawler = ::Holistic::Ruby::Scope::Crawler.new(application:, scope:)
+      crawler = ::Holistic::Ruby::Scope::Crawler.new(scope:)
 
       actual_suggestions = piece_of_code.suggester.suggest(crawler:).map do |suggestion|
         { code: suggestion.code, kind: suggestion.kind }

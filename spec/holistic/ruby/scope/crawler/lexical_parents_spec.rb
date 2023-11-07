@@ -27,7 +27,7 @@ describe ::Holistic::Ruby::Scope::Crawler do
       it "returns lexical parents from the surrounding class upwards" do
         instance_method = application.scopes.find("::MyApp::Mod1::Mod2::Class1#method")
 
-        crawler = described_class.new(application:, scope: instance_method)
+        crawler = described_class.new(scope: instance_method)
 
         lexical_parent_names = crawler.lexical_parents.map { _1.fully_qualified_name }
 
