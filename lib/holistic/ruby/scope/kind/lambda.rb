@@ -13,7 +13,7 @@ module Holistic::Ruby::Scope
     end
 
     def closest_namespace
-      @scope.lexical_parent
+      @scope
     end
 
     def visible_to?(_other_scope)
