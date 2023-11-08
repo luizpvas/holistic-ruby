@@ -19,7 +19,7 @@ module Holistic::Ruby::Autocompletion
         @piece_of_code = piece_of_code
       end
 
-      def suggest(crawler:)
+      def suggest(scope:)
         raise "todo"
       end
     end
@@ -31,16 +31,14 @@ module Holistic::Ruby::Autocompletion
         @piece_of_code = piece_of_code
       end
 
-      def suggest(crawler:)
+      def suggest(scope:)
         suggestions = []
-
-        crawler = ResolveCrawler.(crawler, piece_of_code)
 
         lookup_scopes =
           if piece_of_code.namespaces.any?
-            [crawler.scope]
+            [ResolveCrawler.(scope.crawler, piece_of_code).scope]
           else
-            crawler.lexical_parents
+            scope.crawler.lexical_parents
           end
 
         lookup_scopes.each do |scope|
@@ -64,11 +62,11 @@ module Holistic::Ruby::Autocompletion
         @piece_of_code = piece_of_code
       end
 
-      def suggest(crawler:)
+      def suggest(scope:)
         suggestions = []
         overriden_by_subclass = ::Set.new
 
-        sibling_methods = crawler.visible_scopes.filter { _1.kind == crawler.scope.kind }
+        sibling_methods = scope.crawler.visible_scopes.filter { _1.kind == scope.kind }
 
         sibling_methods.each do |method_scope|
           next if overriden_by_subclass.include?(method_scope.name)
@@ -90,11 +88,11 @@ module Holistic::Ruby::Autocompletion
         @piece_of_code = piece_of_code
       end
 
-      def suggest(crawler:)
+      def suggest(scope:)
         suggestions = []
         overriden_by_subclass = ::Set.new
 
-        crawler = ResolveCrawler.(crawler, piece_of_code)
+        crawler = ResolveCrawler.(scope.crawler, piece_of_code)
 
         sibling_methods = crawler.visible_scopes.filter { _1.class_method? }
 

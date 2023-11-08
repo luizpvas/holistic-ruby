@@ -19,6 +19,10 @@ module Holistic::Ruby::Scope
     def instance_method? = kind == Kind::INSTANCE_METHOD
     def method?          = class_method? || instance_method?
 
+    def crawler
+      @crawler ||= Crawler.new(scope: self)
+    end
+
     # TODO: rename to something more descriptive.
     def subkind
       @subkind ||= Kind.build(self)
