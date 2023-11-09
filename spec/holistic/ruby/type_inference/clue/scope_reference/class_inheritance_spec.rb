@@ -20,7 +20,7 @@ describe ::Holistic::Ruby::TypeInference::Clue::ScopeReference do
       expect(reference.clues.size).to be(2)
       expect(reference.clues[0]).to have_attributes(
         itself: be_a(::Holistic::Ruby::TypeInference::Clue::ScopeReference),
-        nesting: ::Holistic::Ruby::Parser::NestingSyntax.new("MyParent"),
+        expression: ::Holistic::Ruby::Parser::Expression.new("MyParent"),
         resolution_possibilities: ["::MyApp", "::"]
       )
       expect(reference.clues[1]).to have_attributes(

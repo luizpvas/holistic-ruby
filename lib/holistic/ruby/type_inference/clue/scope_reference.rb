@@ -3,12 +3,12 @@
 module Holistic::Ruby::TypeInference::Clue
   # TODO: rename to ReferenceToScope
   ScopeReference = ::Struct.new(
-    :nesting,
+    :expression,
     :resolution_possibilities,
     keyword_init: true
   ) do
     def to_s
-      nesting.to_s
+      expression.to_s
     end
   end
 end

@@ -16,10 +16,10 @@ module Holistic::Ruby::Parser
       def visit_module(node)
         declaration_node, body_statements_node = node.child_nodes
 
-        nesting = NestingSyntax.build(declaration_node)
+        expression = Expression.build(declaration_node)
         location = build_scope_location(declaration_node:, body_node: node)
 
-        @constant_resolution.register_child_module(nesting:, location:) do
+        @constant_resolution.register_child_module(expression:, location:) do
           visit(body_statements_node)
         end
       end
@@ -27,16 +27,16 @@ module Holistic::Ruby::Parser
       def visit_class(node)
         declaration_node, superclass_node, body_statements_node = node.child_nodes
 
-        nesting = NestingSyntax.build(declaration_node)
+        expression = Expression.build(declaration_node)
         location = build_scope_location(declaration_node:, body_node: node)
 
-        class_scope = @constant_resolution.register_child_class(nesting:, location:) do
+        class_scope = @constant_resolution.register_child_class(expression:, location:) do
           visit(body_statements_node)
         end
 
         if superclass_node
           reference_to_scope_clue = ::Holistic::Ruby::TypeInference::Clue::ScopeReference.new(
-            nesting: NestingSyntax.build(superclass_node),
+            expression: Expression.build(superclass_node),
             resolution_possibilities: @constant_resolution.current
           )
 
@@ -60,16 +60,16 @@ module Holistic::Ruby::Parser
         command_name_node, args_node = node.child_nodes
 
         if command_name_node.value == "extend"
-          is_extending_self = args_node.child_nodes.size == 1 && NestingSyntax.build(args_node.child_nodes.first).to_s == "self"
+          is_extending_self = args_node.child_nodes.size == 1 && Expression.build(args_node.child_nodes.first).to_s == "self"
 
           @constant_resolution.change_method_registration_mode_to_class_methods! if is_extending_self
         end
 
         if command_name_node.value == "include"
-          superclass_nesting_syntax = NestingSyntax.build(args_node.child_nodes.first)
+          superclass_expression = Expression.build(args_node.child_nodes.first)
 
           reference_to_scope_clue = ::Holistic::Ruby::TypeInference::Clue::ScopeReference.new(
-            nesting: superclass_nesting_syntax,
+            expression: superclass_expression,
             resolution_possibilities: @constant_resolution.current
           )
 
@@ -92,7 +92,7 @@ module Holistic::Ruby::Parser
       def visit_def(node)
         instance_node, period_node, method_name_node, _params, body_statements_node = node.child_nodes
 
-        nesting = NestingSyntax.new(method_name_node.value)
+        expression = Expression.new(method_name_node.value)
         location = build_scope_location(declaration_node: method_name_node, body_node: node)
 
         kind =
@@ -104,14 +104,14 @@ module Holistic::Ruby::Parser
             ::Holistic::Ruby::Scope::Kind::INSTANCE_METHOD
           end
 
-        @constant_resolution.register_child_method(nesting:, location:, kind:) do
+        @constant_resolution.register_child_method(expression:, location:, kind:) do
           visit(body_statements_node)
         end
       end
 
       def visit_vcall(node)
         method_call_clue = ::Holistic::Ruby::TypeInference::Clue::MethodCall.new(
-          nesting: nil,
+          expression: nil,
           method_name: node.child_nodes.first.value,
           resolution_possibilities: @constant_resolution.current
         )
@@ -131,22 +131,22 @@ module Holistic::Ruby::Parser
         visit(instance_node)
         visit(arguments_nodes)
 
-        nesting =
+        expression =
           if instance_node.is_a?(::SyntaxTree::CallNode)
-            NestingSyntax.build(instance_node.child_nodes[2])
+            Expression.build(instance_node.child_nodes[2])
           elsif instance_node.present?
-            NestingSyntax.build(instance_node)
+            Expression.build(instance_node)
           else
             nil
           end
 
-        return if nesting.present? && nesting.unsupported?
+        return if expression.present? && expression.unsupported?
 
         # method_name_node is nil for the syntax `DoSomething.(value)`
         method_name = method_name_node.nil? ? "call" : method_name_node.value
         
         method_call_clue = ::Holistic::Ruby::TypeInference::Clue::MethodCall.new(
-          nesting:,
+          expression:,
           method_name:,
           resolution_possibilities: @constant_resolution.current
         )
@@ -174,10 +174,10 @@ module Holistic::Ruby::Parser
         if body_node.is_a?(::SyntaxTree::MethodAddBlock)
           call_node, block_node = body_node.child_nodes
 
-          nesting = NestingSyntax.build(assign_node)
+          expression = Expression.build(assign_node)
           location = build_scope_location(declaration_node: assign_node, body_node: block_node)
 
-          class_scope = @constant_resolution.register_child_class(nesting:, location:) do
+          class_scope = @constant_resolution.register_child_class(expression:, location:) do
             visit(block_node)
           end
 
@@ -203,23 +203,23 @@ module Holistic::Ruby::Parser
       end
 
       def visit_const_path_ref(node)
-        register_reference(nesting: NestingSyntax.build(node), location: build_location(node))
+        register_reference(expression: Expression.build(node), location: build_location(node))
       end
 
       def visit_top_const_ref(node)
-        register_reference(nesting: NestingSyntax.build(node), location: build_location(node))
+        register_reference(expression: Expression.build(node), location: build_location(node))
       end
 
       def visit_const(node)
-        register_reference(nesting: NestingSyntax.build(node), location: build_location(node))
+        register_reference(expression: Expression.build(node), location: build_location(node))
       end
     end
 
     private
 
-    def register_reference(nesting:, location:)
+    def register_reference(expression:, location:)
       clue = ::Holistic::Ruby::TypeInference::Clue::ScopeReference.new(
-        nesting:,
+        expression:,
         resolution_possibilities: @constant_resolution.current
       )
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe ::Holistic::Ruby::Parser::NestingSyntax do
+describe ::Holistic::Ruby::Parser::Expression do
   describe "#constant?" do
     context "when value is a constant" do
       it "returns true" do

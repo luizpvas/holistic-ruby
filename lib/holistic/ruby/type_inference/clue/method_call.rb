@@ -3,14 +3,14 @@
 module Holistic::Ruby::TypeInference::Clue
   # TODO: Rename to ReferenceToMethod
   MethodCall = ::Data.define(
-    :nesting,
+    :expression,
     :method_name,
     :resolution_possibilities
   ) do
     def to_s
-      return method_name if nesting.nil?
+      return method_name if expression.nil?
 
-      "#{nesting}.#{method_name}"
+      "#{expression}.#{method_name}"
     end
   end
 end

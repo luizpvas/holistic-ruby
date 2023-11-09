@@ -20,10 +20,11 @@ module Holistic::Ruby::Parser
       @constant_resolution_possibilities.dup
     end
 
-    def register_child_module(nesting:, location:, &block)
+    def register_child_module(expression:, location:, &block)
       starting_scope = @scope
 
-      nesting.each do |name|
+      # TODO: expression.namespaces.each
+      expression.each do |name|
         @scope =
           ::Holistic::Ruby::Scope::Store.call(
             database: @scope_repository.database,
@@ -47,10 +48,11 @@ module Holistic::Ruby::Parser
       registered_module_scope
     end
 
-    def register_child_class(nesting:, location:, &block)
+    def register_child_class(expression:, location:, &block)
       starting_scope = @scope
 
-      nesting.each do |name|
+      # TODO: expression.namespaces.each
+      expression.each do |name|
         @scope =
           ::Holistic::Ruby::Scope::Store.call(
             database: @scope_repository.database,
@@ -74,10 +76,11 @@ module Holistic::Ruby::Parser
       registered_class_scope
     end
 
-    def register_child_method(nesting:, location:, kind:, &block)
+    def register_child_method(expression:, location:, kind:, &block)
       starting_scope = @scope
 
-      nesting.each do |name|
+      # TODO: expression.namespaces.each
+      expression.each do |name|
         @scope =
           ::Holistic::Ruby::Scope::Store.call(
             database: @scope_repository.database,

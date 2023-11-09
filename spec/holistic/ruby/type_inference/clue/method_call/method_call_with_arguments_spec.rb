@@ -16,7 +16,7 @@ describe ::Holistic::Ruby::TypeInference::Clue::MethodCall do
       expect(reference.clues.size).to be(1)
       expect(reference.clues.first).to have_attributes(
         itself: be_a(::Holistic::Ruby::TypeInference::Clue::MethodCall),
-        nesting: ::Holistic::Ruby::Parser::NestingSyntax.new("example"),
+        expression: ::Holistic::Ruby::Parser::Expression.new("example"),
         method_name: "do_something",
         resolution_possibilities: ["::"]
       )
@@ -36,7 +36,7 @@ describe ::Holistic::Ruby::TypeInference::Clue::MethodCall do
       expect(reference_to_do_something.clues.size).to be(1)
       expect(reference_to_do_something.clues.first).to have_attributes(
         itself: be_a(::Holistic::Ruby::TypeInference::Clue::MethodCall),
-        nesting: ::Holistic::Ruby::Parser::NestingSyntax.new("example"),
+        expression: ::Holistic::Ruby::Parser::Expression.new("example"),
         method_name: "do_something",
         resolution_possibilities: ["::"]
       )
@@ -46,7 +46,7 @@ describe ::Holistic::Ruby::TypeInference::Clue::MethodCall do
       expect(reference_to_value.clues.size).to be(1)
       expect(reference_to_value.clues.first).to have_attributes(
         itself: be_a(::Holistic::Ruby::TypeInference::Clue::MethodCall),
-        nesting: ::Holistic::Ruby::Parser::NestingSyntax.new("example"),
+        expression: ::Holistic::Ruby::Parser::Expression.new("example"),
         method_name: "value",
         resolution_possibilities: ["::"]
       )
@@ -68,7 +68,7 @@ describe ::Holistic::Ruby::TypeInference::Clue::MethodCall do
       expect(reference_to_do_something.clues.size).to be(1)
       expect(reference_to_do_something.clues.first).to have_attributes(
         itself: be_a(::Holistic::Ruby::TypeInference::Clue::MethodCall),
-        nesting: ::Holistic::Ruby::Parser::NestingSyntax.new("example"),
+        expression: ::Holistic::Ruby::Parser::Expression.new("example"),
         method_name: "do_something",
         resolution_possibilities: ["::"]
       )
@@ -78,7 +78,7 @@ describe ::Holistic::Ruby::TypeInference::Clue::MethodCall do
       expect(reference_to_do_something_else.clues.size).to be(1)
       expect(reference_to_do_something_else.clues.first).to have_attributes(
         itself: be_a(::Holistic::Ruby::TypeInference::Clue::MethodCall),
-        nesting: ::Holistic::Ruby::Parser::NestingSyntax.new("arg"),
+        expression: ::Holistic::Ruby::Parser::Expression.new("arg"),
         method_name: "do_something_else",
         resolution_possibilities: ["::"]
       )
@@ -100,7 +100,7 @@ describe ::Holistic::Ruby::TypeInference::Clue::MethodCall do
       expect(reference_to_do_something.clues.size).to be(1)
       expect(reference_to_do_something.clues.first).to have_attributes(
         itself: be_a(::Holistic::Ruby::TypeInference::Clue::MethodCall),
-        nesting: ::Holistic::Ruby::Parser::NestingSyntax.new("example"),
+        expression: ::Holistic::Ruby::Parser::Expression.new("example"),
         method_name: "do_something",
         resolution_possibilities: ["::"]
       )
@@ -110,7 +110,7 @@ describe ::Holistic::Ruby::TypeInference::Clue::MethodCall do
       expect(reference_to_do_something_else.clues.size).to be(1)
       expect(reference_to_do_something_else.clues.first).to have_attributes(
         itself: be_a(::Holistic::Ruby::TypeInference::Clue::MethodCall),
-        nesting: ::Holistic::Ruby::Parser::NestingSyntax.new("arg"),
+        expression: ::Holistic::Ruby::Parser::Expression.new("arg"),
         method_name: "do_something_else",
         resolution_possibilities: ["::"]
       )

@@ -16,7 +16,7 @@ describe ::Holistic::Ruby::TypeInference::Clue::MethodCall do
       expect(reference.clues.size).to be(1)
       expect(reference.clues.first).to have_attributes(
         itself: be_a(::Holistic::Ruby::TypeInference::Clue::MethodCall),
-        nesting: ::Holistic::Ruby::Parser::NestingSyntax.new("user"),
+        expression: ::Holistic::Ruby::Parser::Expression.new("user"),
         method_name: "nickname",
         resolution_possibilities: ["::"]
       )

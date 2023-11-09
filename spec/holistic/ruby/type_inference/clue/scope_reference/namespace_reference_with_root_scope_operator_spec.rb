@@ -18,7 +18,7 @@ describe ::Holistic::Ruby::TypeInference::Clue::ScopeReference do
       expect(reference.clues.size).to be(1)
       expect(reference.clues.first).to have_attributes(
         itself: be_a(::Holistic::Ruby::TypeInference::Clue::ScopeReference),
-        nesting: ::Holistic::Ruby::Parser::NestingSyntax.new(["MyLib", "String"]),
+        expression: ::Holistic::Ruby::Parser::Expression.new(["MyLib", "String"]),
         resolution_possibilities: ["::MyApp", "::"]
       )
     end
@@ -39,7 +39,7 @@ describe ::Holistic::Ruby::TypeInference::Clue::ScopeReference do
       expect(reference.clues.size).to be(1)
       expect(reference.clues.first).to have_attributes(
         itself: be_a(::Holistic::Ruby::TypeInference::Clue::ScopeReference),
-        nesting: ::Holistic::Ruby::Parser::NestingSyntax.new("String"),
+        expression: ::Holistic::Ruby::Parser::Expression.new("String"),
         resolution_possibilities: ["::MyApp", "::"]
       )
     end
