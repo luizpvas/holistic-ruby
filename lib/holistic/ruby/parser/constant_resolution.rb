@@ -23,8 +23,7 @@ module Holistic::Ruby::Parser
     def register_child_module(expression:, location:, &block)
       starting_scope = @scope
 
-      # TODO: expression.namespaces.each
-      expression.each do |name|
+      expression.namespaces.each do |name|
         @scope =
           ::Holistic::Ruby::Scope::Store.call(
             database: @scope_repository.database,
@@ -51,8 +50,7 @@ module Holistic::Ruby::Parser
     def register_child_class(expression:, location:, &block)
       starting_scope = @scope
 
-      # TODO: expression.namespaces.each
-      expression.each do |name|
+      expression.namespaces.each do |name|
         @scope =
           ::Holistic::Ruby::Scope::Store.call(
             database: @scope_repository.database,
@@ -79,8 +77,7 @@ module Holistic::Ruby::Parser
     def register_child_method(expression:, location:, kind:, &block)
       starting_scope = @scope
 
-      # TODO: expression.namespaces.each
-      expression.each do |name|
+      expression.namespaces.each do |name|
         @scope =
           ::Holistic::Ruby::Scope::Store.call(
             database: @scope_repository.database,

@@ -69,6 +69,10 @@ module Holistic::Ruby::Parser
       other.class == self.class && other.to_s == to_s
     end
 
+    def namespaces
+      value
+    end
+
     alias == eql?
 
     delegate :each, to: :value
