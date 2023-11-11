@@ -38,6 +38,14 @@ module Holistic::Ruby::Parser
       @value = value
     end
 
+    def to_s
+      value
+    end
+
+    def each(&)
+      namespaces.each(&)
+    end
+
     def root_scope_resolution?
       value.start_with?("::")
     end
