@@ -8,17 +8,17 @@ describe ::Holistic::Ruby::Parser::Expression do
       program = ::SyntaxTree.parse(value)
       node = program.child_nodes.first.child_nodes.first
 
-      described_class.build_from_syntax_tree_node(node)
+      described_class::SyntaxTree.build(node)
     end
 
-    def assert_expression(value)
+    def assert_expression(value, formatted = nil)
       expr = expression value
 
-      expect(expr.value).to eql(value)
+      expect(expr.value).to eql(formatted || value)
     end
   end
 
-  describe "#build_from_syntax_tree_node" do
+  describe "::SyntaxTree.build" do
     it "understands namespaces and method call chains" do
       assert_expression("Foo")
       assert_expression("Foo::Bar")
@@ -30,6 +30,17 @@ describe ::Holistic::Ruby::Parser::Expression do
       assert_expression("foo(10)")
       assert_expression("foo(10, 20)")
       assert_expression("data[:request].response.inspect")
+      assert_expression("@relations[connection_name].to_a")
+      assert_expression("@records[id]&.tap")
+      assert_expression("@content[token_index].match?(/[a-zA-Z0-9_\.:]/)")
+      assert_expression(
+        "@listeners[event].lazy.filter_map { |callback| callback.call(params) }",
+        "@listeners[event].lazy.filter_map <BLOCK>" 
+      )
+      assert_expression('data["params"].dig(*keys)')
+      assert_expression('"string literal #{cursor.file_path}"')
+      assert_expression("node.child_nodes[1..]")
+      assert_expression("method_name_node || instance_node")
     end
   end
 

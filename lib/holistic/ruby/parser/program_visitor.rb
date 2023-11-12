@@ -16,7 +16,7 @@ module Holistic::Ruby::Parser
       def visit_module(node)
         declaration_node, body_statements_node = node.child_nodes
 
-        expression = Expression.build_from_syntax_tree_node(declaration_node)
+        expression = Expression::SyntaxTree.build(declaration_node)
         location = build_scope_location(declaration_node:, body_node: node)
 
         @constant_resolution.register_child_module(expression:, location:) do
@@ -27,7 +27,7 @@ module Holistic::Ruby::Parser
       def visit_class(node)
         declaration_node, superclass_node, body_statements_node = node.child_nodes
 
-        expression = Expression.build_from_syntax_tree_node(declaration_node)
+        expression = Expression::SyntaxTree.build(declaration_node)
         location = build_scope_location(declaration_node:, body_node: node)
 
         class_scope = @constant_resolution.register_child_class(expression:, location:) do
@@ -36,7 +36,7 @@ module Holistic::Ruby::Parser
 
         if superclass_node
           reference_to_scope_clue = ::Holistic::Ruby::TypeInference::Clue::ScopeReference.new(
-            expression: Expression.build_from_syntax_tree_node(superclass_node),
+            expression: Expression::SyntaxTree.build(superclass_node),
             resolution_possibilities: @constant_resolution.current
           )
 
@@ -60,13 +60,13 @@ module Holistic::Ruby::Parser
         command_name_node, args_node = node.child_nodes
 
         if command_name_node.value == "extend"
-          is_extending_self = args_node.child_nodes.size == 1 && Expression.build_from_syntax_tree_node(args_node.child_nodes.first).to_s == "self"
+          is_extending_self = args_node.child_nodes.size == 1 && Expression::SyntaxTree.build(args_node.child_nodes.first).to_s == "self"
 
           @constant_resolution.change_method_registration_mode_to_class_methods! if is_extending_self
         end
 
         if command_name_node.value == "include"
-          superclass_expression = Expression.build_from_syntax_tree_node(args_node.child_nodes.first)
+          superclass_expression = Expression::SyntaxTree.build(args_node.child_nodes.first)
 
           reference_to_scope_clue = ::Holistic::Ruby::TypeInference::Clue::ScopeReference.new(
             expression: superclass_expression,
@@ -111,7 +111,7 @@ module Holistic::Ruby::Parser
       end
 
       def visit_vcall(node)
-        expression = Expression.build_from_syntax_tree_node(node)
+        expression = Expression::SyntaxTree.build(node)
 
         method_call_clue = ::Holistic::Ruby::TypeInference::Clue::MethodCall.new(
           expression:,
@@ -134,7 +134,7 @@ module Holistic::Ruby::Parser
         visit(instance_node)
         visit(arguments_nodes)
 
-        expression = Expression.build_from_syntax_tree_node(node)
+        expression = Expression::SyntaxTree.build(node)
 
         return if !expression.valid?
 
@@ -167,7 +167,7 @@ module Holistic::Ruby::Parser
         if body_node.is_a?(::SyntaxTree::MethodAddBlock)
           call_node, block_node = body_node.child_nodes
 
-          expression = Expression.build_from_syntax_tree_node(assign_node)
+          expression = Expression::SyntaxTree.build(assign_node)
           location = build_scope_location(declaration_node: assign_node, body_node: block_node)
 
           class_scope = @constant_resolution.register_child_class(expression:, location:) do
@@ -196,15 +196,15 @@ module Holistic::Ruby::Parser
       end
 
       def visit_const_path_ref(node)
-        register_reference(expression: Expression.build_from_syntax_tree_node(node), location: build_location(node))
+        register_reference(expression: Expression::SyntaxTree.build(node), location: build_location(node))
       end
 
       def visit_top_const_ref(node)
-        register_reference(expression: Expression.build_from_syntax_tree_node(node), location: build_location(node))
+        register_reference(expression: Expression::SyntaxTree.build(node), location: build_location(node))
       end
 
       def visit_const(node)
-        register_reference(expression: Expression.build_from_syntax_tree_node(node), location: build_location(node))
+        register_reference(expression: Expression::SyntaxTree.build(node), location: build_location(node))
       end
     end
 
