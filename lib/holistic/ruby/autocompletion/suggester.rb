@@ -2,8 +2,8 @@
 
 module Holistic::Ruby::Autocompletion
   module Suggester
-    ResolveCrawler = ->(crawler, piece_of_code) do
-      piece_of_code.namespaces.each do |namespace_name|
+    ResolveCrawler = ->(crawler, expression) do
+      expression.namespaces.each do |namespace_name|
         constant = crawler.resolve_constant(namespace_name)
 
         return crawler if constant.nil?
@@ -15,8 +15,8 @@ module Holistic::Ruby::Autocompletion
     end
 
     class Everything
-      def initialize(piece_of_code)
-        @piece_of_code = piece_of_code
+      def initialize(expression)
+        @expression = expression
       end
 
       def suggest(scope:)
@@ -25,18 +25,22 @@ module Holistic::Ruby::Autocompletion
     end
 
     class Constants
-      attr_reader :piece_of_code
+      attr_reader :expression
 
-      def initialize(piece_of_code)
-        @piece_of_code = piece_of_code
+      def initialize(expression)
+        @expression = expression
       end
 
       def suggest(scope:)
         suggestions = []
 
+        has_at_least_one_completed_namespace =
+          expression.namespaces.length > 1 ||
+          expression.namespaces.one? && expression.namespaces.first != expression.last_subexpression
+
         lookup_scopes =
-          if piece_of_code.namespaces.any?
-            [ResolveCrawler.(scope.crawler, piece_of_code).scope]
+          if has_at_least_one_completed_namespace
+            [ResolveCrawler.(scope.crawler, expression).scope]
           else
             scope.crawler.lexical_parents
           end
@@ -45,7 +49,7 @@ module Holistic::Ruby::Autocompletion
           scope.lexical_children.each do |child_scope|
             next if child_scope.method?
 
-            if child_scope.name.start_with?(piece_of_code.word_to_autocomplete)
+            if child_scope.name.start_with?(expression.last_subexpression)
               suggestions << Suggestion.new(code: child_scope.name, kind: child_scope.kind)
             end
           end
@@ -56,10 +60,10 @@ module Holistic::Ruby::Autocompletion
     end
 
     class MethodsFromCurrentScope
-      attr_reader :piece_of_code
+      attr_reader :expression
 
-      def initialize(piece_of_code)
-        @piece_of_code = piece_of_code
+      def initialize(expression)
+        @expression = expression
       end
 
       def suggest(scope:)
@@ -71,7 +75,7 @@ module Holistic::Ruby::Autocompletion
         sibling_methods.each do |method_scope|
           next if overriden_by_subclass.include?(method_scope.name)
 
-          if method_scope.name.start_with?(piece_of_code.word_to_autocomplete)
+          if method_scope.name.start_with?(expression.last_subexpression)
             suggestions << Suggestion.new(code: method_scope.name, kind: method_scope.kind)
             overriden_by_subclass.add(method_scope.name)
           end
@@ -82,24 +86,24 @@ module Holistic::Ruby::Autocompletion
     end
 
     class MethodsFromScope
-      attr_reader :piece_of_code
+      attr_reader :expression
 
-      def initialize(piece_of_code)
-        @piece_of_code = piece_of_code
+      def initialize(expression)
+        @expression = expression
       end
 
       def suggest(scope:)
         suggestions = []
         overriden_by_subclass = ::Set.new
 
-        crawler = ResolveCrawler.(scope.crawler, piece_of_code)
+        crawler = ResolveCrawler.(scope.crawler, expression)
 
         sibling_methods = crawler.visible_scopes.filter { _1.class_method? }
 
         sibling_methods.each do |method_scope|
           next if overriden_by_subclass.include?(method_scope.name)
 
-          if method_scope.name.start_with?(piece_of_code.word_to_autocomplete)
+          if method_scope.name.start_with?(expression.last_subexpression)
             suggestions << Suggestion.new(code: method_scope.name, kind: method_scope.kind)
             overriden_by_subclass.add(method_scope.name)
           end
@@ -107,6 +111,22 @@ module Holistic::Ruby::Autocompletion
 
         suggestions
       end
+    end
+
+    def self.for(expression:)
+      if expression.empty?
+        return Everything.new(expression)
+      end
+
+      if expression.starts_with_lower_case_letter? || (expression.looks_like_method_call? && !expression.has_dot?)
+        return MethodsFromCurrentScope.new(expression)
+      end
+
+      if expression.has_dot?
+        return MethodsFromScope.new(expression)
+      end
+
+      Constants.new(expression)
     end
   end
 end

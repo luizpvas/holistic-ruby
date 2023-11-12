@@ -5,14 +5,13 @@ require "spec_helper"
 describe ::Holistic::Ruby::Parser::Expression do
   concerning :Helpers do
     def expression(value)
-      program = ::SyntaxTree.parse(value)
-      node = program.child_nodes.first.child_nodes.first
-
-      described_class::SyntaxTree.build(node)
+      described_class::Valid.new(value)
     end
 
     def assert_expression(value, formatted = nil)
-      expr = expression value
+      program = ::SyntaxTree.parse(value)
+      node    = program.child_nodes.first.child_nodes.first
+      expr    = described_class::SyntaxTree.build(node)
 
       expect(expr.value).to eql(formatted || value)
     end
@@ -87,6 +86,19 @@ describe ::Holistic::Ruby::Parser::Expression do
       expect(expression("Foo::Bar").methods).to eql([])
       expect(expression("Foo").methods).to eql([])
       expect(expression("Foo.(10)").methods).to eql(["call"])
+    end
+  end
+
+  describe "#last_subexpression" do
+    it "returns the last namespace or method call in the chain" do
+      expect(expression("foo").last_subexpression).to eql("foo")
+      expect(expression("foo.bar").last_subexpression).to eql("bar")
+      expect(expression("Foo.bar").last_subexpression).to eql("bar")
+      expect(expression("Foo.bar.").last_subexpression).to eql("")
+      expect(expression("Foo").last_subexpression).to eql("Foo")
+      expect(expression("Foo::Bar").last_subexpression).to eql("Bar")
+      expect(expression("Foo::Bar::").last_subexpression).to eql("")
+      expect(expression("::").last_subexpression).to eql("")
     end
   end
 end

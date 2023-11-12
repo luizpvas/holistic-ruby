@@ -23,11 +23,10 @@ module Holistic::LanguageServer
         )
       end
 
-      piece_of_code = ::Holistic::Ruby::Autocompletion::PieceOfCode.new(document.expand_code(cursor))
-
+      expression = ::Holistic::Ruby::Parser::Expression::Valid.new document.expand_code(cursor)
       scope = request.application.scopes.find_inner_most_scope_by_cursor(cursor) || request.application.scopes.root
 
-      suggestions = piece_of_code.suggester.suggest(scope:)
+      suggestions = ::Holistic::Ruby::Autocompletion::Suggester.for(expression:).suggest(scope: scope)
 
       respond_with_suggestions(request, suggestions)
     end

@@ -9,9 +9,9 @@ describe ::Holistic::Ruby::Autocompletion::Suggester do
     def assert_suggestions(code, suggestions)
       scope = application.scopes.find("::MyApp::EventsController#index")
 
-      piece_of_code = ::Holistic::Ruby::Autocompletion::PieceOfCode.new(code)
+      expression = ::Holistic::Ruby::Parser::Expression::Valid.new(code)
 
-      actual_suggestions = piece_of_code.suggester.suggest(scope:).map do |suggestion|
+      actual_suggestions = described_class.for(expression:).suggest(scope:).map do |suggestion|
         { code: suggestion.code, kind: suggestion.kind }
       end
 

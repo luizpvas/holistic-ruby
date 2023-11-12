@@ -24,6 +24,10 @@ module Holistic::Ruby::Parser::Expression
       namespaces.each(&)
     end
 
+    def empty?
+      value.empty?
+    end
+
     def valid?
       true
     end
@@ -66,14 +70,26 @@ module Holistic::Ruby::Parser::Expression
         .map(&RemoveParensAndArguments)
     end
 
-    private
-
-    def chain
-      @chain ||= value.split(/(:|\.)/).compact_blank
+    def last_subexpression
+      @last_subexpression ||= chain.last.then { |last| IsSeparator.(last) ? "" : last }
     end
 
     def starts_with_lower_case_letter?
       StartsWithLowerCase.(value)
+    end
+
+    def looks_like_method_call?
+      value.include?("(")
+    end
+
+    def has_dot?
+      value.include?(".")
+    end
+
+    private
+
+    def chain
+      @chain ||= value.split(/(:|\.)/).compact_blank
     end
   end
 end
