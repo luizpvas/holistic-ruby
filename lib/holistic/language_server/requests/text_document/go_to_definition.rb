@@ -9,6 +9,8 @@ module Holistic::LanguageServer
       cursor = build_cursor_from_params(request)
 
       request.application.unsaved_documents.find(cursor.file_path)&.then do |unsaved_document|
+        ::Holistic.logger.info("parsing file #{unsaved_document.path}")
+
         if unsaved_document.has_unsaved_changes?
           ::Holistic::Ruby::Parser::LiveEditing::ProcessFileChanged.call(
             application: request.application,
@@ -18,7 +20,9 @@ module Holistic::LanguageServer
         end
       end
 
-      case ::Holistic::Ruby::Reference::FindReferencedScope.call(application: request.application, cursor:)
+      result = ::Holistic::Ruby::Reference::FindReferencedScope.call(application: request.application, cursor:)
+
+      case result
       in :not_found
         request.respond_with(nil)
       in :could_not_find_referenced_scope

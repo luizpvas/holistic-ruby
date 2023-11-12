@@ -19,7 +19,7 @@ describe ::Holistic::Ruby::Parser::Expression do
   end
 
   describe "#build_from_syntax_tree_node" do
-    it "understands namespaces" do
+    it "understands namespaces and method call chains" do
       assert_expression("Foo")
       assert_expression("Foo::Bar")
       assert_expression("Foo::Bar::Qux")
@@ -29,6 +29,7 @@ describe ::Holistic::Ruby::Parser::Expression do
       assert_expression("described_class::Value")
       assert_expression("foo(10)")
       assert_expression("foo(10, 20)")
+      assert_expression("data[:request].response.inspect")
     end
   end
 

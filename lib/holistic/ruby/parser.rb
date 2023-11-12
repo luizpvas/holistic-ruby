@@ -10,6 +10,8 @@ module Holistic::Ruby::Parser
   end
 
   ParseFile = ->(application:, file_path:, content:) do
+    ::Holistic.logger.info(file_path)
+
     program = ::SyntaxTree.parse(content)
 
     constant_resolution = ConstantResolution.new(scope_repository: application.scopes)

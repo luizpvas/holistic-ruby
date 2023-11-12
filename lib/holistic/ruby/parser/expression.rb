@@ -25,6 +25,12 @@ module Holistic::Ruby::Parser
       when ::SyntaxTree::CallNode then node.child_nodes.map(&Format).join
       when ::SyntaxTree::ArgParen then "(" + Format.(node.child_nodes[0]) + ")"
       when ::SyntaxTree::ArgBlock then "&" + Format.(node.child_nodes[0])
+
+      # ARef represents the syntax of `data[:request]`
+      # child_nodes[0] is the vcall for data
+      # child_nodes[1] is an args with, usually, one item in it.
+      when ::SyntaxTree::ARef then Format.(node.child_nodes[0]) + "[" + Format.(node.child_nodes[1]) + "]"
+
       when ::SyntaxTree::Paren then node.child_nodes.map(&Format)
       when ::SyntaxTree::LParen then "("
       when ::SyntaxTree::RParen then ")"
@@ -36,9 +42,10 @@ module Holistic::Ruby::Parser
       when ::SyntaxTree::Args then node.child_nodes.map(&Format).join(", ")
       when ::SyntaxTree::Int then node.value
       when ::SyntaxTree::StringLiteral then node.quote + node.parts[0].value + node.quote
+      when ::SyntaxTree::SymbolLiteral then ":" + Format.(node.child_nodes[0])
       when ::SyntaxTree::Statements then raise ::ArgumentError
       when nil then ""
-      else pp(node); pp(node.class); raise "unknown node type #{node.class}"
+      else pp(node); raise "unknown node type #{node.class}"
       end
     end
 
