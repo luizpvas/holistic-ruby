@@ -6,12 +6,14 @@ module Holistic::Ruby::TypeInference::Resolver::Scope
   def resolve(application:, expression:, resolution_possibilities:)
     resolution_possibilities = ["::"] if expression.root_scope_resolution?
 
+    namespace = expression.namespaces.join("::")
+
     resolution_possibilities.each do |resolution_candidate|
       fully_qualified_scope_name =
         if resolution_candidate == "::"
-          "::#{expression.to_s}"
+          "::#{namespace}"
         else
-          "#{resolution_candidate}::#{expression.to_s}"
+          "#{resolution_candidate}::#{namespace}"
         end
 
       scope = application.scopes.find(fully_qualified_scope_name)

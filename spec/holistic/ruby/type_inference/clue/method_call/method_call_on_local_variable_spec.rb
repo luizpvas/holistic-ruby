@@ -14,12 +14,12 @@ describe ::Holistic::Ruby::TypeInference::Clue::MethodCall do
       reference = application.references.find_by_code_content("user.nickname")
 
       expect(reference.clues.size).to be(1)
-      expect(reference.clues.first).to have_attributes(
-        itself: be_a(::Holistic::Ruby::TypeInference::Clue::MethodCall),
-        expression: ::Holistic::Ruby::Parser::Expression.new("user"),
-        method_name: "nickname",
-        resolution_possibilities: ["::"]
-      )
+      
+      reference.clues.first.tap do |clue|
+        expect(clue).to be_a(::Holistic::Ruby::TypeInference::Clue::MethodCall)
+        expect(clue.expression.to_s).to eql("user.nickname")
+        expect(clue.resolution_possibilities).to eql(["::"])
+      end
     end
   end
 end

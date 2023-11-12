@@ -19,7 +19,7 @@ describe ::Holistic::Ruby::Reference::TypeInference::ResolveEnqueued do
     end
 
     it "solves the method call reference" do
-      reference = application.references.find_by_code_content("sum")
+      reference = application.references.find_by_code_content("sum(a, b)")
 
       expect(reference.referenced_scope.fully_qualified_name).to eql("::Calculator#sum")
     end

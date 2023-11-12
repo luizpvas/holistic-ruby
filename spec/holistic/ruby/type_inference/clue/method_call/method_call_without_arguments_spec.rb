@@ -17,22 +17,20 @@ describe ::Holistic::Ruby::TypeInference::Clue::MethodCall do
       reference_to_new = application.references.find_by_code_content("Example.new")
       
       expect(reference_to_new.clues.size).to be(1)
-      expect(reference_to_new.clues.first).to have_attributes(
-        itself: be_a(::Holistic::Ruby::TypeInference::Clue::MethodCall),
-        expression: ::Holistic::Ruby::Parser::Expression.new("Example"),
-        method_name: "new",
-        resolution_possibilities: ["::"]
-      )
+      reference_to_new.clues.first.tap do |clue|
+        expect(clue).to be_a(::Holistic::Ruby::TypeInference::Clue::MethodCall)
+        expect(clue.expression.to_s).to eql("Example.new")
+        expect(clue.resolution_possibilities).to eql(["::"])
+      end
 
       reference_to_do_something = application.references.find_by_code_content("example.do_something")
 
       expect(reference_to_do_something.clues.size).to be(1)
-      expect(reference_to_do_something.clues.first).to have_attributes(
-        itself: be_a(::Holistic::Ruby::TypeInference::Clue::MethodCall),
-        expression: ::Holistic::Ruby::Parser::Expression.new("example"),
-        method_name: "do_something",
-        resolution_possibilities: ["::"]
-      )
+      reference_to_do_something.clues.first.tap do |clue|
+        expect(clue).to be_a(::Holistic::Ruby::TypeInference::Clue::MethodCall)
+        expect(clue.expression.to_s).to eql("example.do_something")
+        expect(clue.resolution_possibilities).to eql(["::"])
+      end
     end
   end
 
@@ -44,25 +42,17 @@ describe ::Holistic::Ruby::TypeInference::Clue::MethodCall do
     end
 
     it "registers a reference for each call" do
-      reference_to_do_something = application.references.find_by_code_content("example.do_something")
+      expect(
+        application.references.find_by_code_content("example")
+      ).to be_a(::Holistic::Ruby::Reference::Record)
 
-      expect(reference_to_do_something.clues.size).to be(1)
-      expect(reference_to_do_something.clues.first).to have_attributes(
-        itself: be_a(::Holistic::Ruby::TypeInference::Clue::MethodCall),
-        expression: ::Holistic::Ruby::Parser::Expression.new("example"),
-        method_name: "do_something",
-        resolution_possibilities: ["::"]
-      )
+      expect(
+        application.references.find_by_code_content("example.do_something")
+      ).to be_a(::Holistic::Ruby::Reference::Record)
 
-      reference_to_do_something_else = application.references.find_by_code_content("do_something.do_something_else")
-
-      expect(reference_to_do_something_else.clues.size).to be(1)
-      expect(reference_to_do_something_else.clues.first).to have_attributes(
-        itself: be_a(::Holistic::Ruby::TypeInference::Clue::MethodCall),
-        expression: ::Holistic::Ruby::Parser::Expression.new("do_something"),
-        method_name: "do_something_else",
-        resolution_possibilities: ["::"]
-      )
+      expect(
+        application.references.find_by_code_content("example.do_something.do_something_else")
+      ).to be_a(::Holistic::Ruby::Reference::Record)
     end
   end
 end

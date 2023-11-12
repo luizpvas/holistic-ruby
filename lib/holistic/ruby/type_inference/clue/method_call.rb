@@ -8,9 +8,7 @@ module Holistic::Ruby::TypeInference::Clue
     :resolution_possibilities
   ) do
     def to_s
-      return method_name if expression.nil?
-
-      "#{expression}.#{method_name}"
+      expression.to_s
     end
   end
 end

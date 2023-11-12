@@ -74,19 +74,17 @@ module Holistic::Ruby::Parser
       registered_class_scope
     end
 
-    def register_child_method(expression:, location:, kind:, &block)
+    def register_child_method(method_name:, location:, kind:, &block)
       starting_scope = @scope
 
-      expression.namespaces.each do |name|
-        @scope =
-          ::Holistic::Ruby::Scope::Store.call(
-            database: @scope_repository.database,
-            lexical_parent: @scope,
-            kind:,
-            name:,
-            location:
-          )
-      end
+      @scope =
+        ::Holistic::Ruby::Scope::Store.call(
+          database: @scope_repository.database,
+          lexical_parent: @scope,
+          kind:,
+          name: method_name,
+          location:
+        )
 
       registered_method_scope = @scope
 

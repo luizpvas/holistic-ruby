@@ -15,14 +15,14 @@ describe ::Holistic::Ruby::TypeInference::Clue::ScopeReference do
     end
 
     it "infers a scope reference clue" do
-      reference = application.references.find_by_code_content("Example")
+      reference = application.references.find_by_code_content("Example.call")
 
       expect(reference.clues.size).to be(1)
-      expect(reference.clues.first).to have_attributes(
-        itself: be_a(::Holistic::Ruby::TypeInference::Clue::ScopeReference),
-        expression: ::Holistic::Ruby::Parser::Expression.new("Example"),
-        resolution_possibilities: ["::MyApp::MyClass", "::MyApp", "::"]
-      )
+      reference.clues.first.tap do |clue|
+        expect(clue).to be_a(::Holistic::Ruby::TypeInference::Clue::MethodCall)
+        expect(clue.expression.to_s).to eql("Example.call")
+        expect(clue.resolution_possibilities).to eql(["::MyApp::MyClass", "::MyApp", "::"])
+      end
     end
   end
 end

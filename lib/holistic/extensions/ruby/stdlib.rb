@@ -6,7 +6,7 @@ module Holistic::Extensions::Ruby
 
     ResolveClassConstructor = ->(application, params) do
       method_call_clue, referenced_scope = params[:method_call_clue], params[:referenced_scope]
-
+      
       if method_call_clue.method_name == "new" && referenced_scope.class?
         initialize_method = "#{referenced_scope.fully_qualified_name}#initialize"
 

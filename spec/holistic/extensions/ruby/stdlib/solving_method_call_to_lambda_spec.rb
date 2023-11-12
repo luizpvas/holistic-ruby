@@ -13,7 +13,7 @@ describe ::Holistic::Extensions::Ruby::Stdlib do
     end
 
     it "solves the method call reference" do
-      reference = application.references.find_by_code_content("Sum.call")
+      reference = application.references.find_by_code_content("Sum.call(1, 2)")
 
       expect(reference.referenced_scope.fully_qualified_name).to eql("::Sum.call")
     end
@@ -29,7 +29,7 @@ describe ::Holistic::Extensions::Ruby::Stdlib do
     end
 
     it "solves the method call reference" do
-      reference = application.references.find_by_code_content("Sum.curry")
+      reference = application.references.find_by_code_content("Sum.curry(1)")
 
       expect(reference.referenced_scope.fully_qualified_name).to eql("::Sum.curry")
     end

@@ -18,6 +18,7 @@ module Holistic::Ruby::TypeInference
       reference_to_scope = bag_of_clues.find(Clue::ScopeReference)
 
       return if reference_to_scope.nil?
+      return if !reference_to_scope.expression.valid?
 
       Scope.resolve(
         application:,
@@ -53,8 +54,9 @@ module Holistic::Ruby::TypeInference
       method_call_clue = bag_of_clues.find(Clue::MethodCall)
 
       return if !method_call_clue
+      return if !method_call_clue.expression
 
-      if method_call_clue.expression.nil?
+      if method_call_clue.expression.namespaces.empty?
         SolveMethodCallInCurrentScope.call(application:, scope:, method_call_clue:)
       elsif method_call_clue.expression.constant?
         SolveMethodCallInSpecifiedScope.call(application:, method_call_clue:)
