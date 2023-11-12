@@ -13,6 +13,12 @@ describe ::Holistic::Extensions::Ruby::Stdlib do
       Example.new
       RUBY
     end
+    
+    it "stores a scope for the `new` class method" do
+      scope = application.scopes.find("::Example.new")
+
+      expect(scope).to be_a(::Holistic::Ruby::Scope::Record)
+    end
 
     it "solves the method call reference" do
       reference = application.references.find_by_code_content("Example.new")

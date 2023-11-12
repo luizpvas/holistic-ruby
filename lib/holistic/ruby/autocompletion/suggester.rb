@@ -96,11 +96,12 @@ module Holistic::Ruby::Autocompletion
         suggestions = []
         overriden_by_subclass = ::Set.new
 
+
         crawler = ResolveCrawler.(scope.crawler, expression)
 
-        sibling_methods = crawler.visible_scopes.filter { _1.class_method? }
+        class_methods = crawler.visible_scopes.filter { _1.class_method? }
 
-        sibling_methods.each do |method_scope|
+        class_methods.each do |method_scope|
           next if overriden_by_subclass.include?(method_scope.name)
 
           if method_scope.name.start_with?(expression.last_subexpression)
