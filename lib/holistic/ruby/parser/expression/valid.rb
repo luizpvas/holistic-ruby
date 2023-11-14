@@ -36,11 +36,6 @@ module Holistic::Ruby::Parser::Expression
       value.start_with?("::")
     end
 
-    # TODO: remove this method
-    def constant?
-      namespaces.any?
-    end
-
     IsSeparator = ->(str) { str == ":" || str == "." }
 
     StartsWithLowerCase = ->(str) do

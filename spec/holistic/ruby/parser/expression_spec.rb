@@ -50,17 +50,6 @@ describe ::Holistic::Ruby::Parser::Expression do
     end
   end
 
-  describe "#constant?" do
-    it "returns true for constants, false otherwise" do
-      expect(expression("::Foo").constant?).to be(true)
-      expect(expression("Foo").constant?).to be(true)
-      expect(expression("Foo::Bar").constant?).to be(true)
-      expect(expression("Foo.bar").constant?).to be(true)
-      expect(expression("foo").constant?).to be(false)
-      expect(expression("class_name.constantize").constant?).to be(false)
-    end
-  end
-
   describe "#namespaces" do
     it "returns the namespaces" do
       expect(expression("::Foo").namespaces).to eql(["Foo"])

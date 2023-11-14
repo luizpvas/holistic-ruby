@@ -58,10 +58,8 @@ module Holistic::Ruby::TypeInference
 
       if method_call_clue.expression.namespaces.empty?
         SolveMethodCallInCurrentScope.call(application:, scope:, method_call_clue:)
-      elsif method_call_clue.expression.constant?
-        SolveMethodCallInSpecifiedScope.call(application:, method_call_clue:)
       else
-        nil # TODO
+        SolveMethodCallInSpecifiedScope.call(application:, method_call_clue:)
       end
     end
   end
