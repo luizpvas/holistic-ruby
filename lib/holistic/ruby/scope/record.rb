@@ -7,11 +7,12 @@ module Holistic::Ruby::Scope
     def name                 = attr(:name)
     def kind                 = attr(:kind)
 
-    def lexical_parent   = has_one(:lexical_parent)
-    def lexical_children = has_many(:lexical_children)
-    def ancestors        = has_many(:ancestors)
-    def descendants      = has_many(:descendants)
-    def referenced_by    = has_many(:referenced_by)
+    def lexical_parent      = has_one(:lexical_parent)
+    def lexical_children    = has_many(:lexical_children)
+    def ancestors           = has_many(:ancestors)
+    def descendants         = has_many(:descendants)
+    def referenced_by       = has_many(:referenced_by)
+    def contains_references = has_many(:contains_many_references)
 
     def root?            = kind == Kind::ROOT
     def class?           = kind == Kind::CLASS
