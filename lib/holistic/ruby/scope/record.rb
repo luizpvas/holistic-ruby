@@ -7,6 +7,8 @@ module Holistic::Ruby::Scope
     def name                 = attr(:name)
     def kind                 = attr(:kind)
 
+    def return_type         = has_one(:return_type)
+    def returned_by_many    = has_many(:returned_by_many)
     def lexical_parent      = has_one(:lexical_parent)
     def lexical_children    = has_many(:lexical_children)
     def ancestors           = has_many(:ancestors)
