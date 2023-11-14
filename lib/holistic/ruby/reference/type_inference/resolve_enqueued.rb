@@ -11,10 +11,13 @@ module Holistic::Ruby::Reference
         reference = application.type_inference_resolving_queue.pop
 
         case resolve(application:, reference:)
+        when :skip then nil
         when :resolved then nil
         when :unresolved then retry_later << reference
         end
       end
+
+      ::Holistic.logger.info("danling references count: #{retry_later.size}")
 
       retry_later.each do |reference|
         application.type_inference_resolving_queue.push(reference)
@@ -26,6 +29,9 @@ module Holistic::Ruby::Reference
     def resolve(application:, reference:)
       bag_of_clues = ::Holistic::Ruby::TypeInference::BagOfClues.new(reference.clues)
       resolver = ::Holistic::Ruby::TypeInference::Resolver.new(application:)
+
+      return :skip if !reference.located_in_scope
+
       referenced_scope = resolver.resolve(scope: reference.located_in_scope, bag_of_clues:)
 
       return :unresolved if !referenced_scope
