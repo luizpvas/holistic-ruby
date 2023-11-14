@@ -7,12 +7,15 @@ module Holistic::Ruby::Reference
       @default_priority = ::Queue.new
     end
 
-    def push(item)
-      @default_priority.push(item)
-    end
+    def push(reference)
+      queue =
+        if reference.resolve_type_inference_with_high_priority?
+          @high_priority
+        else
+          @default_priority
+        end
 
-    def push_with_high_priority(item)
-      @high_priority.push(item)
+      queue.push(reference)
     end
 
     def empty?

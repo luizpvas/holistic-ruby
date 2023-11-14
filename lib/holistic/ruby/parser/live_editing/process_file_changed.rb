@@ -30,11 +30,7 @@ module Holistic::Ruby::Parser
       references_to_reresolve.each do |reference|
         reference.relation(:referenced_scope).delete!(reference.referenced_scope)
 
-        if reference.resolve_type_inference_with_high_priority?
-          application.type_inference_resolving_queue.push_with_high_priority(reference)
-        else
-          application.type_inference_resolving_queue.push(reference)
-        end
+        application.type_inference_resolving_queue.push(reference)
       end
     end
 

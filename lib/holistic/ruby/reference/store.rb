@@ -12,11 +12,7 @@ module Holistic::Ruby::Reference
       reference.relation(:located_in_scope).add!(scope)
       reference.relation(:reference_defined_in_file).add!(location.file)
 
-      if reference.resolve_type_inference_with_high_priority?
-        processing_queue.push_with_high_priority(reference)
-      else
-        processing_queue.push(reference)
-      end
+      processing_queue.push(reference)
     end
   end
 end
