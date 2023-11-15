@@ -40,6 +40,7 @@ describe ::Holistic::Ruby::Parser::Expression do
       assert_expression('"string literal #{cursor.file_path}"')
       assert_expression("node.child_nodes[1..]")
       assert_expression("method_name_node || instance_node")
+      assert_expression("%i[foo bar]")
     end
   end
 

@@ -44,15 +44,16 @@ module Holistic::Ruby::Parser::Expression
       when ::SyntaxTree::Assoc then Format.(node.child_nodes[0]) + " " + Format.(node.child_nodes[1])
       when ::SyntaxTree::Label then node.value + ":"
       when ::SyntaxTree::Args then node.child_nodes.map(&Format).join(", ")
-      when ::SyntaxTree::Int then node.value
 
       when ::SyntaxTree::StringLiteral then node.quote + node.child_nodes.map(&Format).join + node.quote
       when ::SyntaxTree::TStringContent then node.value
       when ::SyntaxTree::StringEmbExpr then "\#{" + Format.(node.child_nodes[0].child_nodes[0]) + "}"
 
+      when ::SyntaxTree::Int then node.value
       when ::SyntaxTree::SymbolLiteral then ":" + Format.(node.child_nodes[0])
       when ::SyntaxTree::RegexpLiteral then node.beginning + node.parts.map(&:value).join + node.ending
       when ::SyntaxTree::RangeNode then Format.(node.left) + Format.(node.operator) + Format.(node.right)
+      when ::SyntaxTree::QSymbols then node.beginning.value + node.elements.map(&Format).join(" ") + "]"
 
       when ::SyntaxTree::Statements then raise ::ArgumentError
       when nil then ""
