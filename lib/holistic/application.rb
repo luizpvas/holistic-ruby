@@ -4,6 +4,12 @@ module Holistic
   class Application
     attr_reader :name, :root_directory, :database
 
+    def self.boot(name:, root_directory:)
+      new(name:, root_directory:).tap do |application|
+        Extensions::Ruby::Stdlib.register(application)
+      end
+    end
+
     def initialize(name:, root_directory:)
       @name = name
       @root_directory = root_directory

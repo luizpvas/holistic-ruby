@@ -23,9 +23,7 @@ module Holistic::LanguageServer
       root_directory = request.param("rootPath")
       name = ::File.basename(root_directory)
 
-      Current.application = ::Holistic::Application.new(name:, root_directory:).tap do |application|
-        ::Holistic::Extensions::Ruby::Stdlib.register(application)
-      end
+      Current.application = ::Holistic::Application.boot(name:, root_directory:)
     end
 
     def advance_lifecycle_state

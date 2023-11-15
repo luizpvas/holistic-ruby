@@ -3,12 +3,18 @@
 module Holistic::EmbeddedAgent
   module Bridge
     class Inline
-      def send(event_name, payload)
+      def publish(event_name, payload)
+      end
+
+      def subscribe(event_name, callback)
       end
     end
 
     class FileStream
-      def send(event_name, payload)
+      def publish(event_name, payload)
+      end
+
+      def subscribe(event_name, callback)
       end
     end
   end

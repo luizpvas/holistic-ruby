@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module EmbeddedAgent
+module Holistic::EmbeddedAgent
   module Event
     Spec = ::Data.define(:required)
 
