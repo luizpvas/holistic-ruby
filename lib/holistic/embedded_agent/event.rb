@@ -7,7 +7,8 @@ module Holistic::EmbeddedAgent
     FORMATS = {
       "register_constant" => Spec.new(
         required: %i[
-          fully_qualified_name
+          fully_qualified_lexical_parent
+          name
           type
         ]
       ),

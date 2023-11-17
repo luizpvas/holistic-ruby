@@ -6,5 +6,9 @@ module Holistic::Document::File
 
     def defines_scopes     = has_many(:defines_scopes)
     def defines_references = has_many(:defines_references)
+
+    def external?
+      path == External::FILE_PATH
+    end
   end
 end

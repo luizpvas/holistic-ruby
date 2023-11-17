@@ -14,6 +14,10 @@ module Holistic::Ruby::Scope
         location_matching_scope_name || items.first
       end
 
+      def external?
+        items.any?(&:external?)
+      end
+
       delegate :<<,      to: :items
       delegate :each,    to: :items
       delegate :find,    to: :items
@@ -33,11 +37,22 @@ module Holistic::Ruby::Scope
       end
     end
 
+    def self.external(application:)
+      declaration = ::Holistic::Document::File::External.get(application:)
+      body = ::Holistic::Document::File::External.get(application:)
+
+      new(declaration:, body:)
+    end
+
     attr_reader :declaration, :body
 
     def initialize(declaration:, body:)
       @declaration = declaration
       @body = body
+    end
+
+    def external?
+      declaration.external?
     end
   end
 end

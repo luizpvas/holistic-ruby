@@ -51,21 +51,21 @@ describe ::Holistic::Ruby::Autocompletion::Suggester do
 
     it "suggests Payment." do
       assert_suggestions("Payment.", [
-        { code: "this_is_a_class_method", kind: :class_method },
-        { code: "new", kind: :class_method }
+        { code: "this_is_a_class_method", kind: "class_method" },
+        { code: "new", kind: "class_method" }
       ])
     end
 
     it "suggests Payment.this" do
       assert_suggestions("Payment.this", [
-        { code: "this_is_a_class_method", kind: :class_method }
+        { code: "this_is_a_class_method", kind: "class_method" }
       ])
     end
 
     it "suggests ::MyApp::Payment." do
       assert_suggestions("::MyApp::Payment.", [
-        { code: "this_is_a_class_method", kind: :class_method },
-        { code: "new", kind: :class_method }
+        { code: "this_is_a_class_method", kind: "class_method" },
+        { code: "new", kind: "class_method" }
       ])
     end
   end

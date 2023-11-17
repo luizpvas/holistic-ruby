@@ -44,14 +44,14 @@ describe ::Holistic::Ruby::Autocompletion::Suggester do
 
     it "suggests met" do
       assert_suggestions("met", [
-        { code: "method_1", kind: :instance_method },
-        { code: "method_2", kind: :instance_method }
+        { code: "method_1", kind: "instance_method" },
+        { code: "method_2", kind: "instance_method" }
       ])
     end
 
     it "suggests Lam" do
       assert_suggestions("Lam", [
-        { code: "Lambda1", kind: :lambda }
+        { code: "Lambda1", kind: "lambda" }
       ])
     end
   end
