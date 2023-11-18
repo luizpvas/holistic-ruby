@@ -25,6 +25,7 @@ module Holistic::Ruby::Parser::Expression
       when ::SyntaxTree::Kw then node.value
       when ::SyntaxTree::Period then "."
       when ::SyntaxTree::Op then node.value
+      when ::SyntaxTree::Unary then node.operator + Format.(node.statement)
       when ::SyntaxTree::Binary then Format.(node.left) + " || " + Format.(node.right)
 
       when ::SyntaxTree::CallNode then node.child_nodes.map(&Format).join
@@ -48,6 +49,7 @@ module Holistic::Ruby::Parser::Expression
       when ::SyntaxTree::StringLiteral then node.quote + node.child_nodes.map(&Format).join + node.quote
       when ::SyntaxTree::TStringContent then node.value
       when ::SyntaxTree::StringEmbExpr then "\#{" + Format.(node.child_nodes[0].child_nodes[0]) + "}"
+      when ::SyntaxTree::Heredoc then node.beginning.value + "\n" + node.parts.map(&Format).join + node.ending.value
 
       when ::SyntaxTree::Int then node.value
       when ::SyntaxTree::SymbolLiteral then ":" + Format.(node.child_nodes[0])

@@ -42,6 +42,10 @@ describe ::Holistic::Ruby::Parser::Expression do
       assert_expression("node.child_nodes[1..]")
       assert_expression("method_name_node || instance_node")
       assert_expression("%i[foo bar]")
+      assert_expression("-10")
+      assert_expression("<<~TXT
+        Hello
+      TXT")
     end
   end
 
