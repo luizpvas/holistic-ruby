@@ -49,8 +49,5 @@ describe ::Holistic::EmbeddedAgent::Event do
       expect(scope.kind).to eq(::Holistic::Ruby::Scope::Kind::MODULE)
       expect(scope.locations.external?).to be(true)
     end
-
-    context "when registering an object" do
-    end
   end
 end
