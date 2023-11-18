@@ -3,6 +3,6 @@
 module Holistic::Ruby::TableOfContents
   class Record < ::Holistic::Database::Node
     def scope_fully_qualified_name = attr(:scope_fully_qualified_name)
-    def clues = attr(:clues)
+    def items = attr(:items)
   end
 end

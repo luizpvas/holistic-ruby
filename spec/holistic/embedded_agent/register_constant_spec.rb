@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "spec_helper"
-
 describe ::Holistic::EmbeddedAgent::Event do
   describe "register_constant" do
     let(:application) do
