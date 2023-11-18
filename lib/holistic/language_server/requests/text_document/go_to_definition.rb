@@ -22,6 +22,9 @@ module Holistic::LanguageServer
 
       result = ::Holistic::Ruby::Reference::FindReferencedScope.call(application: request.application, cursor:)
 
+      ::Holistic.logger.info("===============")
+      ::Holistic.logger.info(result.inspect)
+
       case result
       in :not_found
         request.respond_with(nil)
