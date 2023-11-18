@@ -45,13 +45,13 @@ describe ::Holistic::Ruby::Autocompletion::Suggester do
 
     it "suggests p" do
       assert_suggestions("p", [
-        { code: "parent_method", kind: :instance_method }
+        { code: "parent_method", kind: "instance_method" }
       ])
     end
 
     it "suggests o" do
       assert_suggestions("o", [
-        { code: "overriden_method", kind: :instance_method }
+        { code: "overriden_method", kind: "instance_method" }
       ])
     end
   end

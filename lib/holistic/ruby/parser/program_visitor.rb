@@ -57,7 +57,7 @@ module Holistic::Ruby::Parser
       end
 
       def visit_command(node)
-        command_name_node, args_node = node.child_nodes
+        command_name_node, args_node, block_node = node.child_nodes
 
         if command_name_node.value == "extend"
           is_extending_self = args_node.child_nodes.size == 1 && Expression::SyntaxTree.build(args_node.child_nodes.first).to_s == "self"
@@ -86,7 +86,8 @@ module Holistic::Ruby::Parser
           )
         end
 
-        visit(args_node)
+        visit(args_node) if args_node
+        visit(block_node) if block_node
       end
 
       def visit_def(node)

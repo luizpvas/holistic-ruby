@@ -12,6 +12,10 @@ module Holistic::Document
       "#{file.path}[#{start_line},#{start_column},#{end_line},#{end_column}]"
     end
 
+    def external?
+      file.external?
+    end
+
     def contains?(cursor)
       same_file = cursor.file_path == file.path
       contains_line = cursor.line >= start_line && cursor.line <= end_line

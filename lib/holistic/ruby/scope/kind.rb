@@ -4,12 +4,12 @@ module Holistic::Ruby::Scope
   module Kind
     extend self
 
-    ROOT            = :root
-    MODULE          = :module
-    CLASS           = :class
-    INSTANCE_METHOD = :instance_method
-    CLASS_METHOD    = :class_method
-    LAMBDA          = :lambda
+    ROOT            = "root"
+    MODULE          = "module"
+    CLASS           = "class"
+    INSTANCE_METHOD = "instance_method"
+    CLASS_METHOD    = "class_method"
+    LAMBDA          = "lambda"
 
     Subkind = {
       ROOT            => Kind::Root,

@@ -47,8 +47,8 @@ describe ::Holistic::Ruby::Autocompletion::Suggester do
 
     it "suggests p" do
       assert_suggestions("p", [
-        { code: "parent_1_method", kind: :instance_method },
-        { code: "parent_2_method", kind: :instance_method }
+        { code: "parent_1_method", kind: "instance_method" },
+        { code: "parent_2_method", kind: "instance_method" }
       ])
     end
   end

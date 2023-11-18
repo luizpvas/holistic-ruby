@@ -4,14 +4,27 @@ module Holistic
   class Application
     attr_reader :name, :root_directory, :database
 
+    def self.boot(name:, root_directory:)
+      new(name:, root_directory:).tap do |application|
+        Extensions::Ruby::Stdlib.register(application)
+
+        EmbeddedAgent::Subscriber.subscribe(application:)
+      end
+    end
+
     def initialize(name:, root_directory:)
       @name = name
       @root_directory = root_directory
+
       @database = Database.new.tap(&Database::Migrations::Run)
     end
 
     def extensions
       @extensions ||= Extensions::Events.new
+    end
+
+    def bridge
+      @bridge ||= EmbeddedAgent::Bridge::Inline.new
     end
 
     def scopes

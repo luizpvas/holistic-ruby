@@ -37,15 +37,15 @@ describe ::Holistic::Ruby::Autocompletion::Suggester do
 
     it "suggests methods of the parent class from the child class scope" do
       assert_suggestions("p", [
-        { code: "parent_method", kind: :class_method }
+        { code: "parent_method", kind: "class_method" }
       ])
     end
 
     it "suggests methods from parent from the fully qualified child scope name" do
       assert_suggestions("::MyApp::Child.", [
-        { code: "child_method", kind: :class_method },
-        { code: "new", kind: :class_method },
-        { code: "parent_method", kind: :class_method }
+        { code: "child_method", kind: "class_method" },
+        { code: "new", kind: "class_method" },
+        { code: "parent_method", kind: "class_method" }
       ])
     end
   end

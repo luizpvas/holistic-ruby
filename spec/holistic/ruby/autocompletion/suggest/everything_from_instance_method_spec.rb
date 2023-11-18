@@ -50,9 +50,9 @@ describe ::Holistic::Ruby::Autocompletion::Suggester do
 
     xit "suggests methods, classes, modules, lambdas and constants from the current class and ancesors" do
       assert_suggestions("", [
-        { code: "child_method", kind: :instance_method },
-        { code: "sibling_method", kind: :instance_method },
-        { code: "parent_method", kind: :instance_method }
+        { code: "child_method", kind: "instance_method" },
+        { code: "sibling_method", kind: "instance_method" },
+        { code: "parent_method", kind: "instance_method" }
       ])
     end
   end

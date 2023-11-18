@@ -42,8 +42,8 @@ describe ::Holistic::Ruby::Autocompletion::Suggester do
 
     it "suggests met" do
       assert_suggestions("met", [
-        { code: "method_1", kind: :class_method },
-        { code: "method_2", kind: :class_method }
+        { code: "method_1", kind: "class_method" },
+        { code: "method_2", kind: "class_method" }
       ])
     end
   end

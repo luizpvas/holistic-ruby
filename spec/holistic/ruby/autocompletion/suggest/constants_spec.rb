@@ -47,62 +47,62 @@ describe ::Holistic::Ruby::Autocompletion::Suggester do
     end
 
     it "suggests Fee" do
-      assert_suggestions("Fe", [{ code: "Feed", kind: :module }])
+      assert_suggestions("Fe", [{ code: "Feed", kind: "module" }])
     end
 
     it "suggests Feed::" do
-      assert_suggestions("Feed::", [{ code: "Item", kind: :module }])
+      assert_suggestions("Feed::", [{ code: "Item", kind: "module" }])
     end
 
     it "suggests Ev" do
-      assert_suggestions("Ev", [{code: "EventsController", kind: :class }])
+      assert_suggestions("Ev", [{code: "EventsController", kind: "class" }])
     end
 
     it "suggests Pay" do
       assert_suggestions("Pay", [
-        { code: "Payment", kind: :class },
-        { code: "Payout", kind: :class }
+        { code: "Payment", kind: "class" },
+        { code: "Payout", kind: "class" }
       ])
     end
 
     it "suggests Paym" do
-      assert_suggestions("Paym", [{ code: "Payment", kind: :class }])
+      assert_suggestions("Paym", [{ code: "Payment", kind: "class" }])
     end
 
     it "suggests Payo" do
-      assert_suggestions("Payo", [{ code: "Payout", kind: :class }])
+      assert_suggestions("Payo", [{ code: "Payout", kind: "class" }])
     end
 
     it "suggests My" do
-      assert_suggestions("My", [{ code: "MyApp", kind: :module }])
+      assert_suggestions("My", [{ code: "MyApp", kind: "module" }])
     end
 
     it "suggests ::My" do
-      assert_suggestions("::My", [{ code: "MyApp", kind: :module }])
+      assert_suggestions("::My", [{ code: "MyApp", kind: "module" }])
     end
 
     it "suggests ::MyApp::" do
       assert_suggestions("::MyApp::", [
-        { code: "Payment", kind: :class },
-        { code: "Payout", kind: :class },
-        { code: "Calculate", kind: :lambda }, 
-        { code: "EventsController", kind: :class }
+        { code: "Payment", kind: "class" },
+        { code: "Payout", kind: "class" },
+        { code: "Calculate", kind: "lambda" }, 
+        { code: "EventsController", kind: "class" }
       ])
     end
 
     it "suggests ::MyApp::Pay" do
       assert_suggestions("::MyApp::Pay", [
-        { code: "Payment", kind: :class },
-        { code: "Payout", kind: :class }
+        { code: "Payment", kind: "class" },
+        { code: "Payout", kind: "class" }
       ])
     end
 
     it "suggests ::MyApp::Ev" do
-      assert_suggestions("::MyApp::Ev", [{ code: "EventsController", kind: :class }])
+      assert_suggestions("::MyApp::Ev", [{ code: "EventsController", kind: "class" }])
     end
 
     it "suggests ::MyApp::EventsController::" do
-      assert_suggestions("::MyApp::EventsController::", [{ code: "Feed", kind: :module }])
+      assert_suggestions("::MyApp::EventsController::", [{ code: "Feed", kind: "module" }])
     end
   end
 end

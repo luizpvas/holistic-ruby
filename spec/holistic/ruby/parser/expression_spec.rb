@@ -28,6 +28,7 @@ describe ::Holistic::Ruby::Parser::Expression do
       assert_expression("described_class::Value")
       assert_expression("foo(10)")
       assert_expression("foo(10, 20)")
+      assert_expression("foo(num: 10)")
       assert_expression("data[:request].response.inspect")
       assert_expression("@relations[connection_name].to_a")
       assert_expression("@records[id]&.tap")
@@ -41,6 +42,10 @@ describe ::Holistic::Ruby::Parser::Expression do
       assert_expression("node.child_nodes[1..]")
       assert_expression("method_name_node || instance_node")
       assert_expression("%i[foo bar]")
+      assert_expression("-10")
+      assert_expression("<<~TXT
+        Hello
+      TXT")
     end
   end
 
@@ -70,6 +75,7 @@ describe ::Holistic::Ruby::Parser::Expression do
       expect(expression("foo.bar").methods).to eql(["foo", "bar"])
       expect(expression("foo.bar.qux").methods).to eql(["foo", "bar", "qux"])
       expect(expression("foo(10).bar").methods).to eql(["foo", "bar"])
+      expect(expression("foo(num: 10).bar").methods).to eql(["foo", "bar"])
       expect(expression("Foo.bar").methods).to eql(["bar"])
       expect(expression("Foo::Bar.qux").methods).to eql(["qux"])
       expect(expression("Foo::Bar.qux.quz").methods).to eql(["qux", "quz"])
