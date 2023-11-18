@@ -42,7 +42,7 @@ module Holistic::Ruby::Parser::Expression
       when ::SyntaxTree::BareAssocHash then node.child_nodes.map(&Format).join(", ")
       when ::SyntaxTree::ArrayLiteral then "[" + node.child_nodes[1..].map(&Format).join(", ") + "]"
       when ::SyntaxTree::Assoc then Format.(node.child_nodes[0]) + " " + Format.(node.child_nodes[1])
-      when ::SyntaxTree::Label then node.value + ":"
+      when ::SyntaxTree::Label then node.value
       when ::SyntaxTree::Args then node.child_nodes.map(&Format).join(", ")
 
       when ::SyntaxTree::StringLiteral then node.quote + node.child_nodes.map(&Format).join + node.quote

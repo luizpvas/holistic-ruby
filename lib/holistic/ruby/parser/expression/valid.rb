@@ -44,13 +44,6 @@ module Holistic::Ruby::Parser::Expression
       str[0] == str[0].downcase
     end
 
-    RemoveParensAndArguments = ->(method_call) do
-      # if the method call start with "(" it means the syntax looked something like "foo.(10)"
-      return "call" if method_call.start_with?("(")
-
-      method_call.gsub(/\(.*\)/, "")
-    end
-
     def namespaces
       return [] if starts_with_lower_case_letter?
 
@@ -60,9 +53,11 @@ module Holistic::Ruby::Parser::Expression
     end
 
     def methods
-      chain
-        .select(&StartsWithLowerCase)
-        .map(&RemoveParensAndArguments)
+      methods = chain.select(&StartsWithLowerCase)
+
+      methods << "call" if value.include?(".(")
+
+      methods
     end
 
     def last_subexpression
@@ -83,8 +78,10 @@ module Holistic::Ruby::Parser::Expression
 
     private
 
+    ARGUMENTS = /\(.*\)/
+
     def chain
-      @chain ||= value.split(/(:|\.)/).compact_blank
+      @chain ||= value.gsub(ARGUMENTS, "").split(/(:|\.)/).compact_blank
     end
   end
 end
